@@ -5,13 +5,12 @@ requests==2.32.3
 typer==0.12.5
 
 # DB & migrations
+
 SQLAlchemy==2.0.34
 alembic==1.13.2
 
-# Dev
-ruff==0.12.10
-mypy==1.17.1
-pytest==8.4.1
-pytest-cov==6.2.1
-types-requests==2.32.4.20250809
-httpx==0.28.1
+# Auth
+
+PyJWT==2.9.0
+passlib==1.7.4
+bcrypt==4.2.0

@@ -69,3 +69,31 @@ backend\.venv\Scripts\python -m pytest -q backend/tests/test_assignments_uniquen
 $Env:DATABASE_URL="sqlite:///./backend/dev.db"
 backend\.venv\Scripts\alembic -c backend\alembic.ini upgrade head
 ```
+
+## Jalon 4 - Auth reelle (JWT + refresh)
+
+### Endpoints
+
+* POST /api/v1/auth/login  -> JSON {access_token}, cookie httpOnly refresh_token
+* POST /api/v1/auth/refresh -> JSON {access_token} (lit cookie refresh)
+* POST /api/v1/auth/logout  -> supprime le cookie
+* GET  /api/v1/auth/me      -> infos compte derivees du JWT
+* POST /api/v1/auth/reset/request -> en dev renvoie {reset_token}
+* POST /api/v1/auth/reset/confirm -> applique le nouveau mot de passe
+
+### Variables env
+
+* SECRET_KEY, JWT_ALG, ACCESS_TOKEN_MINUTES, REFRESH_TOKEN_DAYS
+
+### Notes CORS/CSRF
+
+* Refresh utilise un cookie httpOnly SameSite=Lax. En prod, mettre Secure=True via TLS et ajouter un CSRF header si necessaire.
+* Ce jalon ne couvre pas l envoi email (fait plus tard). En dev, le token de reset est renvoye dans la reponse.
+
+### Tests
+
+```powershell
+$Env:PYTHONPATH="backend"
+backend\.venv\Scripts\python -m pytest -q backend/tests/test_auth_flow.py
+backend\.venv\Scripts\python -m pytest -q backend/tests/test_password_reset_flow.py
+```
