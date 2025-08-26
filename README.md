@@ -39,6 +39,10 @@ BE 8000 ; FE 5173 ; DB 5432 ; Redis 6379 ; Adminer 8080.
 pwsh -NoLogo -NoProfile -File PS1/test_all.ps1
 ```
 
+### Typing (passlib)
+
+passlib n a pas de stubs types officiels; nous ignorons l import via `# type: ignore[import-untyped]` dans `backend/app/auth.py`. La CI appelle mypy avec `--config-file backend/mypy.ini`.
+
 ## README Policy
 
 Tout changement de CLI/API/env/scripts/ports/procedures => MAJ README(s) concernes (root + dossiers). CI docs guard echoue si non mis a jour.

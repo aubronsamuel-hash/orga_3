@@ -8,7 +8,7 @@ $venv = Join-Path "backend" ".venv"
 $py = Join-Path $venv "Scripts\python.exe"
 
 & $py -m ruff check backend
-& $py -m mypy backend
+& $py -m mypy --config-file backend\mypy.ini backend
 
 # Ensure PYTHONPATH=backend for app imports
 $Env:PYTHONPATH = "backend"

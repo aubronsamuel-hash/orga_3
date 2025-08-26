@@ -27,7 +27,7 @@ jobs:
         shell: pwsh
         run: |
           backend\.venv\Scripts\python -m ruff check backend
-          backend\.venv\Scripts\python -m mypy backend
+          backend\.venv\Scripts\python -m mypy --config-file backend\mypy.ini backend
       - name: Tests
         shell: pwsh
         env:
