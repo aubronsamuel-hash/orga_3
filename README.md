@@ -47,16 +47,14 @@ Tout changement de CLI/API/env/scripts/ports/procedures => MAJ README(s) concern
 
 Les lockfiles sont obligatoires (policy DEPENDANCES).
 
-### Backend
+### Backend (dev)
 
 * Runtime: `backend/requirements.txt` (inclut `email-validator` requis par `pydantic.EmailStr`)
 * Dev (CI lints/tests): `backend/requirements-dev.txt`
 
+Deps dev incluent `httpx` pour `fastapi.testclient`:
+
 ```powershell
-# Installation locale (incluant outils dev)
-pwsh -NoLogo -NoProfile -File PS1/init_repo.ps1
-# ou manuellement:
-python -m venv backend/.venv
 backend\.venv\Scripts\pip install -r backend\requirements.txt -r backend\requirements-dev.txt
 ```
 
