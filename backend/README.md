@@ -199,3 +199,29 @@ ACCEPTANCE:
 * HIT/MISS observe via `X-Cache` sur projects/missions.
 * Ecritures invalident et provoquent un MISS ensuite.
 * CI verte (ruff, mypy, pytest). Roadmap J7 respectee.
+
+## Observabilite (Jalon 8)
+
+* /metrics (Prometheus) expose des compteurs, histos et gauge: `app_requests_total`, `app_request_duration_seconds`, `app_inflight_requests`.
+* Logs JSON par requete: `request_id`, `trace_id`, `method`, `path`, `status`, `duration_ms`.
+* Probes:
+  * `/livez` -> 200 si process en vie
+  * `/readyz` -> 200 si DB OK (`SELECT 1`), sinon 503
+* Env:
+  * `LOG_LEVEL` (defaut INFO)
+  * `METRICS_ENABLED` (true/false)
+* Scrape Prometheus (exemple):
+
+```
+scrape_configs:
+  - job_name: "cc-backend"
+    static_configs: [{ targets: ["localhost:8000"] }]
+    metrics_path: /metrics
+```
+
+* Tests:
+
+```powershell
+$Env:PYTHONPATH="backend"
+backend\.venv\Scripts\python -m pytest -q -k "obs or readiness or metrics"
+```

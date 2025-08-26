@@ -9,6 +9,13 @@ pwsh -NoLogo -NoProfile -File PS1/init_repo.ps1
 pwsh -NoLogo -NoProfile -File PS1/dev_up.ps1
 # Ouvrir: http://localhost:5173 et GET http://localhost:8000/api/v1/ping
 ```
+## CI gates actifs (extrait)
+
+* backend: ruff, mypy, pytest
+* frontend: npm ci + lint (registry public force)
+* obs-smoke: tests ciblant observabilite (/metrics, probes)
+  Relire `docs/ROADMAP.md` avant toute PR.
+
 
 ## Scripts clefs
 
