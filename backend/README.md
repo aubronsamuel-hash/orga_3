@@ -39,3 +39,33 @@ PYTHONPATH=backend backend\.venv\Scripts\python -m pytest -q backend/tests/test_
 
 * Cible finale: Postgres 16 (avec Docker compose au Jalon 9). Au jalon 2, la CI s appuie sur SQLite pour des tests deterministes.
 * A partir du Jalon 3, les modeles metier seront introduits et les migrations evoluent.
+
+## Jalon 3 - Modeles metier
+
+### Enums
+
+* assignment_status: INVITED | ACCEPTED | DECLINED | CANCELLED
+* project_status: DRAFT | ACTIVE | ARCHIVED
+
+### Tables (principales)
+
+* orgs, accounts, users (+ skills, tags), projects, missions (+ roles), assignments, availability, invitations, audit_log.
+
+### Contraintes clefs
+
+* Unicite assignment actif par (mission_id, user_id): index unique partiel sur status IN ('INVITED','ACCEPTED')
+
+### Tests
+
+```powershell
+$Env:PYTHONPATH="backend"
+backend\.venv\Scripts\python -m pytest -q backend/tests/test_models_crud.py
+backend\.venv\Scripts\python -m pytest -q backend/tests/test_assignments_uniqueness.py
+```
+
+### Alembic
+
+```powershell
+$Env:DATABASE_URL="sqlite:///./backend/dev.db"
+backend\.venv\Scripts\alembic -c backend\alembic.ini upgrade head
+```
