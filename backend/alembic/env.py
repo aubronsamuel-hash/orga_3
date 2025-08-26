@@ -39,10 +39,18 @@ def run_migrations_online() -> None:
         poolclass=pool.NullPool,
         future=True,
     )
-    with connectable.connect() as connection:
-        context.configure(connection=connection)
-        with context.begin_transaction():
-            context.run_migrations()
+    try:
+        with connectable.connect() as connection:
+            context.configure(connection=connection)
+            with context.begin_transaction():
+                context.run_migrations()
+    finally:
+        # Important sous Windows/SQLite: libere les poignees de fichiers
+        try:
+            connectable.dispose()
+        except Exception:
+            # Pas bloquant: on evite d echouer le pipeline si la disposal echoue
+            pass
 
 if context.is_offline_mode():
     run_migrations_offline()
