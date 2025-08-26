@@ -1,0 +1,22 @@
+# Root
+
+.env
+*.log
+node_modules/
+dist/
+.vscode/
+.DS_Store
+
+# Python
+
+backend/.venv/
+**pycache**/
+*.pyc
+.coverage
+coverage.xml
+
+# Frontend
+
+frontend/.vite/
+frontend/coverage/
+frontend/.eslintcache

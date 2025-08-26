@@ -1,0 +1,6 @@
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["backend/tests"]
+
+[tool.coverage.run]
+source = ["backend"]
