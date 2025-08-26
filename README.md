@@ -44,7 +44,7 @@ Les lockfiles sont obligatoires (policy DEPENDANCES).
 
 ### Backend
 
-* Runtime: `backend/requirements.txt`
+* Runtime: `backend/requirements.txt` (inclut `email-validator` requis par `pydantic.EmailStr`)
 * Dev (CI lints/tests): `backend/requirements-dev.txt`
 
 ```powershell
