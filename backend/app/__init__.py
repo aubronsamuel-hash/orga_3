@@ -1,1 +1,1 @@
-__all__ = ["create_app"]
+"""Application package."""
