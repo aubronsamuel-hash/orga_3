@@ -3,11 +3,11 @@ from __future__ import annotations
 import time
 import uuid
 from datetime import datetime, timedelta, timezone
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, cast
 
 import jwt
 from passlib.context import CryptContext  # type: ignore[import-untyped, unused-ignore]
-from fastapi import Depends, HTTPException, status, Request
+from fastapi import Depends, HTTPException, status, Request, Response
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 
@@ -18,11 +18,11 @@ pwd_ctx = CryptContext(schemes=["bcrypt"], deprecated="auto")
 bearer_scheme = HTTPBearer(auto_error=False)
 
 def hash_password(password: str) -> str:
-    return pwd_ctx.hash(password)
+    return cast(str, pwd_ctx.hash(password))
 
 def verify_password(password: str, password_hash: str) -> bool:
     try:
-        return pwd_ctx.verify(password, password_hash)
+        return bool(pwd_ctx.verify(password, password_hash))
     except Exception:
         return False
 
@@ -66,7 +66,10 @@ def create_reset_token(email: str) -> str:
 
 def decode_token(token: str) -> Dict[str, Any]:
     try:
-        return jwt.decode(token, settings.secret_key, algorithms=[settings.jwt_algorithm])
+        return cast(
+            Dict[str, Any],
+            jwt.decode(token, settings.secret_key, algorithms=[settings.jwt_algorithm]),
+        )
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="token expire")
     except jwt.InvalidTokenError:
@@ -79,7 +82,7 @@ def get_current_account(
     creds: Optional[HTTPAuthorizationCredentials] = Depends(bearer_scheme),
     request: Request = None,  # type: ignore[assignment]
     db: Session = Depends(get_db),
-):
+) -> Dict[str, Any]:
     if not creds:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="auth manquante")
     token = creds.credentials
@@ -97,7 +100,7 @@ def get_current_account(
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="compte inconnu")
     return {"id": row.id, "email": row.email, "org_id": row.org_id}
 
-def set_refresh_cookie(response, refresh_token: str) -> None:
+def set_refresh_cookie(response: Response, refresh_token: str) -> None:
     response.set_cookie(
         key="refresh_token",
         value=refresh_token,
@@ -108,5 +111,5 @@ def set_refresh_cookie(response, refresh_token: str) -> None:
         max_age=int(timedelta(days=settings.refresh_token_days).total_seconds()),
     )
 
-def clear_refresh_cookie(response) -> None:
+def clear_refresh_cookie(response: Response) -> None:
     response.delete_cookie(key="refresh_token", path="/api/v1/auth")
