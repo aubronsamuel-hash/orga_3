@@ -67,9 +67,28 @@ jobs:
           echo "[debug] registry (pre): $(npm config get registry)"
           npm ci --no-audit --no-fund
           npm run lint
+  obs-smoke:
+    runs-on: windows-latest
+    needs: [backend]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.10" }
+      - name: Deps minimales
+        shell: pwsh
+        run: |
+          python -m venv backend/.venv
+          backend\.venv\Scripts\pip install -r backend\requirements.txt
+          if (Test-Path "backend\requirements-dev.txt") { backend\.venv\Scripts\pip install -r backend\requirements-dev.txt }
+      - name: Obs smoke (pytest -k obs)
+        shell: pwsh
+        env:
+          PYTHONPATH: backend
+        run: |
+          backend\.venv\Scripts\python -m pytest -q -k "obs or readiness or metrics"
   docs-guard:
     runs-on: ubuntu-latest
-    needs: [backend, frontend]
+    needs: [backend, frontend, obs-smoke]
     steps:
       - uses: actions/checkout@v4
       - name: Docs guard
