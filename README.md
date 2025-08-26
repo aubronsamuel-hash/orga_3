@@ -40,16 +40,32 @@ Tout changement de CLI/API/env/scripts/ports/procedures => MAJ README(s) concern
 
 ## Dependances et lockfiles
 
-Les lockfiles sont obligatoires (policy DEPENDANCES). Pour le frontend:
+Les lockfiles sont obligatoires (policy DEPENDANCES).
+
+### Backend
+
+* Runtime: `backend/requirements.txt`
+* Dev (CI lints/tests): `backend/requirements-dev.txt`
 
 ```powershell
-# Regenerer le lockfile apres modification de package.json
+# Installation locale (incluant outils dev)
+pwsh -NoLogo -NoProfile -File PS1/init_repo.ps1
+# ou manuellement:
+python -m venv backend/.venv
+backend\.venv\Scripts\pip install -r backend\requirements.txt -r backend\requirements-dev.txt
+```
+
+### Frontend
+
+* `frontend/package-lock.json` doit etre committe.
+
+```powershell
 pwsh -NoLogo -NoProfile -File PS1/gen_frontend_lock.ps1
 git add frontend/package-lock.json
 git commit -m "chore(frontend): regen package-lock"
 ```
 
-La CI utilise `npm ci` et echouera si `frontend/package-lock.json` est absent ou non committe.
+La CI utilise `npm ci` et echouera si le lockfile est absent.
 
 ## FAQ
 
