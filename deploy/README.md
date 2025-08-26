@@ -25,6 +25,9 @@ pwsh -NoLogo -NoProfile -File PS1/smoke.ps1
 * Adminer: http://localhost:8080
 * Postgres: localhost:5432 (DB ${POSTGRES_DB}, user ${POSTGRES_USER})
 
+### Note image backend
+L image definit `ENV PYTHONPATH=/app/backend` afin que `uvicorn app.main:create_app` importe correctement le package `app` situe sous `/app/backend`. Sans cela, le process tomberait au demarrage (import error) et le port 8000 ne repondrait pas en smoke.
+
 ## Arret
 
 ```powershell

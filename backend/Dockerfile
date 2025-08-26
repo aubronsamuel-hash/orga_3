@@ -20,6 +20,9 @@ RUN python -m pip install -U pip && \
 # Copy source
 COPY backend /app/backend
 
+# Rendre importable le package "app" (sous /app/backend)
+ENV PYTHONPATH=/app/backend
+
 EXPOSE 8000
 
 # Start FastAPI (factory)
