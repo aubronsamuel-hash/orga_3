@@ -93,24 +93,25 @@ def test_missions_cache_hit_miss() -> None:
 
     eng = create_engine(TEST_DB_URL, future=True)
     with eng.begin() as c:
+        # Utiliser un jeu distinct pour eviter les collisions avec le test precedent
         c.execute(
             text(
-                "INSERT INTO orgs (id, name, created_at, updated_at) VALUES ('o1','Org',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)"
+                "INSERT INTO orgs (id, name, created_at, updated_at) VALUES ('o2','Org2',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)"
             )
         )
         c.execute(
             text(
-                "INSERT INTO accounts (id, org_id, email, is_active, created_at, updated_at) VALUES ('a1','o1','mgr@example.com',1,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)"
+                "INSERT INTO accounts (id, org_id, email, is_active, created_at, updated_at) VALUES ('a2','o2','mgr2@example.com',1,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)"
             )
         )
         c.execute(
             text(
-                "INSERT INTO org_memberships (id, org_id, account_id, role, created_at, updated_at) VALUES ('m1','o1','a1','manager',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)"
+                "INSERT INTO org_memberships (id, org_id, account_id, role, created_at, updated_at) VALUES ('m2','o2','a2','manager',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)"
             )
         )
     from app.auth import create_access_token
 
-    token = create_access_token("a1", "o1")
+    token = create_access_token("a2", "o2")
     client = _client()
 
     r1 = client.get("/api/v1/missions", headers={"Authorization": f"Bearer {token}"})
