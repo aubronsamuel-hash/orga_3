@@ -23,7 +23,7 @@ Voir `deploy/README.md` pour details (compose, observabilite). Roadmap: relire `
 ## CI gates actifs (extrait)
 
 * backend: ruff, mypy, pytest
-* frontend: npm ci + lint (registry public force)
+* frontend: lint, typecheck, unit tests, build, e2e smoke
 * obs-smoke: tests ciblant observabilite (/metrics, probes)
   Relire `docs/ROADMAP.md` avant toute PR.
 
@@ -35,6 +35,8 @@ Voir `deploy/README.md` pour details (compose, observabilite). Roadmap: relire `
 * PS1/dev_down.ps1 : arrete le stack compose (option -Prune pour volumes)
 * PS1/smoke.ps1 : verif /healthz et /metrics du backend
 * PS1/test_all.ps1 : ruff, mypy, pytest, npm lint
+* PS1/fe_test.ps1 : npm lint, typecheck, unit
+* PS1/fe_e2e.ps1 : build + e2e smoke
 * tools/docs_guard.ps1 : guard doc
 * tools/readme_check.ps1 : verif sections README
 
@@ -105,9 +107,12 @@ TESTS (PS + curl):
   * backend.venv\Scripts\python -m ruff check backend
   * backend.venv\Scripts\python -m mypy --config-file backend\mypy.ini backend
   * $Env:PYTHONPATH="backend"; backend.venv\Scripts\python -m pytest -q
+  * pwsh -NoLogo -NoProfile -File PS1/fe_test.ps1
+  * pwsh -NoLogo -NoProfile -File PS1/fe_e2e.ps1
 * Linux/macOS:
 
   * PYTHONPATH=backend backend/.venv/bin/python -m pytest -q
+  * cd frontend && npm ci && npm run lint && npm run typecheck && npm run test:unit && npm run build && npm run test:e2e
 
 ## README Policy
 
