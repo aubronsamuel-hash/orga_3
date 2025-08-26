@@ -36,9 +36,10 @@ BE 8000 ; FE 5173 ; DB 5432 ; Redis 6379 ; Adminer 8080.
 ## Tests/Lint
 
 ```powershell
-pwsh -NoLogo -NoProfile -File PS1/test_all.ps1
+backend\.venv\Scripts\python -m ruff check backend
+backend\.venv\Scripts\python -m mypy --config-file backend\mypy.ini backend
+$Env:PYTHONPATH="backend"; backend\.venv\Scripts\python -m pytest -q -k "v1_endpoints"
 ```
-
 ### Typing (passlib)
 
 passlib n a pas de stubs officiels. Nous:

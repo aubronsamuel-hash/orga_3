@@ -136,3 +136,41 @@ backend\.venv\Scripts\python -m pytest -q -k "rbac"
 ```
 
 * Matrice roles x actions minimale: owner > admin > manager > tech. Les endpoints metier (Jalon 6) utiliseront ces deps pour le controle fin. (Roadmap Jalon 5-6).
+
+## API v1 (Jalon 6)
+
+Endpoints exposes (subset prioritaire) :
+
+* `/api/v1/projects` CRUD + `/{id}/missions:bulk_create`
+* `/api/v1/missions` CRUD de base + `/{id}:duplicate`
+* `/api/v1/assignments` CRUD + `/{id}:status` (ACCEPTED/DECLINED/...)
+* `/api/v1/invitations` create/revoke + `/{id}/accept|decline?token=...` (token signe typ=invite)
+* `/api/v1/users` CRUD minimal + recherche
+* `/api/v1/availability` CRUD simple
+* `/api/v1/conflicts/user/{uid}` detection overlaps affectations ACCEPTED
+* `/api/v1/rates/user/{uid}` get/set profil tarifaire
+* `/api/v1/orgs/members` liste membres + roles
+  Ecriture: `require_role(Role.manager)` ; Lecture: `require_role(Role.tech)` par defaut.
+  Flux cle: invitation -> accept/decline met a jour `assignments.status`. (Roadmap Jalon 6)
+
+### Codes d erreur
+
+* 400: validations (ex: conflit horaire)
+* 401/403: auth/rbac
+* 404: introuvable
+
+### Tests
+
+```powershell
+$Env:PYTHONPATH="backend"
+backend\.venv\Scripts\python -m pytest -q -k "v1_endpoints"
+```
+
+ACCEPTANCE:
+
+* CRUD de base projects/missions/users/assignments OK.
+* `projects/{id}/missions:bulk_create` cree plusieurs missions.
+* `invitations create` renvoie un token; `accept` et `decline` changent `assignments.status` (OK et KO couverts).
+* `assignments:{id}:status` refuse ACCEPTED en cas de conflit horaire.
+* `conflicts/user/{uid}` retourne les overlaps pour ACCEPTED.
+* CI verte (ruff/mypy/pytest). Viser >=70% de cov pour ce jalon (selon roadmap).
