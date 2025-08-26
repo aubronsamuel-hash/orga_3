@@ -1,4 +1,4 @@
-# Coulisses Crew (Monorepo, Jalon 0)
+# Coulisses Crew (Monorepo, Jalon 2)
 
 Badges: (CI), (coverage) a ajouter des jalons suivants.
 
