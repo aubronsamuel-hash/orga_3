@@ -18,8 +18,9 @@
   - `deploy/` compose files, Caddy, k6, Prometheus, Grafana, Loki, alert rules
   - `docs/` roadmap, runbooks, schemas, READMEs
   - `PS1/` scripts PowerShell Windows-first
+- Dependances: lockfiles commit (package-lock.json, etc.), npm ci.
 - Terminologie:
-  - **user** = personne planifiable (CDI, CDD, intermittent, freelance). 
+  - **user** = personne planifiable (CDI, CDD, intermittent, freelance).
   - **account** = identite de connexion; un account appartient a un user.
   - **org** = organisation/entreprise (multi-tenant) a laquelle appartiennent users + accounts.
 

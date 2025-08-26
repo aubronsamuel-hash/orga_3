@@ -38,6 +38,19 @@ pwsh -NoLogo -NoProfile -File PS1/test_all.ps1
 
 Tout changement de CLI/API/env/scripts/ports/procedures => MAJ README(s) concernes (root + dossiers). CI docs guard echoue si non mis a jour.
 
+## Dependances et lockfiles
+
+Les lockfiles sont obligatoires (policy DEPENDANCES). Pour le frontend:
+
+```powershell
+# Regenerer le lockfile apres modification de package.json
+pwsh -NoLogo -NoProfile -File PS1/gen_frontend_lock.ps1
+git add frontend/package-lock.json
+git commit -m "chore(frontend): regen package-lock"
+```
+
+La CI utilise `npm ci` et echouera si `frontend/package-lock.json` est absent ou non committe.
+
 ## FAQ
 
 Q: Ca ne demarre pas ?
