@@ -2,35 +2,40 @@
 
 ## Jalon 1 - Backend skeleton + healthz
 
-### Lancer en local
+* GET /healthz -> 200 JSON {"status":"ok"}
+
+## Jalon 2 - DB + Alembic
+
+Objectif: initialiser SQLAlchemy + Alembic, fournir une premiere migration et valider upgrade/downgrade.
+
+### URLs de base
+
+* DATABASE_URL (env) prioritaire.
+* Par defaut au jalon 2 (sans Postgres): `sqlite:///./backend/dev.db`
+
+### Commandes Alembic (PowerShell)
 
 ```powershell
-pwsh -NoLogo -NoProfile -File ../PS1/init_repo.ps1
-.\.venv\Scripts\Activate.ps1
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-```
+# Upgrade head (utilise DATABASE_URL si defini, sinon SQLite)
+$Env:DATABASE_URL="sqlite:///./backend/dev.db"
+backend\.venv\Scripts\alembic -c backend\alembic.ini upgrade head
 
-Ouvrir [http://localhost:8000/healthz](http://localhost:8000/healthz)
+# Downgrade base
+backend\.venv\Scripts\alembic -c backend\alembic.ini downgrade base
+```
 
 ### Tests
 
 ```powershell
-pytest -q backend/tests/test_healthz.py
+# Teste upgrade/downgrade sur un fichier SQLite temporaire
+PYTHONPATH=backend backend\.venv\Scripts\python -m pytest -q backend/tests/test_migrations.py
 ```
-
-### Imports et PYTHONPATH
-
-Les tests importent app.main. Il faut que backend/ soit dans PYTHONPATH.
-
-* En local, c est gere par backend/conftest.py.
-* En CI et scripts PS1, on exporte PYTHONPATH=backend avant pytest.
 
 ### CI Gates actifs
 
-* ruff
-* mypy
-* pytest
+* ruff, mypy, pytest (incluant test_migrations)
 
-### Acceptance
+### Notes
 
-* GET /healthz -> 200 JSON {"status":"ok"}
+* Cible finale: Postgres 16 (avec Docker compose au Jalon 9). Au jalon 2, la CI s appuie sur SQLite pour des tests deterministes.
+* A partir du Jalon 3, les modeles metier seront introduits et les migrations evoluent.

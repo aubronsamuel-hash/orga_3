@@ -25,6 +25,7 @@ if (-not (Test-Path $venv)) {
     python -m venv $venv
 }
 & (Join-Path $venv "Scripts\pip.exe") install -U pip
+# Installe dependances backend (incluant SQLAlchemy + Alembic)
 & (Join-Path $venv "Scripts\pip.exe") install -r (Join-Path "backend" "requirements.txt")
 
 # Frontend install
