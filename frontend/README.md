@@ -1,6 +1,6 @@
-# Frontend (Jalon 10)
+# Frontend (Jalon 11 - Auth)
 
-Socle React+Vite+TS+Tailwind + Router, ESLint, Vitest, Playwright, Storybook. Shell UI pret. 
+Flux auth FE complet: login/logout, refresh auto 401, gardes de routes protegees. Session via cookies httpOnly (fetch avec `credentials: include`). En-tete CSRF: meta `csrf-token` dans `index.html`.
 
 ## Quickstart (Windows)
 
@@ -10,23 +10,59 @@ npm ci --registry=https://registry.npmjs.org/ --no-audit --no-fund
 npm run dev
 ```
 
-## Scripts
+## Variables
 
-* `npm run lint` / `npm run typecheck`
-* `npm run test` (Vitest) / `npm run test:unit`
-* `npm run test:e2e` (Playwright) / `test:e2e:ci`
-* `npm run storybook` / `npm run build-storybook`
-* `npm run build` / `npm run preview`
+* `VITE_API_BASE` (defaut `/api/v1`)
 
-## Theming
+## API client
 
-Bouton ThemeToggle (light/dark) ajoute une classe `dark` sur `<html>`. Layout basique avec header, routes Home/Login/404.
+* Intercepte 401 -> POST `/auth/refresh` -> retry.
+* Headers: `Content-Type: application/json` si body, `X-CSRF` depuis meta `csrf-token`.
 
-## Tests
+## Composants
 
-* Unit: Vitest + Testing Library.
-* E2E: Playwright smoke charge la home et verifie le header.
+* `AuthProvider`: charge `/auth/me`, expose `login`, `logout`.
+* `Protected`: redirige vers `/login` si non auth.
+* `Dashboard`: bouton "Charger projets" pour illustrer un appel protege (avec refresh si 401).
 
-## CI Gates (frontend)
+## Tests e2e (Playwright)
 
-Lint, typecheck, unit tests, e2e smoke. 
+Mock reseau via `page.route("**/api/v1/**", ...)`:
+
+* `/auth/me`: 401 -> apres login: 200
+* `/auth/login`: 200
+* `/auth/refresh`: 200
+* `/projects`: 401 une fois puis 200 (verifie le refresh)
+  Commandes:
+
+```bash
+cd frontend
+npm run build
+npx playwright install --with-deps
+npm run test:e2e
+```
+
+## CMD_TESTS
+
+# Windows
+
+pwsh -NoLogo -NoProfile -File PS1/fe_test.ps1
+pwsh -NoLogo -NoProfile -File PS1/fe_e2e.ps1
+
+# Linux/mac
+
+cd frontend && npm ci && npm run lint && npm run typecheck && npm run test:unit && npm run build && npm run test:e2e
+
+## ACCEPTANCE
+
+* Aller sur /app non connecte -> redir /login.
+* Login OK -> redirect /app, "Bonjour <email>" visible.
+* Clic "Charger projets": premier appel 401 -> refresh -> retry 200 -> "Projets: 1".
+* CI frontend verts (lint/typecheck/unit/build/e2e).
+
+## GIT
+
+Branche feat/jalon-11-frontend-auth
+PR "Jalon 11 - Frontend auth (login/logout, refresh, gardes, e2e)"
+Commit feat(fe-auth): API client + AuthProvider + Protected + Login + Dashboard + e2e
+Labels: build, tests, docs-required
