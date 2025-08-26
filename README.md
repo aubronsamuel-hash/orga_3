@@ -38,7 +38,7 @@ BE 8000 ; FE 5173 ; DB 5432 ; Redis 6379 ; Adminer 8080.
 ```powershell
 backend\.venv\Scripts\python -m ruff check backend
 backend\.venv\Scripts\python -m mypy --config-file backend\mypy.ini backend
-$Env:PYTHONPATH="backend"; backend\.venv\Scripts\python -m pytest -q -k "v1_endpoints"
+$Env$Env:PYTHONPATH="backend"; backend\.venv\Scripts\python -m pytest -q -k "v1_endpoints"
 ```
 ### Typing (passlib)
 
@@ -46,6 +46,25 @@ passlib n a pas de stubs officiels. Nous:
 
 * ignorons l import dans `backend/app/auth.py` via `# type: ignore[import-untyped]`
 * desactivons `import-untyped` uniquement pour `passlib.*` dans `backend/mypy.ini`
+
+## Warnings CI
+
+Un guide rapide est disponible dans `docs/WARNINGS.md` (codes, gravite, actions).
+Scanners:
+
+* Windows: `pwsh -NoLogo -NoProfile -File tools/warnings_scan.ps1`
+* Linux/macOS: `bash tools/warnings_scan.sh`
+
+TESTS (PS + curl):
+
+* Windows:
+
+  * backend.venv\Scripts\python -m ruff check backend
+  * backend.venv\Scripts\python -m mypy --config-file backend\mypy.ini backend
+  * $Env:PYTHONPATH="backend"; backend.venv\Scripts\python -m pytest -q
+* Linux/macOS:
+
+  * PYTHONPATH=backend backend/.venv/bin/python -m pytest -q
 
 ## README Policy
 
@@ -82,3 +101,4 @@ La CI utilise `npm ci` et echouera si le lockfile est absent.
 
 Q: Ca ne demarre pas ?
 R: Verifier python, npm et l existance du venv. Utiliser dev_down.ps1 puis dev_up.ps1.
+
