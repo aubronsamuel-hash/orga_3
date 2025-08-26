@@ -18,3 +18,4 @@ bcrypt==4.2.0
 # Pydantic EmailStr support
 
 email-validator==2.1.1
+redis==5.0.7

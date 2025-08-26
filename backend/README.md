@@ -174,3 +174,28 @@ ACCEPTANCE:
 * `assignments:{id}:status` refuse ACCEPTED en cas de conflit horaire.
 * `conflicts/user/{uid}` retourne les overlaps pour ACCEPTED.
 * CI verte (ruff/mypy/pytest). Viser >=70% de cov pour ce jalon (selon roadmap).
+
+## Cache (Jalon 7)
+
+* Objectif: accelerer les listages lourds (projects, missions).
+* Client: `redis` si `REDIS_URL` pointe vers un serveur, sinon `fakeredis://` en dev/test.
+* TTL: `CACHE_TTL_SECONDS` (defaut 60s).
+* Invalidation:
+  * tag `projects:<org_id>` sur /projects (create/update/delete)
+  * tag `missions:<org_id>` sur /missions (create/duplicate)
+* En-tete `X-Cache`: renvoye par les listages pour debug (HIT/MISS).
+* Extension future: etendre a d autres listages si besoin.
+
+### Tests
+
+```powershell
+$Env:REDIS_URL="fakeredis://"
+$Env:PYTHONPATH="backend"
+backend\.venv\Scripts\python -m pytest -q -k "cache"
+```
+
+ACCEPTANCE:
+
+* HIT/MISS observe via `X-Cache` sur projects/missions.
+* Ecritures invalident et provoquent un MISS ensuite.
+* CI verte (ruff, mypy, pytest). Roadmap J7 respectee.

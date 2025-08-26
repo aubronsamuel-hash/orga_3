@@ -33,6 +33,10 @@ Voir .env.example. Pas de secrets dans le repo.
 
 BE 8000 ; FE 5173 ; DB 5432 ; Redis 6379 ; Adminer 8080.
 
+## Cache
+
+Un cache Redis (TTL court) couvre les listages projects/missions. Voir `backend/README.md#cache-jalon-7` pour details et tests.
+
 ## Tests/Lint
 
 ```powershell
