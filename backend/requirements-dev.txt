@@ -1,0 +1,6 @@
+# Outils de dev CI/lints/tests (versions epinglees)
+
+ruff==0.6.8
+mypy==1.10.0
+pytest==8.2.0
+pytest-cov==5.0.0

@@ -21,6 +21,7 @@ jobs:
           python -m pip install -U pip
           python -m venv backend/.venv
           backend/.venv/Scripts/pip install -r backend/requirements.txt
+          if exist backend\requirements-dev.txt backend\.venv\Scripts\pip install -r backend\requirements-dev.txt
       - name: Lints
         run: |
           backend/.venv/Scripts/python -m ruff check backend
