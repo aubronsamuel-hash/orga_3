@@ -97,3 +97,21 @@ $Env:PYTHONPATH="backend"
 backend\.venv\Scripts\python -m pytest -q backend/tests/test_auth_flow.py
 backend\.venv\Scripts\python -m pytest -q backend/tests/test_password_reset_flow.py
 ```
+
+### Note DB pour les tests (robustesse ordre d import)
+
+L app utilise une **factory** `create_app()` qui rebinde l engine/Session sur `DATABASE_URL` courant via `set_database_url()` (dans `app.db`).
+Cela evite les erreurs type `no such table: accounts` quand un autre test importe l app avant d avoir positionne `DATABASE_URL`.
+
+### Tests
+
+```powershell
+$Env:PYTHONPATH="backend"
+backend\.venv\Scripts\python -m pytest -q
+```
+
+ou
+
+```bash
+PYTHONPATH=backend backend/.venv/bin/python -m pytest -q
+```
