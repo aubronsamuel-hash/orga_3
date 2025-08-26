@@ -56,17 +56,25 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('frontend/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-      - name: Install + Lint (registry force)
-        shell: bash
-        env:
-          NPM_CONFIG_USERCONFIG: ${{ github.workspace }}/frontend/.npmrc
-          NPM_CONFIG_REGISTRY: https://registry.npmjs.org/
+      - name: Install deps
         run: |
           cd frontend
-          echo "[debug] npm version: $(npm --version)"
-          echo "[debug] registry (pre): $(npm config get registry)"
           npm ci --no-audit --no-fund
+      - name: Lint + typecheck + unit
+        run: |
+          cd frontend
           npm run lint
+          npm run typecheck
+          npm run test:unit
+      - name: Build
+        run: |
+          cd frontend
+          npm run build
+      - name: Playwright e2e smoke
+        run: |
+          cd frontend
+          npx playwright install --with-deps
+          npm run test:e2e
   obs-smoke:
     runs-on: windows-latest
     needs: [backend]
