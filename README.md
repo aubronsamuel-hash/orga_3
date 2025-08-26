@@ -9,6 +9,17 @@ pwsh -NoLogo -NoProfile -File PS1/init_repo.ps1
 pwsh -NoLogo -NoProfile -File PS1/dev_up.ps1
 # Ouvrir: http://localhost:5173 et GET http://localhost:8000/api/v1/ping
 ```
+## Quickstart Windows (compose dev)
+
+```powershell
+# lancer le stack (compose)
+pwsh -NoLogo -NoProfile -File PS1/dev_up.ps1
+# smoke simple
+pwsh -NoLogo -NoProfile -File PS1/smoke.ps1
+```
+
+Ports: BE 8000 ; DB 5432 ; Redis 6379 ; Adminer 8080 ; Prom 9090 ; Grafana 3000 ; Mailpit 8025.
+Voir `deploy/README.md` pour details (compose, observabilite). Roadmap: relire `docs/roadmap.md`.
 ## CI gates actifs (extrait)
 
 * backend: ruff, mypy, pytest
@@ -20,9 +31,9 @@ pwsh -NoLogo -NoProfile -File PS1/dev_up.ps1
 ## Scripts clefs
 
 * PS1/init_repo.ps1 : prepare venv Python et npm ci
-* PS1/dev_up.ps1 : lance uvicorn et vite
-* PS1/dev_down.ps1 : arrete uvicorn/node
-* PS1/smoke.ps1 : verif API /api/v1/ping
+* PS1/dev_up.ps1 : lance le stack Docker compose de dev
+* PS1/dev_down.ps1 : arrete le stack compose (option -Prune pour volumes)
+* PS1/smoke.ps1 : verif /healthz et /metrics du backend
 * PS1/test_all.ps1 : ruff, mypy, pytest, npm lint
 * tools/docs_guard.ps1 : guard doc
 * tools/readme_check.ps1 : verif sections README
@@ -38,7 +49,7 @@ Voir .env.example. Pas de secrets dans le repo.
 
 ## Ports
 
-BE 8000 ; FE 5173 ; DB 5432 ; Redis 6379 ; Adminer 8080.
+BE 8000 ; DB 5432 ; Redis 6379 ; Adminer 8080 ; Prom 9090 ; Grafana 3000 ; Mailpit 8025.
 
 ## Cache
 

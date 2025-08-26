@@ -1,0 +1,119 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: cc_postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-cc}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ccpass}
+      POSTGRES_DB: ${POSTGRES_DB:-cc}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL","pg_isready -U $POSTGRES_USER -d $POSTGRES_DB || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    container_name: cc_redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD","redis-cli","ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  backend:
+    build:
+      context: ../../
+      dockerfile: backend/Dockerfile
+    container_name: cc_backend
+    environment:
+      ENV: dev
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      METRICS_ENABLED: "true"
+      DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER:-cc}:${POSTGRES_PASSWORD:-ccpass}@postgres:5432/${POSTGRES_DB:-cc}
+      REDIS_URL: redis://redis:6379/0
+      SMTP_HOST: mailpit
+      SMTP_PORT: "1025"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+
+  mailpit:
+    image: axllent/mailpit:v1.20
+    container_name: cc_mailpit
+    ports:
+      - "1025:1025" # SMTP
+      - "8025:8025" # UI
+
+  adminer:
+    image: adminer:4
+    container_name: cc_adminer
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_started
+
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    container_name: cc_prometheus
+    command: ["--config.file=/etc/prometheus/prometheus.yml","--storage.tsdb.retention.time=15d"]
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - promdata:/prometheus
+    ports:
+      - "9090:9090"
+    depends_on:
+      - backend
+
+  loki:
+    image: grafana/loki:2.9.8
+    container_name: cc_loki
+    command: ["-config.file=/etc/loki/loki-config.yml"]
+    volumes:
+      - ./loki-config.yml:/etc/loki/loki-config.yml:ro
+      - lokidata:/loki
+    ports:
+      - "3100:3100"
+
+  promtail:
+    image: grafana/promtail:2.9.8
+    container_name: cc_promtail
+    command: ["-config.file=/etc/promtail/config.yml"]
+    volumes:
+      - ./promtail-config.yml:/etc/promtail/config.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    depends_on:
+      - loki
+
+  grafana:
+    image: grafana/grafana:10.4.9
+    container_name: cc_grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - grafdata:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+      - loki
+
+volumes:
+  pgdata:
+  promdata:
+  lokidata:
+  grafdata:

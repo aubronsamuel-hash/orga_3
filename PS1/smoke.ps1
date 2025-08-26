@@ -2,13 +2,18 @@ Param()
 $ErrorActionPreference="Stop"
 Set-StrictMode -Version Latest
 
-Write-Host "[smoke] Ping API..." -ForegroundColor Cyan
-try {
-    $resp = Invoke-WebRequest -UseBasicParsing -Uri "http://localhost:8000/api/v1/ping" -TimeoutSec 5
-    if ($resp.StatusCode -ne 200) { Write-Error "Code HTTP inattendu: $( $resp.StatusCode)"; exit 4 }
-    Write-Host $resp.Content
-} catch {
-    Write-Error "Echec ping API: $($_.Exception.Message)"; exit 4
+function Check($name, $url) {
+    try {
+        $r = Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 5
+        if ($r.StatusCode -ne 200) { throw "HTTP $($r.StatusCode)" }
+        Write-Host "[smoke] $name OK" -ForegroundColor Green
+    } catch {
+        Write-Host "[smoke] $name KO: $_" -ForegroundColor Red
+        exit 4
+    }
 }
-Write-Host "[smoke] OK" -ForegroundColor Green
+
+Check "backend /healthz" "http://localhost:8000/healthz"
+Check "backend /metrics" "http://localhost:8000/metrics"
+Write-Host "[smoke] Prometheus UI: http://localhost:9090  Grafana: http://localhost:3000  Mailpit: http://localhost:8025" -ForegroundColor Cyan
 exit 0
