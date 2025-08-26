@@ -20,6 +20,11 @@ pwsh -NoLogo -NoProfile -File PS1/dev_up.ps1
 * tools/docs_guard.ps1 : guard doc
 * tools/readme_check.ps1 : verif sections README
 
+### Outils docs (Windows-first)
+
+* PowerShell: `tools/docs_guard.ps1`, `tools/readme_check.ps1`
+* Degrade Linux/macOS: `tools/docs_guard.sh`, `tools/readme_check.sh` (optionnels hors CI)
+
 ## Envs requis
 
 Voir .env.example. Pas de secrets dans le repo.
