@@ -26,6 +26,8 @@ jobs:
           backend/.venv/Scripts/python -m ruff check backend
           backend/.venv/Scripts/python -m mypy backend
       - name: Tests
+        env:
+          PYTHONPATH: backend
         run: |
           backend/.venv/Scripts/python -m pytest -q --disable-warnings --maxfail=1
   frontend:
