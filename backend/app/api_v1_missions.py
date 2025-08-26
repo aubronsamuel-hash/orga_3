@@ -1,12 +1,13 @@
 from __future__ import annotations
-from typing import List
-from fastapi import APIRouter, Depends, HTTPException, status
+from typing import Any, List
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from pydantic import BaseModel
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from .rbac import require_role, Role
 from .auth import get_db
+from .cache import get_cache
 
 router = APIRouter(prefix="/api/v1/missions", tags=["missions"])
 
@@ -37,17 +38,29 @@ def create_mission(payload: MissionIn, current=Depends(require_role(Role.manager
     ).fetchone()
     assert row is not None
     db.commit()
+    get_cache().invalidate_tags([f"missions:{org_id}"])
     return dict(row._mapping)
 
 
 @router.get("", response_model=List[MissionOut])
-def list_missions(current=Depends(require_role(Role.tech)), db: Session = Depends(get_db)):
+def list_missions(response: Response, current=Depends(require_role(Role.tech)), db: Session = Depends(get_db)):
     org_id = current["org_id"]
-    rows = db.execute(
-        text("SELECT id, project_id, starts_at, ends_at, title FROM missions WHERE org_id=:o ORDER BY starts_at"),
-        {"o": org_id},
-    ).fetchall()
-    return [{"id": r.id, "project_id": r.project_id, "start_at": r.starts_at, "end_at": r.ends_at, "role": r.title} for r in rows]
+    c = get_cache()
+    key = f"missions:list:{org_id}"
+
+    def _build() -> List[dict[str, Any]]:
+        rows = db.execute(
+            text("SELECT id, project_id, starts_at, ends_at, title FROM missions WHERE org_id=:o ORDER BY starts_at"),
+            {"o": org_id},
+        ).fetchall()
+        return [
+            {"id": r.id, "project_id": r.project_id, "start_at": r.starts_at, "end_at": r.ends_at, "role": r.title}
+            for r in rows
+        ]
+
+    data, hit = c.cached_list(key, _build, ttl=None, tags=[f"missions:{org_id}"])
+    response.headers["X-Cache"] = "HIT" if hit else "MISS"
+    return data
 
 
 @router.post("/{mid}:duplicate", response_model=MissionOut)
@@ -67,4 +80,5 @@ def duplicate_mission(mid: str, current=Depends(require_role(Role.manager)), db:
     ).fetchone()
     assert row is not None
     db.commit()
+    get_cache().invalidate_tags([f"missions:{org_id}"])
     return {"id": row.id, "project_id": row.project_id, "start_at": row.starts_at, "end_at": row.ends_at, "role": row.title}

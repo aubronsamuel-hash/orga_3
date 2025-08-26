@@ -1,11 +1,12 @@
 from __future__ import annotations
-from typing import List
-from fastapi import APIRouter, Depends, HTTPException, status
+from typing import Any, List
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from pydantic import BaseModel
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from .auth import get_db
+from .cache import get_cache
 from .rbac import require_role, Role
 
 router = APIRouter(prefix="/api/v1/projects", tags=["projects"])
@@ -33,17 +34,26 @@ def create_project(payload: ProjectIn, current=Depends(require_role(Role.manager
     ).fetchone()
     assert row is not None
     db.commit()
+    get_cache().invalidate_tags([f"projects:{org_id}"])
     return {"id": row.id, "name": row.name, "status": row.status}
 
 
 @router.get("", response_model=List[ProjectOut])
-def list_projects(current=Depends(require_role(Role.tech)), db: Session = Depends(get_db)):
+def list_projects(response: Response, current=Depends(require_role(Role.tech)), db: Session = Depends(get_db)):
     org_id = current["org_id"]
-    rows = db.execute(
-        text("SELECT id, name, status FROM projects WHERE org_id=:o ORDER BY created_at DESC"),
-        {"o": org_id},
-    ).fetchall()
-    return [{"id": r.id, "name": r.name, "status": r.status} for r in rows]
+    c = get_cache()
+    key = f"projects:list:{org_id}"
+
+    def _build() -> List[dict[str, Any]]:
+        rows = db.execute(
+            text("SELECT id, name, status FROM projects WHERE org_id=:o ORDER BY created_at DESC"),
+            {"o": org_id},
+        ).fetchall()
+        return [{"id": r.id, "name": r.name, "status": r.status} for r in rows]
+
+    data, hit = c.cached_list(key, _build, ttl=None, tags=[f"projects:{org_id}"])
+    response.headers["X-Cache"] = "HIT" if hit else "MISS"
+    return data
 
 
 @router.get("/{pid}", response_model=ProjectOut)
@@ -69,6 +79,8 @@ def update_project(pid: str, payload: ProjectIn, current=Depends(require_role(Ro
     ).fetchone()
     if row is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="project introuvable")
+    db.commit()
+    get_cache().invalidate_tags([f"projects:{org_id}"])
     return {"id": row.id, "name": row.name, "status": row.status}
 
 
@@ -79,6 +91,7 @@ def delete_project(pid: str, current=Depends(require_role(Role.admin)), db: Sess
     db.commit()
     if res.rowcount == 0:  # type: ignore[attr-defined]
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="project introuvable")
+    get_cache().invalidate_tags([f"projects:{org_id}"])
     return {"status": "ok"}
 
 
@@ -100,4 +113,5 @@ def bulk_create_missions(pid: str, items: List[MissionBulkItem], current=Depends
             {"o": org_id, "p": pid, "sa": it.start_at, "ea": it.end_at, "r": it.role},
         )
     db.commit()
+    get_cache().invalidate_tags([f"missions:{org_id}"])
     return {"status": "ok", "created": len(items)}
