@@ -94,7 +94,7 @@ jobs:
       - name: Build backend image
         run: docker build -t cc-backend:ci -f backend/Dockerfile .
       - name: Run backend container
-        run: docker run -d --rm -p 8000:8000 --name cc-backend ci_dummy cc-backend:ci || docker run -d --rm -p 8000:8000 --name cc-backend cc-backend:ci
+        run: docker run -d --rm -p 8000:8000 --name cc-backend cc-backend:ci
       - name: Wait for healthz
         run: |
           for i in {1..30}; do
