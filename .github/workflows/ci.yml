@@ -17,20 +17,23 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: "3.10" }
       - name: Backend deps
+        shell: pwsh
         run: |
           python -m pip install -U pip
           python -m venv backend/.venv
-          backend/.venv/Scripts/pip install -r backend/requirements.txt
-          if exist backend\requirements-dev.txt backend\.venv\Scripts\pip install -r backend\requirements-dev.txt
+          backend\.venv\Scripts\pip install -r backend\requirements.txt
+          if (Test-Path "backend\requirements-dev.txt") { backend\.venv\Scripts\pip install -r backend\requirements-dev.txt }
       - name: Lints
+        shell: pwsh
         run: |
-          backend/.venv/Scripts/python -m ruff check backend
-          backend/.venv/Scripts/python -m mypy backend
+          backend\.venv\Scripts\python -m ruff check backend
+          backend\.venv\Scripts\python -m mypy backend
       - name: Tests
+        shell: pwsh
         env:
           PYTHONPATH: backend
         run: |
-          backend/.venv/Scripts/python -m pytest -q --disable-warnings --maxfail=1
+          backend\.venv\Scripts\python -m pytest -q --disable-warnings --maxfail=1
   frontend:
     runs-on: ubuntu-latest
     steps:
