@@ -8,8 +8,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Rappel lecture docs/roadmap.md
-        run: |
-          echo "Relire docs/ROADMAP.md et aligner le code; proposer patch si divergence."
+        run: echo "Relire docs/ROADMAP.md (source de verite)."
   backend:
     runs-on: windows-latest
     steps:
@@ -40,12 +39,16 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: "20" }
-      - name: Force npm registry public (CI)
+      - name: Ecrire .npmrc de projet (registry public)
+        shell: bash
         run: |
-          echo "registry=https://registry.npmjs.org/" > .npmrc
-          echo "always-auth=false" >> .npmrc
-          echo "fund=false" >> .npmrc
-          echo "audit=false" >> .npmrc
+          cat > frontend/.npmrc <<'EOF'
+          registry=https://registry.npmjs.org/
+          always-auth=false
+          audit=false
+          fund=false
+          strict-ssl=true
+          EOF
       - name: Cache npm
         uses: actions/cache@v4
         with:
@@ -53,10 +56,16 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('frontend/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-      - name: Frontend lint
+      - name: Install + Lint (registry force)
+        shell: bash
+        env:
+          NPM_CONFIG_USERCONFIG: ${{ github.workspace }}/frontend/.npmrc
+          NPM_CONFIG_REGISTRY: https://registry.npmjs.org/
         run: |
           cd frontend
-          npm ci --no-audit --no-fund --registry=https://registry.npmjs.org/
+          echo "[debug] npm version: $(npm --version)"
+          echo "[debug] registry (pre): $(npm config get registry)"
+          npm ci --no-audit --no-fund
           npm run lint
   docs-guard:
     runs-on: ubuntu-latest

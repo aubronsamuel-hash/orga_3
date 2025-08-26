@@ -38,11 +38,25 @@ BE 8000 ; FE 5173 ; DB 5432 ; Redis 6379 ; Adminer 8080.
 Un cache Redis (TTL court) couvre les listages projects/missions. Voir `backend/README.md#cache-jalon-7` pour details et tests.
 
 ## NPM registry (CI)
+En CI, nous **pinnons** le fichier userconfig npm sur `frontend/.npmrc` via la variable d env `NPM_CONFIG_USERCONFIG` pour garantir l usage du **registry public**:
 
-En CI, on force le registry public npmjs pour eviter des 403 si un `.npmrc` prive ou une policy force l auth:
+* Workflow: ecriture de `frontend/.npmrc` + `NPM_CONFIG_USERCONFIG=${{ github.workspace }}/frontend/.npmrc`
+* Commandes:
 
-* Workflow: etape "Force npm registry public (CI)" + `npm ci --registry=https://registry.npmjs.org/`
-* Local: `npm config set registry https://registry.npmjs.org/` si besoin.
+```bash
+cd frontend
+npm ci --no-audit --no-fund
+npm run lint
+```
+
+Astuce debug CI:
+
+```bash
+npm --version
+npm config get registry
+```
+
+Si un `.npmrc` global force une registry privee, ce pin l ignore.
 
 ## Tests/Lint
 
