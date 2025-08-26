@@ -115,3 +115,24 @@ ou
 ```bash
 PYTHONPATH=backend backend/.venv/bin/python -m pytest -q
 ```
+
+## RBAC (Jalon 5)
+
+* Table `org_memberships`: (id, org_id, account_id, role: owner|admin|manager|tech)
+* Enforcement:
+  * `require_role(min_role)` -> verifie qu'un account est membre de l'org du token et que son role >= min_role
+  * `require_org_scope(org_id)` -> verifie que l'org_id du path == claim `org`
+* Endpoints de demo (pour tests):
+  * GET `/api/v1/rbac_demo/any` (membre requis)
+  * GET `/api/v1/rbac_demo/manager` (>= manager)
+  * GET `/api/v1/rbac_demo/admin` (>= admin)
+  * GET `/api/v1/rbac_demo/owner` (== owner)
+  * GET `/api/v1/rbac_demo/scoped/{org_id}` (scope org strict)
+* Tests:
+
+```powershell
+$Env:PYTHONPATH="backend"
+backend\.venv\Scripts\python -m pytest -q -k "rbac"
+```
+
+* Matrice roles x actions minimale: owner > admin > manager > tech. Les endpoints metier (Jalon 6) utiliseront ces deps pour le controle fin. (Roadmap Jalon 5-6).

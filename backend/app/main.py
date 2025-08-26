@@ -6,6 +6,7 @@ from .settings import settings
 from .logging_conf import setup as setup_logging
 from .api import router as api_router
 from .api_auth import router as auth_router
+from .api_rbac_demo import router as rbac_demo_router
 from .db import set_database_url
 
 def create_app() -> FastAPI:
@@ -31,6 +32,7 @@ def create_app() -> FastAPI:
 
     app.include_router(api_router)
     app.include_router(auth_router)
+    app.include_router(rbac_demo_router)
     return app
 
 
