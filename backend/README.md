@@ -18,6 +18,13 @@ Ouvrir [http://localhost:8000/healthz](http://localhost:8000/healthz)
 pytest -q backend/tests/test_healthz.py
 ```
 
+### Imports et PYTHONPATH
+
+Les tests importent app.main. Il faut que backend/ soit dans PYTHONPATH.
+
+* En local, c est gere par backend/conftest.py.
+* En CI et scripts PS1, on exporte PYTHONPATH=backend avant pytest.
+
 ### CI Gates actifs
 
 * ruff
