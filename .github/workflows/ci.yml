@@ -86,9 +86,27 @@ jobs:
           PYTHONPATH: backend
         run: |
           backend\.venv\Scripts\python -m pytest -q -k "obs or readiness or metrics"
+  docker-smoke:
+    runs-on: ubuntu-latest
+    needs: [backend]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build backend image
+        run: docker build -t cc-backend:ci -f backend/Dockerfile .
+      - name: Run backend container
+        run: docker run -d --rm -p 8000:8000 --name cc-backend ci_dummy cc-backend:ci || docker run -d --rm -p 8000:8000 --name cc-backend cc-backend:ci
+      - name: Wait for healthz
+        run: |
+          for i in {1..30}; do
+            if curl -sSf http://localhost:8000/healthz >/dev/null; then exit 0; fi
+            sleep 2
+          done
+          echo "backend not ready"; exit 3
+      - name: Check metrics
+        run: curl -sSf http://localhost:8000/metrics | head -n 5
   docs-guard:
     runs-on: ubuntu-latest
-    needs: [backend, frontend, obs-smoke]
+    needs: [backend, frontend, obs-smoke, docker-smoke]
     steps:
       - uses: actions/checkout@v4
       - name: Docs guard
