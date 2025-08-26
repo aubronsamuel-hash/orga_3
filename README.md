@@ -41,7 +41,10 @@ pwsh -NoLogo -NoProfile -File PS1/test_all.ps1
 
 ### Typing (passlib)
 
-passlib n a pas de stubs types officiels; nous ignorons l import via `# type: ignore[import-untyped]` dans `backend/app/auth.py`. La CI appelle mypy avec `--config-file backend/mypy.ini`.
+passlib n a pas de stubs officiels. Nous:
+
+* ignorons l import dans `backend/app/auth.py` via `# type: ignore[import-untyped]`
+* desactivons `import-untyped` uniquement pour `passlib.*` dans `backend/mypy.ini`
 
 ## README Policy
 
