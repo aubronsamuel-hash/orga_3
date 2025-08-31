@@ -2,7 +2,7 @@
 
 > Source de verite. A LIRE avant toute PR. ASCII uniquement. Windows-first. Zero secret dans le repo et les workflows.
 
-* J17: Stabilisation mypy: `mypy_path=backend`, ajout `backend/tests/__init__.py`, `backend/app/__init__.py`, script `.\\PS1\\mypy.ps1`.
+* J17: CI mypy stabilisee: etape mypy appelle `python -m mypy --config-file mypy.ini` avec `MYPYPATH=backend`.
 
 ## Objectifs
 - Livrer un MVP fiable (backend + frontend) puis durcir la securite a la fin.
