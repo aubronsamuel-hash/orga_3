@@ -37,6 +37,7 @@ def teardown_module(module) -> None:  # noqa: ANN001
 
 def _alembic_upgrade(url: str) -> None:
     os.environ["DB_URL"] = url
+    os.environ["DATABASE_URL"] = url
     cfg = Config("backend/alembic.ini")
     cfg.set_main_option("script_location", "backend/alembic")
     command.upgrade(cfg, "head")
