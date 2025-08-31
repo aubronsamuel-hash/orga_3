@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Added
+- Jalon 15.5: workflow d’acceptation (API, UI, tokens signés, tests)
+
 ## Jalon 12 – Design system + a11y
 - Added CSS tokens and theme variables.
 - Integrated base UI components with stories.

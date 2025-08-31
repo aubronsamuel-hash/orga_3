@@ -1,11 +1,12 @@
 from __future__ import annotations
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Body
 from pydantic import BaseModel
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from .rbac import require_role, Role
 from .auth import get_db
+from .services import assignments as assignment_service
 
 router = APIRouter(prefix="/api/v1/assignments", tags=["assignments"])
 
@@ -70,3 +71,35 @@ def set_status(aid: str, payload: StatusIn, current=Depends(require_role(Role.ma
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="assignment introuvable")
     db.commit()
     return dict(row._mapping)
+
+
+@router.post("/{assignment_id}/accept")
+def accept_assignment_endpoint(assignment_id: str, token: str | None = None, db: Session = Depends(get_db)):
+    try:
+        asg = assignment_service.accept_assignment(db, assignment_id, token)
+    except ValueError:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="invalid token")
+    if not asg:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="assignment introuvable")
+    return {"status": asg.status}
+
+
+class DeclinePayload(BaseModel):
+    reason: str | None = None
+
+
+@router.post("/{assignment_id}/decline")
+def decline_assignment_endpoint(
+    assignment_id: str,
+    token: str | None = None,
+    payload: DeclinePayload | None = Body(default=None),
+    db: Session = Depends(get_db),
+):
+    reason = payload.reason if payload else None
+    try:
+        asg = assignment_service.decline_assignment(db, assignment_id, token, reason)
+    except ValueError:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="invalid token")
+    if not asg:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="assignment introuvable")
+    return {"status": asg.status}

@@ -66,6 +66,9 @@ jobs:
         env:
           E2E_BASE_URL: http://localhost:5173
         run: npm run e2e:smoke
+      - name: Run Playwright (acceptance)
+        if: env.E2E_ACCEPTANCE == '1'
+        run: npm run e2e
   obs-smoke:
     runs-on: windows-latest
     needs: [backend]

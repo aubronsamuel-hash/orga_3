@@ -14,7 +14,7 @@ depends_on = None
 def upgrade() -> None:
     bind = op.get_bind()
     if "invitations" in inspect(bind).get_table_names():
-        return
+        op.drop_table("invitations")
 
     op.create_table(
         "invitations",
@@ -23,6 +23,7 @@ def upgrade() -> None:
         sa.Column("token_hash", sa.String(length=64), nullable=False),
         sa.Column("expires_at", sa.DateTime(), nullable=False),
         sa.Column("revoked_at", sa.DateTime(), nullable=True),
+        sa.Column("used_at", sa.DateTime(), nullable=True),
         sa.Column(
             "created_at",
             sa.DateTime(),
