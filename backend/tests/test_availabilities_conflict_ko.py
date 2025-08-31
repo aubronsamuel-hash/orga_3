@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 
-from tests.utils import _client, _mk_account_and_members, _upgrade, TEST_DB_URL
+from .utils import _client, _mk_account_and_members, _upgrade, TEST_DB_URL
 
 
 def test_conflict_on_overlap_ko() -> None:

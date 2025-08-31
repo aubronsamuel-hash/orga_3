@@ -1,3 +1,3 @@
-# Package 'app' explicit
+# Package 'app'
 
-__all__: list[str] = []
+__all__ = []
