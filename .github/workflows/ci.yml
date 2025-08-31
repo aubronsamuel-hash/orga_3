@@ -34,40 +34,38 @@ jobs:
         run: |
           backend\.venv\Scripts\python -m pytest -q --disable-warnings --maxfail=1
   frontend:
+    name: frontend (lint+unit+e2e-smoke)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: frontend
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: "20" }
-      - name: Ecrire .npmrc de projet (registry public)
-        shell: bash
-        run: |
-          cat > frontend/.npmrc <<'EOF'
-          registry=https://registry.npmjs.org/
-          always-auth=false
-          audit=false
-          fund=false
-          strict-ssl=true
-          EOF
-      - name: Cache npm
-        uses: actions/cache@v4
+
+      - name: Use Node LTS
+        uses: actions/setup-node@v4
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('frontend/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-      - name: Install deps
-        run: npm ci --no-audit --no-fund --workspace frontend
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install deps (FE)
+        run: npm ci --no-audit --no-fund
+
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
+
       - name: Lint (FE)
-        run: npm run lint --workspace frontend
+        run: npm run lint
+
       - name: Unit tests (FE)
-        run: npm run test --workspace frontend
-      - name: E2E smoke (FE, jalon 10)
+        run: npm run test
+
+      - name: E2E smoke (J10)
         env:
           E2E_BASE_URL: http://localhost:5173
-        run: npm run e2e:smoke --workspace frontend
+        run: npm run e2e:smoke
   obs-smoke:
     runs-on: windows-latest
     needs: [backend]
