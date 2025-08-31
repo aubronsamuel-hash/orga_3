@@ -1,3 +1,20 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "orga-backend"
+version = "0.0.0"
+requires-python = ">=3.10"
+
+[tool.setuptools]
+# Decouverte controlee: inclure uniquement 'app' (et sous-packages)
+packages = ["app"]
+
+[tool.setuptools.package-data]
+# alembic\* lu au runtime, pas distribue comme package python
+app = ["py.typed"]
+
 [tool.pytest.ini_options]
 addopts = "-q"
 testpaths = ["backend/tests"]
@@ -10,7 +27,7 @@ line-length = 100
 target-version = "py310"
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.12"
 warn_unused_ignores = true
 warn_redundant_casts = true
 strict = true

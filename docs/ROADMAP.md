@@ -245,6 +245,7 @@ Tests: tests conflits backend + e2e resolution.
 CI Gates: e2e conflits.
 Docs: algos et limites.
 Acceptance: conflit resolu via UI.
+Note packaging/typing: ajouter backend/__init__.py ; mypy.ini avec explicit_package_bases ; setuptools limite a 'app'.
 
 ## Jalon 18 - Notifications (email + Telegram) fonctionnelles
 But: envoi reel + liens d acceptation securises + centre de notifications.
