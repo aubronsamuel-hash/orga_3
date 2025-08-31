@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, type RouteObject } from "react-router-dom";
 import { lazy } from "react";
 import { AppLayout } from "./ui/AppLayout";
 import { Home } from "./pages/Home";
@@ -12,7 +12,7 @@ function WithAuth({ element }: { element: JSX.Element }) {
   return <AuthProvider>{element}</AuthProvider>;
 }
 
-const routes: any[] = [
+const routes: RouteObject[] = [
   {
     path: "/",
     element: <WithAuth element={<AppLayout />} />,
