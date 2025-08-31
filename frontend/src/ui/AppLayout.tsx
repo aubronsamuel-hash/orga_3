@@ -1,9 +1,11 @@
 import { Outlet, Link } from "react-router-dom";
 import { ThemeToggle } from "./ThemeToggle";
+import { Shortcuts } from "./Shortcuts";
 
 export function AppLayout() {
   return (
     <div className="min-h-screen flex flex-col">
+      <Shortcuts />
       <header className="border-b bg-white/70 backdrop-blur">
         <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
           <Link to="/" className="font-semibold">Coulisses Crew</Link>
