@@ -1,0 +1,16 @@
+name: CI / storybook (pull_request)
+on:
+  pull_request:
+    paths: [ 'frontend/**' ]
+jobs:
+  storybook:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20', cache: 'npm' }
+      - run: npm ci --no-audit --no-fund --workspace frontend
+      - run: npm run -w frontend build:storybook
+      - run: npm run -w frontend test:storybook
+      - run: npm run -w frontend build
+      - run: npm run -w frontend size

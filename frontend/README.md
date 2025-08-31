@@ -1,11 +1,15 @@
-# Frontend (Jalon 10 - foundation)
+# Frontend (Jalon 12 - design system + a11y)
 
-Base React + Vite.
+Base React + Vite with a small design system.
 
-## CI local (jalon 10)
+## CI local
 - Installation: `npm ci`
 - Lint: `npm run lint`
-- Unit: `npm run test`
-- E2E smoke: `E2E_BASE_URL=http://localhost:5173 npm run e2e:smoke`
+- Unit: `npm test`
+- Storybook: `npm run storybook`
+- Build Storybook: `npm run build:storybook`
+- Storybook tests: `npm run test:storybook`
+- Build: `npm run build`
+- Bundle budget: `npm run size`
 
-Note: Pas de `--workspace` au jalon 10; exécuter dans `frontend/`.
+Note: exécuter ces commandes dans `frontend/`.
