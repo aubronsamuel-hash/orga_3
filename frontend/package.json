@@ -18,7 +18,7 @@
     "e2e:auth": "cross-env E2E_AUTH=1 playwright test tests/e2e/auth.spec.ts",
     "storybook": "storybook dev -p 6006",
     "prepare": "husky install",
-    "build:storybook": "storybook build",
+    "build-storybook": "storybook build",
     "test:storybook": "storybook test --ci",
     "size": "size-limit",
     "lint:a11y": "echo \"a11y via test-runner\""
