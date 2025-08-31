@@ -3,6 +3,7 @@ import os
 from sqlalchemy import engine_from_config, pool, create_engine
 from sqlalchemy.pool import StaticPool
 from alembic import context
+from typing import Any, Dict
 
 
 config = context.config
@@ -16,6 +17,7 @@ def run_migrations_offline() -> None:
     url = (
         os.getenv("ALEMBIC_URL")
         or os.getenv("DATABASE_URL")
+        or os.getenv("DB_URL")
         or config.get_main_option("sqlalchemy.url")
     )
     if url:
@@ -34,6 +36,7 @@ def run_migrations_online() -> None:
     url = (
         os.getenv("ALEMBIC_URL")
         or os.getenv("DATABASE_URL")
+        or os.getenv("DB_URL")
         or config.get_main_option("sqlalchemy.url")
     )
     if url:
@@ -49,8 +52,12 @@ def run_migrations_online() -> None:
             connect_args={"check_same_thread": False},
         )
     else:
+        # Mypy: get_section() -> dict[str, str] | None ; on normalise en Dict[str, Any]
+        ini_section: Dict[str, Any] = dict(
+            config.get_section(config.config_ini_section) or {}
+        )
         connectable = engine_from_config(
-            config.get_section(config.config_ini_section),
+            ini_section,
             prefix="sqlalchemy.",
             poolclass=pool.NullPool,
             future=True,
