@@ -78,6 +78,11 @@ npm config get registry
 
 Si un `.npmrc` global force une registry privee, ce pin l ignore.
 
+## CI Frontend (jalon 10)
+- Le repo **n utilise pas** de workspaces npm a la racine.
+- Toutes les commandes npm front s executent **dans `frontend/`**.
+- Local (Windows): `pwsh -NoLogo -NoProfile -File PS1/fe_ci.ps1`
+
 ## Tests/Lint
 
 ```powershell

@@ -2,8 +2,10 @@
 
 Base React + Vite.
 
-## Tests FE (jalon 10)
-- Lancer unit:    npm run -w frontend test
-- Lancer smoke:   npm run -w frontend e2e:smoke
-- Auth e2e:       npm run -w frontend e2e:auth   (active a partir du jalon 11)  [E2E_AUTH=1]
+## CI local (jalon 10)
+- Installation: `npm ci`
+- Lint: `npm run lint`
+- Unit: `npm run test`
+- E2E smoke: `E2E_BASE_URL=http://localhost:5173 npm run e2e:smoke`
 
+Note: Pas de `--workspace` au jalon 10; exécuter dans `frontend/`.
