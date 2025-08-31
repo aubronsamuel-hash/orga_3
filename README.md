@@ -25,6 +25,15 @@ Voir `deploy/README.md` pour details (compose, observabilite). Roadmap: relire `
 - API: /v1/invitations (create/revoke/verify), /v1/assignments/{id}/accept|decline (token ou session)
 - UI: My Missions, Invite Landing (/invite?token=...)
 - Tests: pytest invitations_flow, e2e Playwright acceptance (toggle par E2E_ACCEPTANCE)
+### Disponibilites (Jalon 16)
+
+* Profil user: GET/PUT /api/v1/users/{id}/profile
+* Calendrier user (dispos approuvees): GET /api/v1/users/{id}/calendar?from=&to=
+* Demande dispo: POST /api/v1/availabilities
+* Approver/Rejecter: POST /api/v1/availabilities/{id}:approve | :reject
+  Codes HTTP: 200 OK, 400 usage invalide, 404 introuvable, 409 conflit chevauchement.
+  Tests:
+* pwsh -NoLogo -NoProfile -File PS1/test_e2e_avail.ps1
 ## CI
 
 - backend: ruff, mypy, pytest

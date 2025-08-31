@@ -25,6 +25,8 @@ from .api_v1_orgs import router as orgs_router
 from .api_v1_projects import router as projects_router
 from .api_v1_rates import router as rates_router
 from .api_v1_users import router as users_router
+from .api.v1 import availabilities as avail_api
+from .api.v1 import users_profile as users_profile_api
 
 
 # Middleware request_id + logs JSON
@@ -118,6 +120,8 @@ def create_app() -> FastAPI:
     # Invitations (create, verify, accept)
     app.include_router(invitations_router)
     app.include_router(users_router)
+    app.include_router(avail_api.router, prefix="/api/v1/availabilities", tags=["availabilities"])
+    app.include_router(users_profile_api.router, prefix="/api/v1/users", tags=["users"])
     app.include_router(availability_router)
     app.include_router(conflicts_router)
     app.include_router(rates_router)
