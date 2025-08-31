@@ -42,6 +42,14 @@ npx playwright install --with-deps
 npm run test:e2e
 ```
 
+## Repro E2E (Windows)
+
+```powershell
+pwsh -File PS1/e2e_repro.ps1
+```
+
+> Les tests e2e ciblent les champs via `getByLabel`. Les pages doivent associer les labels aux inputs avec `htmlFor`/`id` pour garantir l’accessibilite et la stabilite des tests.
+
 ## CMD_TESTS
 
 # Windows
