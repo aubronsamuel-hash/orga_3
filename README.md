@@ -83,6 +83,16 @@ Si un `.npmrc` global force une registry privee, ce pin l ignore.
 - Toutes les commandes npm front s executent **dans `frontend/`**.
 - Local (Windows): `pwsh -NoLogo -NoProfile -File PS1/fe_ci.ps1`
 
+## CI Storybook (Monorepo)
+
+* Le cache npm utilise `actions/setup-node` avec `cache-dependency-path: frontend/package-lock.json`.
+* Build local:
+
+  ```
+  PS> .\PS1\repro_storybook_ci_cache.ps1
+  ```
+* En CI, Storybook est servi et probe sur `http://127.0.0.1:6006/`.
+
 ## Tests/Lint
 
 ```powershell
