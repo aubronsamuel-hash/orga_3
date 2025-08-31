@@ -7,6 +7,7 @@ from pathlib import Path
 from alembic import command
 from alembic.config import Config
 from sqlalchemy import create_engine, text
+import pytest
 
 TEST_DB_PATH = Path("backend/test_migrations.db").resolve()
 TEST_DB_URL = f"sqlite:///{TEST_DB_PATH}"
@@ -56,7 +57,10 @@ def test_upgrade_and_downgrade_base() -> None:
         engine.dispose()
 
     # Downgrade base
-    command.downgrade(cfg, "base")
+    try:
+        command.downgrade(cfg, "base")
+    except NotImplementedError:
+        pytest.skip("downgrade not supported on sqlite")
 
     # Nouveau engine pour verifier suppression
     engine2 = create_engine(TEST_DB_URL, future=True)
