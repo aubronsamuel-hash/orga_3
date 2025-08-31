@@ -33,6 +33,7 @@ test.describe("auth flow (login, garde, refresh)", () => {
     // aller sur une page protegee -> redir login
     await page.goto("/app");
     await expect(page).toHaveURL(/\/login/);
+    await expect(page.getByLabel("Email")).toBeVisible();
 
     // login
     await page.getByLabel("Email").fill("sam@example.com");

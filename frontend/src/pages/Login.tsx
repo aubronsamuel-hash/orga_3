@@ -37,13 +37,24 @@ export function Login() {
       <h1 className="text-xl font-semibold mb-2">Login</h1>
       <form onSubmit={onSubmit} className="space-y-3">
         <div>
-          <label className="block text-sm">Email</label>
-          <input className="border px-3 py-2 w-full" {...register("email")} />
+          <label htmlFor="email" className="block text-sm">Email</label>
+          <input
+            id="email"
+            autoComplete="username"
+            className="border px-3 py-2 w-full"
+            {...register("email")}
+          />
           {errors.email && <p className="text-red-600 text-sm">Email invalide</p>}
         </div>
         <div>
-          <label className="block text-sm">Mot de passe</label>
-          <input type="password" className="border px-3 py-2 w-full" {...register("password")} />
+          <label htmlFor="password" className="block text-sm">Mot de passe</label>
+          <input
+            id="password"
+            type="password"
+            autoComplete="current-password"
+            className="border px-3 py-2 w-full"
+            {...register("password")}
+          />
           {errors.password && <p className="text-red-600 text-sm">Mot de passe invalide</p>}
         </div>
         {error && <p className="text-red-700 text-sm">{error}</p>}
