@@ -22,3 +22,8 @@ orgs (id) 1--* audit_log
 * users: ix_users_last_name, ix_users_first_name
 * missions: ix_missions_starts_at, ix_missions_ends_at
 * assignments: uq_active_assignment_per_mission_user (unique partiel status ACTIVE)
+
+## Flux Conflits
+
+FE -> GET /api/v1/conflicts -> pour chaque id GET /api/v1/conflicts/{id} -> POST /api/v1/conflicts/resolve -> mise a jour UI
+

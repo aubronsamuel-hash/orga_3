@@ -255,3 +255,10 @@ Exemples curl (Windows PowerShell):
 curl -Method Put -Uri http://localhost:8000/api/v1/users/1/profile -Headers @{ "Content-Type"="application/json"; "Authorization"="***" } -Body '{"skills":["lumiere"],"tags":["bobino"],"employment_type":"INTERMITTENT","rate_profile":{"jour":250}}'
 curl -Method Post -Uri http://localhost:8000/api/v1/availabilities -Headers @{ "Content-Type"="application/json"; "Authorization"="***" } -Body '{"user_id":1,"start_at":"2025-09-10T09:00:00Z","end_at":"2025-09-10T18:00:00Z"}'
 curl -Method Post -Uri http://localhost:8000/api/v1/availabilities/1:approve -Headers @{ "Authorization"="***" }
+
+## API Conflits
+
+GET /api/v1/conflicts?from=ISO&to=ISO -> [ConflictItem]
+GET /api/v1/conflicts/{id}?from=ISO&to=ISO -> ConflictDetail (suggestions)
+POST /api/v1/conflicts/resolve { conflict_id, replace_assignment_mission_id, replacement_user_id } -> { resolved, message }
+

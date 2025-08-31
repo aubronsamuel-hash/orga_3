@@ -18,7 +18,7 @@ pwsh -NoLogo -NoProfile -File PS1/dev_up.ps1
 pwsh -NoLogo -NoProfile -File PS1/smoke.ps1
 ```
 
-Ports: BE 8000 ; DB 5432 ; Redis 6379 ; Adminer 8080 ; Prom 9090 ; Grafana 3000 ; Mailpit 8025.
+Ports: BE 8000 ; FE 5173 ; DB 5432 ; Redis 6379 ; Adminer 8080 ; Prom 9090 ; Grafana 3000 ; Mailpit 8025.
 Voir `deploy/README.md` pour details (compose, observabilite). Roadmap: relire `docs/roadmap.md`.
 
 ### Jalon 15.5 — Workflow d’acceptation mission
@@ -34,6 +34,12 @@ Voir `deploy/README.md` pour details (compose, observabilite). Roadmap: relire `
   Codes HTTP: 200 OK, 400 usage invalide, 404 introuvable, 409 conflit chevauchement.
   Tests:
 * pwsh -NoLogo -NoProfile -File PS1/test_e2e_avail.ps1
+
+### Conflits (Jalon 17)
+
+* API: /api/v1/conflicts, /api/v1/conflicts/{id}, /api/v1/conflicts/resolve
+* UI: /conflicts
+* Tests: `pwsh -NoLogo -NoProfile -File PS1/test_backend.ps1`, `pwsh -NoLogo -NoProfile -File PS1/e2e_conflicts.ps1`
 ## CI
 
 - backend: ruff, mypy, pytest
@@ -55,6 +61,8 @@ pwsh -NoLogo -NoProfile -File PS1/repro_storybook_ci_cache.ps1
 * PS1/dev_down.ps1 : arrete le stack compose (option -Prune pour volumes)
 * PS1/smoke.ps1 : verif /healthz, /metrics et endpoint invitation
 * PS1/test_all.ps1 : ruff, mypy, pytest, npm lint
+* PS1/test_backend.ps1 : tests unitaires conflits
+* PS1/e2e_conflicts.ps1 : e2e Playwright (conflits)
 * PS1/fe_test.ps1 : npm lint, typecheck, unit
 * PS1/fe_e2e.ps1 : build + e2e smoke
 * tools/docs_guard.ps1 : guard doc
@@ -81,10 +89,11 @@ Tests:
 ## Envs requis
 
 Voir .env.example. Pas de secrets dans le repo. Ajout de `INVITES_SECRET` et `INVITES_TTL_SECONDS` pour les tokens d'invitation.
+Variables: `VITE_API_BASE`, `PLAYWRIGHT_BASE_URL`.
 
 ## Ports
 
-BE 8000 ; DB 5432 ; Redis 6379 ; Adminer 8080 ; Prom 9090 ; Grafana 3000 ; Mailpit 8025.
+BE 8000 ; FE 5173 ; DB 5432 ; Redis 6379 ; Adminer 8080 ; Prom 9090 ; Grafana 3000 ; Mailpit 8025.
 
 ## Cache
 

@@ -240,7 +240,7 @@ Acceptance: cycle dispo complet.
 
 ## Jalon 17 - Conflits (UI resolution)
 But: affichage conflits, suggestions auto (remplacements), merge tools.
-Livrables: vue resolution, services.
+Livrables: endpoints `/api/v1/conflicts`, page `/conflicts`, CI `e2e-conflits`.
 Tests: tests conflits backend + e2e resolution.
 CI Gates: e2e conflits.
 Docs: algos et limites.
