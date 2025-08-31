@@ -240,4 +240,6 @@ Tokens signes pour l'acceptation des assignments.
 ```powershell
 $Env:PYTHONPATH="backend"
 backend\.venv\Scripts\python -m pytest -q backend/tests/test_invitations_tokens.py
+alembic upgrade head
+backend\.venv\Scripts\python -m pytest -q -k invitations_flow
 ```

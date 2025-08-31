@@ -45,4 +45,11 @@ def get_invitation_by_token(db: Session, token: str) -> Optional[Invitation]:
     if token_hash is None:
         return None
     token_hash = hashlib.sha256(token_hash.encode()).hexdigest()
-    return db.query(Invitation).filter_by(token_hash=token_hash).first()
+    inv = db.query(Invitation).filter_by(token_hash=token_hash).first()
+    if not inv:
+        return None
+    if inv.revoked_at is not None:
+        return None
+    if inv.expires_at <= _now():
+        return None
+    return inv

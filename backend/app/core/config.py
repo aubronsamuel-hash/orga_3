@@ -28,6 +28,9 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_EXPIRES_MIN: int = 7 * 24 * 60
     INVITES_SECRET: str = "change-me"
     INVITES_TTL_SECONDS: int = 604800
+    INVITE_TOKEN_SECRET: str = "dev-please-change"
+    INVITE_TOKEN_TTL_MIN: int = 7 * 24 * 60
+    PUBLIC_BASE_URL: str = "http://localhost:5173"
 
     model_config = SettingsConfigDict(
         env_file=None,

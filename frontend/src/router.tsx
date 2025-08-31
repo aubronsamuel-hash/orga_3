@@ -7,6 +7,8 @@ import { NotFound } from "./pages/NotFound";
 import { Protected } from "./components/Protected";
 import { Dashboard } from "./pages/Dashboard";
 import { AuthProvider } from "./auth";
+import MyMissions from "./pages/MyMissions";
+import InviteLanding from "./pages/Invite";
 const CalendarPage = lazy(() => import("./features/calendar/CalendarPage"));
 
 function WithAuth({ element }: { element: JSX.Element }) {
@@ -29,6 +31,15 @@ const routes: RouteObject[] = [
         ),
       },
       { path: "calendar", element: <CalendarPage /> },
+      {
+        path: "my-missions",
+        element: (
+          <Protected>
+            <MyMissions />
+          </Protected>
+        ),
+      },
+      { path: "invite", element: <InviteLanding /> },
       { path: "*", element: <NotFound /> },
     ],
   },

@@ -39,3 +39,11 @@ Le job **frontend-storybook** ne produit que `storybook-static/` et n execute pa
 ```
 pwsh -NoLogo -NoProfile -File ..\PS1\repro_storybook_ci_cache.ps1
 ```
+
+## Acceptance workflow
+
+```
+npm run dev
+# e2e acceptance toggle
+$Env:E2E_ACCEPTANCE=1; npm run e2e
+```
