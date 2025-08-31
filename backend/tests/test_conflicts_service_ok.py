@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from backend.app.services.conflicts import ConflictService, Assignment
+from app.services.conflicts import ConflictService, Assignment
 
 
 class MockDB:
