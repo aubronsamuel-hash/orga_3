@@ -1,2 +1,2 @@
-# Marque 'backend' comme package racine pour les outils.
+# Rendre 'backend' un package parent explicite pour mypy/outil.
 

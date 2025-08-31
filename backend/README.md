@@ -9,12 +9,12 @@ pip install -e .
 
 Le packaging est limite au package `app` (Alembic exclu).
 
-## Typing (mypy)
+### Typage (mypy)
 
-* Chemin de recherche configure: `mypy_path=backend` pour resoudre `app.*` et `tests.*`.
-* Commande:
+* La config `mypy.ini` au root fixe `mypy_path=backend`.
+* Execution:
 
-```
+```powershell
 pwsh -NoLogo -NoProfile -File ..\PS1\mypy.ps1
 ```
 

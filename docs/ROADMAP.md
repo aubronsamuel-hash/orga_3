@@ -2,7 +2,7 @@
 
 > Source de verite. A LIRE avant toute PR. ASCII uniquement. Windows-first. Zero secret dans le repo et les workflows.
 
-J17: Typing stabilise: `mypy_path=backend`, ajout `backend/tests/__init__.py`, `backend/app/__init__.py`. Runner PowerShell `.\\PS1\\mypy.ps1`.
+* J17: Stabilisation mypy: `mypy_path=backend`, ajout `backend/tests/__init__.py`, `backend/app/__init__.py`, script `.\\PS1\\mypy.ps1`.
 
 ## Objectifs
 - Livrer un MVP fiable (backend + frontend) puis durcir la securite a la fin.
