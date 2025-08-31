@@ -11,9 +11,18 @@ Le packaging est limite au package `app` (Alembic exclu).
 
 ### Typage (mypy)
 
-* `mypy_path=backend;backend/typings`
-* Stubs alembic pour op/context/command.
-* Commande: `..\PS1\mypy.ps1`
+* Config: `mypy_path=backend`, `explicit_package_bases=False`.
+* Normalisation tests:
+
+```
+pwsh -NoLogo -NoProfile -File ..\PS1\fix_mypy_imports.ps1 -WhatIf:$false
+```
+
+* Execution:
+
+```
+pwsh -NoLogo -NoProfile -File ..\PS1\mypy.ps1
+```
 
 ## Jalon 1 - Backend skeleton + healthz
 

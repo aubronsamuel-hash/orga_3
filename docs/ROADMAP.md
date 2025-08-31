@@ -2,11 +2,11 @@
 
 > Source de verite. A LIRE avant toute PR. ASCII uniquement. Windows-first. Zero secret dans le repo et les workflows.
 
-J17: Typing CI stabilise:
+J17: mypy stabilise
 
-* Packages `app`/`tests` + `py.typed`
-* Stubs locaux Alembic (backend/typings/alembic)
-* MYPYPATH = backend;backend/typings
+* Tests: imports relatifs `.utils`
+* Packages explicites app/tests + `app/py.typed`
+* `explicit_package_bases=False`, `mypy_path=backend`
 
 
 ## Objectifs

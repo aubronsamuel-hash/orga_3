@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 from datetime import datetime, timezone
 
-from tests.utils import _client, _mk_account_and_members, _upgrade, TEST_DB_URL
+from .utils import _client, _mk_account_and_members, _upgrade, TEST_DB_URL
 
 
 def test_availability_flow_ok() -> None:

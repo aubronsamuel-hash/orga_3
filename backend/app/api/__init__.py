@@ -12,4 +12,4 @@ def ping() -> dict[str, str]:
     return {"status": "ok"}
 
 
-__all__: list[str] = []
+__all__ = []
