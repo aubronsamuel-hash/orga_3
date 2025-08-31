@@ -20,13 +20,19 @@ pwsh -NoLogo -NoProfile -File PS1/smoke.ps1
 
 Ports: BE 8000 ; DB 5432 ; Redis 6379 ; Adminer 8080 ; Prom 9090 ; Grafana 3000 ; Mailpit 8025.
 Voir `deploy/README.md` pour details (compose, observabilite). Roadmap: relire `docs/roadmap.md`.
-## CI gates actifs (extrait)
+## CI
 
-* backend: ruff, mypy, pytest
-* frontend: lint, typecheck, unit tests, build, e2e smoke
-* obs-smoke: tests ciblant observabilite (/metrics, probes)
+- backend: ruff, mypy, pytest
+- frontend (lint+unit+e2e-smoke): build Vite + size-limit (bundle budget) + tests
+- frontend-storybook: build Storybook (storybook-static/) + smoke HTTP; pas de size-limit ici car il cible dist/assets/*.js produit par le build Vite
+- obs-smoke: tests ciblant observabilite (/metrics, probes)
   Relire `docs/ROADMAP.md` avant toute PR.
 
+### Repro locale (Windows)
+
+```powershell
+pwsh -NoLogo -NoProfile -File PS1/repro_storybook_ci_cache.ps1
+```
 
 ## Scripts clefs
 
@@ -82,16 +88,6 @@ Si un `.npmrc` global force une registry privee, ce pin l ignore.
 - Le repo **n utilise pas** de workspaces npm a la racine.
 - Toutes les commandes npm front s executent **dans `frontend/`**.
 - Local (Windows): `pwsh -NoLogo -NoProfile -File PS1/fe_ci.ps1`
-
-## CI Storybook (Monorepo)
-
-* Le cache npm utilise `actions/setup-node` avec `cache-dependency-path: frontend/package-lock.json`.
-* Build local:
-
-  ```
-  PS> .\PS1\repro_storybook_ci_cache.ps1
-  ```
-* En CI, Storybook est servi et probe sur `http://127.0.0.1:6006/`.
 
 ## Tests/Lint
 

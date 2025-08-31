@@ -1,19 +1,35 @@
-Param(
-    [switch]$SkipBuild
-)
-$ErrorActionPreference="Stop"
+# Windows-first repro Storybook CI
+$ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
-Push-Location (Join-Path $PSScriptRoot ".." "frontend")
+$frontend = Join-Path $PSScriptRoot "..\frontend"
+Push-Location $frontend
 try {
-    if (-not (Test-Path "./package-lock.json")) {
-        throw "Manque frontend\package-lock.json (requis par CI cache)."
+  npm ci --no-audit --no-fund
+  npm run build-storybook -- --quiet
+
+  # Lance un serveur local Storybook
+  $proc = Start-Process -FilePath "npx" -ArgumentList @("--yes","http-server","storybook-static","-p","6006") -NoNewWindow -PassThru
+
+  $ok = $false
+  for ($i=0; $i -lt 30; $i++) {
+    try {
+      Invoke-WebRequest -Uri "http://127.0.0.1:6006/" -UseBasicParsing -TimeoutSec 2 | Out-Null
+      $ok = $true
+      break
+    } catch {
+      Start-Sleep -Seconds 1
     }
-    if (-not $SkipBuild) {
-        npm ci --no-audit --no-fund
-        npm run build-storybook -- --quiet
-    }
-    Write-Host "OK: cache CI base sur frontend/package-lock.json et build storybook passe."
-} finally {
-    Pop-Location
+  }
+
+  if (-not $ok) {
+    Write-Error "storybook not ready"
+    exit 3
+  }
+
+  Write-Host "OK: Storybook sert sur http://127.0.0.1:6006/"
+  exit 0
+}
+finally {
+  Pop-Location
 }
