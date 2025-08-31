@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy import inspect
 
 revision = "0005_invitations_table"
 down_revision = "0004_rbac_org_memberships"
@@ -11,6 +12,11 @@ depends_on = None
 
 
 def upgrade() -> None:
+    bind = op.get_bind()
+    insp = inspect(bind)
+    if "invitations" in insp.get_table_names():
+        return
+
     op.create_table(
         "invitations",
         sa.Column("id", sa.String(length=36), primary_key=True, nullable=False),
@@ -31,6 +37,11 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
+    bind = op.get_bind()
+    insp = inspect(bind)
+    if "invitations" not in insp.get_table_names():
+        return
+
     op.drop_index("ix_invitations_token_hash", table_name="invitations")
     op.drop_index("ix_invitations_expires_at", table_name="invitations")
     op.drop_table("invitations")
