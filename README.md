@@ -35,6 +35,12 @@ pwsh -NoLogo -NoProfile -Command "backend\.venv\Scripts\python -m ruff check bac
 pwsh -NoLogo -NoProfile -File .\PS1\mypy.ps1
 ```
 
+Notes:
+
+* Le package `app` est declare avec `__init__.py` et `py.typed`.
+* Les libs tiers sans stubs (fastapi, sqlalchemy, etc.) sont ignorees cote mypy; notre code `app.*` et `tests.*` reste strict.
+
+
 ### Jalon 15.5 — Workflow d’acceptation mission
 - API: /v1/invitations (create/revoke/verify), /v1/assignments/{id}/accept|decline (token ou session)
 - UI: My Missions, Invite Landing (/invite?token=...)

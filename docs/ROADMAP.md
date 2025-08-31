@@ -3,6 +3,11 @@
 > Source de verite. A LIRE avant toute PR. ASCII uniquement. Windows-first. Zero secret dans le repo et les workflows.
 
 * J17: CI mypy stabilisee: etape mypy appelle `python -m mypy --config-file mypy.ini` avec `MYPYPATH=backend`.
+* J17: Stabilisation mypy imports:
+  - Ajout `__init__.py` (app/, services/, api/, api/v1/, tests/)
+  - Ajout `app/py.typed`
+  - mypy.ini: ignore imports tiers sans stubs; enforcement strict pour app/tests.
+
 
 ## Objectifs
 - Livrer un MVP fiable (backend + frontend) puis durcir la securite a la fin.

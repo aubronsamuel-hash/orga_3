@@ -1,1 +1,3 @@
-# Package 'tests' pour permettre 'from tests.utils import ...'
+# Package 'tests' pour autoriser 'from tests.utils import ...'
+
+__all__: list[str] = []
