@@ -1,45 +1,31 @@
-from __future__ import annotations
-
-import importlib
-from typing import TYPE_CHECKING
-
+from functools import lru_cache
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
-# Chargement .env **sans** import statique (evite les erreurs mypy si python-dotenv n'est pas installe)
-_load = None
-try:  # importlib renvoie Any, mypy ne tente pas de resoudre le paquet
-    _mod = importlib.import_module("dotenv")
-    _load = getattr(_mod, "load_dotenv", None)
-except Exception:
-    _load = None
-
-if callable(_load):
-    try:
-        _load()
-    except Exception:
-        pass  # best-effort : si ca echoue en CI, on continue
 
 
 class Settings(BaseSettings):
-    ENV: str = "dev"
-    DATABASE_URL: str
-    SECRET_KEY: str = "changeme"
-    ACCESS_TOKEN_EXPIRES_MIN: int = 15
-    REFRESH_TOKEN_EXPIRES_MIN: int = 7 * 24 * 60
-    INVITES_SECRET: str = "change-me"
-    INVITES_TTL_SECONDS: int = 604800
-    INVITE_TOKEN_SECRET: str = "dev-please-change"
-    INVITE_TOKEN_TTL_MIN: int = 7 * 24 * 60
-    PUBLIC_BASE_URL: str = "http://localhost:5173"
+    """Application settings loaded from environment variables."""
 
-    model_config = SettingsConfigDict(
-        env_file=None,
-        env_prefix="",
-        case_sensitive=True,
-    )
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+
+    ENV: str = Field(default="dev")
+    DATABASE_URL: str = Field(default="sqlite:///./dev.db")
+    SECRET_KEY: str = Field(default="changeme")
+    ACCESS_TOKEN_EXPIRES_MIN: int = Field(default=15)
+    REFRESH_TOKEN_EXPIRES_MIN: int = Field(default=7 * 24 * 60)
+    INVITES_SECRET: str = Field(default="change-me")
+    INVITES_TTL_SECONDS: int = Field(default=604_800)
+    INVITE_TOKEN_SECRET: str = Field(default="dev-please-change")
+    INVITE_TOKEN_TTL_MIN: int = Field(default=7 * 24 * 60)
+    PUBLIC_BASE_URL: str = Field(default="http://localhost:5173")
 
 
-if TYPE_CHECKING:
-    settings = Settings(DATABASE_URL="")
-else:
-    settings = Settings()
+@lru_cache
+def get_settings() -> Settings:
+    """Return cached settings instance."""
+
+    return Settings()
+
+
+# Convenience instance used by modules importing settings
+settings = get_settings()

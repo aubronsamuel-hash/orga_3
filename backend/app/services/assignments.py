@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import Optional
 
 from sqlalchemy.orm import Session
@@ -11,7 +11,7 @@ from .invitations import get_invitation_by_token
 
 
 def _now() -> datetime:
-    return datetime.now(timezone.utc)
+    return datetime.utcnow()
 
 
 def accept_assignment(db: Session, assignment_id: str, token: Optional[str] = None) -> Optional[Assignment]:

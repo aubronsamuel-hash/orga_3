@@ -1,7 +1,7 @@
 from __future__ import annotations
 import hashlib
 import uuid
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from typing import Any, Dict
 
 import jwt
@@ -13,7 +13,7 @@ _DEF_ALGO = "HS256"
 
 
 def _now() -> datetime:
-    return datetime.now(timezone.utc)
+    return datetime.utcnow()
 
 
 def sign_invite_token(assignment_id: str) -> tuple[str, str]:
