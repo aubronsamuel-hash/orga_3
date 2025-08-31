@@ -25,6 +25,6 @@ jobs:
         python -m ruff check backend
     - name: Mypy (with config + path)
       env:
-        MYPYPATH: backend:backend/typings
+        MYPYPATH: backend/typings:backend
       run: |
         python -m mypy --config-file mypy.ini

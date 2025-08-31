@@ -9,20 +9,11 @@ pip install -e .
 
 Le packaging est limite au package `app` (Alembic exclu).
 
-### Typage (mypy)
+### Mypy
 
-* Config: `mypy_path=backend`, `explicit_package_bases=False`.
-* Normalisation tests:
-
-```
-pwsh -NoLogo -NoProfile -File ..\PS1\fix_mypy_imports.ps1 -WhatIf:$false
-```
-
-* Execution:
-
-```
-pwsh -NoLogo -NoProfile -File ..\PS1\mypy.ps1
-```
+* `mypy_path` colon-separe dans `mypy.ini` pour CI Linux.
+* Local Windows: le script PS utilise le separateur adequat.
+* Les stubs locaux (`backend/typings`) ne sont pas inclus dans `files`.
 
 ## Jalon 1 - Backend skeleton + healthz
 

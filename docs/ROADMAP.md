@@ -1,13 +1,8 @@
-# Roadmap Coulisses Crew (base Codex)
-
-> Source de verite. A LIRE avant toute PR. ASCII uniquement. Windows-first. Zero secret dans le repo et les workflows.
-
 J17: mypy stabilise
 
-* Tests: imports relatifs `.utils`
-* Packages explicites app/tests + `app/py.typed`
-* `explicit_package_bases=False`, `mypy_path=backend`
-
+* Eviter doublon stubs: `files=backend/app,backend/tests` + `mypy_path=backend/typings:backend`
+* PS cross-OS pour MYPYPATH
+* `__all__` type-annotes
 
 ## Objectifs
 - Livrer un MVP fiable (backend + frontend) puis durcir la securite a la fin.
