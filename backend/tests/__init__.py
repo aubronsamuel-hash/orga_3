@@ -1,3 +1,1 @@
-# Package 'tests' pour autoriser 'from tests.utils import ...'
-
-__all__: list[str] = []
+# Rend 'tests' importable pour mypy (ex: from tests.utils import ...)

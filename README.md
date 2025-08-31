@@ -23,13 +23,13 @@ Voir `deploy/README.md` pour details (compose, observabilite). Roadmap: relire `
 
 ## Lints et Typage
 
-* Ruff:
+Ruff:
 
 ```powershell
 pwsh -NoLogo -NoProfile -Command "backend\.venv\Scripts\python -m ruff check backend"
 ```
 
-* Mypy (avec config et chemin de recherche corrects):
+Mypy:
 
 ```powershell
 pwsh -NoLogo -NoProfile -File .\PS1\mypy.ps1
@@ -37,8 +37,9 @@ pwsh -NoLogo -NoProfile -File .\PS1\mypy.ps1
 
 Notes:
 
-* Le package `app` est declare avec `__init__.py` et `py.typed`.
-* Les libs tiers sans stubs (fastapi, sqlalchemy, etc.) sont ignorees cote mypy; notre code `app.*` et `tests.*` reste strict.
+* Packages declares: `app`, `tests`.
+* Stubs locaux pour Alembic: `backend/typings/alembic/*`.
+* Chemin de recherche mypy: `backend;backend/typings`.
 
 
 ### Jalon 15.5 — Workflow d’acceptation mission
