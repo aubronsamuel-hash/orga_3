@@ -53,7 +53,7 @@ pwsh -NoLogo -NoProfile -File PS1/repro_storybook_ci_cache.ps1
 
 ## Envs requis
 
-Voir .env.example. Pas de secrets dans le repo.
+Voir .env.example. Pas de secrets dans le repo. Ajout de `INVITES_SECRET` et `INVITES_TTL_SECONDS` pour les tokens d'invitation.
 
 ## Ports
 

@@ -1,0 +1,4 @@
+Manager -> POST /v1/invitations -> token signe
+User (email/lien) -> GET /invite/:code -> POST accept/decline
+API -> verif token+expiry -> update assignments.status -> audit log
+FE -> invalidate queries -> planning UI/counters MAJ

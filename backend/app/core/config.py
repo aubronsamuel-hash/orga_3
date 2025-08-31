@@ -26,6 +26,8 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "changeme"
     ACCESS_TOKEN_EXPIRES_MIN: int = 15
     REFRESH_TOKEN_EXPIRES_MIN: int = 7 * 24 * 60
+    INVITES_SECRET: str = "change-me"
+    INVITES_TTL_SECONDS: int = 604800
 
     model_config = SettingsConfigDict(
         env_file=None,

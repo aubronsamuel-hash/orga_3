@@ -175,16 +175,22 @@ class Availability(Base, TSMixin):
     )
 
 
-class Invitation(Base, TSMixin):
+class Invitation(Base):
     __tablename__ = "invitations"
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
-    org_id: Mapped[str] = mapped_column(String(36), ForeignKey("orgs.id", ondelete="CASCADE"), nullable=False)
-    mission_id: Mapped[Optional[str]] = mapped_column(String(36), ForeignKey("missions.id", ondelete="SET NULL"))
-    user_id: Mapped[Optional[str]] = mapped_column(String(36), ForeignKey("users.id", ondelete="SET NULL"))
-    token: Mapped[str] = mapped_column(String(64), nullable=False, unique=True)
-    expires_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
-    revoked: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    assignment_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("assignments.id", ondelete="CASCADE"), nullable=False
+    )
+    token_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    revoked_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.utcnow(), nullable=False)
+
+    __table_args__ = (
+        Index("ix_invitations_token_hash", "token_hash"),
+        Index("ix_invitations_expires_at", "expires_at"),
+    )
 
 
 class AuditLog(Base):
