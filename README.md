@@ -62,6 +62,15 @@ pwsh -NoLogo -NoProfile -File .\PS1\mypy.ps1
 - obs-smoke: tests ciblant observabilite (/metrics, probes)
   Relire `docs/ROADMAP.md` avant toute PR.
 
+## CI Typage (mypy)
+
+La CI force `MYPYPATH=backend` et utilise `mypy.ini` du repo pour resoudre `app.*` et `tests.*`.
+Local:
+
+```powershell
+pwsh -NoLogo -NoProfile -File .\PS1\mypy.ps1
+```
+
 ### Repro locale (Windows)
 
 ```powershell
