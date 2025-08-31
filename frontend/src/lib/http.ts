@@ -1,4 +1,4 @@
-// http.ts - fetch client avec retries, CSRF, cookies httpOnly
+// frontend/src/lib/http.ts
 export type HttpError = { status: number; message: string; body?: unknown };
 
 function readCookie(name: string): string | null {
@@ -12,8 +12,10 @@ export async function http<T>(
 ): Promise<T> {
   const retry = opts.retry ?? 2;
   const headers = new Headers(opts.headers || {});
-  // CSRF: header basique (road book: cookies httpOnly + header CSRF cote FE)
-  const csrf = readCookie("csrf") || (document.querySelector('meta[name="csrf"]') as HTMLMetaElement)?.content;
+  const csrf =
+    readCookie("csrf") ||
+    (document.querySelector('meta[name="csrf"]') as HTMLMetaElement | null)?.content ||
+    null;
   if (csrf) headers.set("x-csrf", csrf);
 
   const res = await fetch(url, {
@@ -23,18 +25,35 @@ export async function http<T>(
   });
 
   if (res.status >= 500 && retry > 0) {
-    // backoff simple
-    await new Promise(r => setTimeout(r, 300 * (3 - retry)));
+    await new Promise((r) => setTimeout(r, 300 * (3 - retry)));
     return http<T>(url, { ...opts, retry: retry - 1 });
   }
 
+  const contentType = res.headers.get("content-type") || "";
+
   if (!res.ok) {
     let body: unknown = undefined;
-    try { body = await res.json(); } catch {}
+    if (contentType.includes("json")) {
+      try {
+        body = await res.json();
+      } catch (_e) {
+        body = undefined; // non-JSON ou parse KO → ignore proprement
+      }
+    } else {
+      try {
+        body = await res.text();
+      } catch (_e) {
+        body = undefined;
+      }
+    }
     const err: HttpError = { status: res.status, message: res.statusText, body };
     throw err;
   }
 
-  const text = await res.text();
-  try { return JSON.parse(text) as T; } catch { return text as unknown as T; }
+  if (contentType.includes("json")) {
+    // @ts-expect-error: si T n'est pas JSON, l'appelant sait ce qu'il fait
+    return res.json();
+  }
+  // @ts-expect-error: idem ci-dessus
+  return res.text();
 }
