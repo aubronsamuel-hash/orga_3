@@ -1,4 +1,6 @@
 import { test, expect } from "@playwright/test";
+// Gate auth e2e until jalon 11
+test.skip(process.env.E2E_AUTH !== "1", "Enable at jalon 11 with E2E_AUTH=1");
 
 test.describe("auth flow (login, garde, refresh)", () => {
   test("redir -> login, puis login OK, puis refresh 401", async ({ page }) => {

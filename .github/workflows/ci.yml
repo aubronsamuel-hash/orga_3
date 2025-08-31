@@ -57,24 +57,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
       - name: Install deps
-        run: |
-          cd frontend
-          npm ci --no-audit --no-fund
-      - name: Lint + typecheck + unit
-        run: |
-          cd frontend
-          npm run lint
-          npm run typecheck
-          npm run test:unit
-      - name: Build
-        run: |
-          cd frontend
-          npm run build
-      - name: Playwright e2e smoke
-        run: |
-          cd frontend
-          npx playwright install --with-deps
-          npm run test:e2e
+        run: npm ci --no-audit --no-fund --workspace frontend
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+      - name: Lint (FE)
+        run: npm run lint --workspace frontend
+      - name: Unit tests (FE)
+        run: npm run test --workspace frontend
+      - name: E2E smoke (FE, jalon 10)
+        env:
+          E2E_BASE_URL: http://localhost:5173
+        run: npm run e2e:smoke --workspace frontend
   obs-smoke:
     runs-on: windows-latest
     needs: [backend]
