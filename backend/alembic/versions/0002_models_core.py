@@ -177,7 +177,8 @@ def downgrade() -> None:
     op.drop_table("audit_log")
     op.drop_table("user_tags")
     op.drop_table("user_skills")
-    op.drop_table("invitations")
+    # NOTE: 'invitations' est gérée par 0005_invitations_table (upgrade + downgrade).
+    # Ne PAS la supprimer ici.
     op.drop_index("ix_availability_ends_at", table_name="availability")
     op.drop_index("ix_availability_starts_at", table_name="availability")
     op.drop_table("availability")
