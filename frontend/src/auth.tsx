@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { QueryClientProvider, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "./lib/api";
-import { queryClient as client } from "./lib/query";
 
 type User = { id: string; email: string };
 type AuthCtx = {
@@ -53,11 +52,7 @@ function AuthInner({ children }: { children: ReactNode }) {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  return (
-    <QueryClientProvider client={client}>
-      <AuthInner>{children}</AuthInner>
-    </QueryClientProvider>
-  );
+  return <AuthInner>{children}</AuthInner>;
 }
 
 export function useAuth(): AuthCtx {

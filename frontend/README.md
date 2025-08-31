@@ -1,11 +1,18 @@
-# Frontend (Jalon 12 - design system + a11y)
+# Frontend (Jalon 13 - data fetching et état)
 
 Base React + Vite with a small design system.
+
+## Data fetching et etat
+
+- TanStack Query: queryClient, retry=2, staleTime=30s
+- Helpers `useApiQuery` / `useApiMutation`
+- Update optimiste (`useUpdateProfile`)
+- Route test `/dev/retry` pour e2e
 
 ## CI
 - Installation: `npm ci`
 - Lint: `npm run lint`
-- Unit: `npm test`
+- Unit: `npm run test:unit`
 - Storybook: `npm run storybook`
 - Storybook tests: `npm run test:storybook`
 - Build: `npm run build`
