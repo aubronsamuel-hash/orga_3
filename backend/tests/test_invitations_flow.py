@@ -33,11 +33,25 @@ def _seed() -> None:
     now = datetime.utcnow()
     later = now + timedelta(hours=1)
     with eng.begin() as s:
+        # SQLite: s'assurer que les FKs sont actives
+        s.execute(text("PRAGMA foreign_keys=ON"))
+
+        # Nettoyage idempotent (ordre: enfants -> parents)
+        s.execute(text("DELETE FROM invitations"))
+        s.execute(text("DELETE FROM assignments"))
+        s.execute(text("DELETE FROM missions"))
+        s.execute(text("DELETE FROM projects"))
+        s.execute(text("DELETE FROM users"))
+        s.execute(text("DELETE FROM org_memberships"))
+        s.execute(text("DELETE FROM accounts"))
+        s.execute(text("DELETE FROM orgs"))
+
+        # Données de test déterministes
         s.execute(text("INSERT INTO orgs (id, name, created_at, updated_at) VALUES ('org1','Org',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)"))
         s.execute(text("INSERT INTO accounts (id, org_id, email, is_active, created_at, updated_at) VALUES ('acc1','org1','a@example.com',1,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)"))
         s.execute(text("INSERT INTO users (id, org_id, account_id, first_name, last_name, employment_type, created_at, updated_at) VALUES ('u1','org1','acc1','Sam','A','Intermittent',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)"))
         s.execute(text("INSERT INTO projects (id, org_id, name, status, created_at, updated_at) VALUES ('p1','org1','Proj','DRAFT',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)"))
-        s.execute(text("INSERT INTO missions (id, org_id, project_id, title, starts_at, ends_at, created_at, updated_at) VALUES ('m1','org1','p1','Bal',:s,:e,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)"), {"s": now.isoformat(), "e": later.isoformat()})
+        s.execute(text("INSERT INTO missions (id, org_id, project_id, title, starts_at, ends_at, created_at, updated_at) VALUES('m1','org1','p1','Bal',:s,:e,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)"), {"s": now.isoformat(), "e": later.isoformat()})
         s.execute(text("INSERT INTO assignments (id, mission_id, user_id, status, created_at, updated_at) VALUES ('a1','m1','u1','INVITED',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)"))
     eng.dispose()
 
