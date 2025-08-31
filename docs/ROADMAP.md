@@ -221,6 +221,15 @@ CI Gates: e2e acceptance.
 Docs: flux sequence ASCII, securite tokens (duree, revocation).
 Acceptance: invitation -> accept/decline -> planning mis a jour et visible.
 
+## Jalon 15.6 - Invitations: endpoint accept
+But: corriger l endpoint public d acceptation par token (idempotence).
+Livrables:
+- POST /api/v1/invitations/{id}/accept?token=...
+- Service de validation token et MAJ assignment -> ACCEPTED
+Tests: pytest test_invitations_accept.py
+Docs: README root + backend
+Acceptance: idempotence cote seed OK
+
 ## Jalon 16 - Users + disponibilites
 But: profils users (skills, tags, employment_type, rate_profile), calendrier individuel, demande/approbation disponibilite.
 Livrables: pages profil, workflow appro.

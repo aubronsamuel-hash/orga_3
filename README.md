@@ -44,12 +44,25 @@ pwsh -NoLogo -NoProfile -File PS1/repro_storybook_ci_cache.ps1
 * PS1/init_repo.ps1 : prepare venv Python et npm ci
 * PS1/dev_up.ps1 : lance le stack Docker compose de dev
 * PS1/dev_down.ps1 : arrete le stack compose (option -Prune pour volumes)
-* PS1/smoke.ps1 : verif /healthz et /metrics du backend
+* PS1/smoke.ps1 : verif /healthz, /metrics et endpoint invitation
 * PS1/test_all.ps1 : ruff, mypy, pytest, npm lint
 * PS1/fe_test.ps1 : npm lint, typecheck, unit
 * PS1/fe_e2e.ps1 : build + e2e smoke
 * tools/docs_guard.ps1 : guard doc
 * tools/readme_check.ps1 : verif sections README
+
+### Endpoint Invitations (public)
+
+POST /api/v1/invitations/{invitation_id}/accept?token=...
+
+* 200: { invitation_id, assignment_id, accepted: true, message }
+* 400: token invalide
+* 404: invitation/assignment introuvable
+* 500: erreur interne
+
+Tests:
+
+* backend.venv\Scripts\python -m pytest -q --disable-warnings --maxfail=1
 
 ### Outils docs (Windows-first)
 

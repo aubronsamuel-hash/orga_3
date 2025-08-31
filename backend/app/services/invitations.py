@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import hashlib
 from datetime import datetime, timedelta
 from typing import Optional
@@ -7,7 +5,8 @@ from typing import Optional
 from sqlalchemy.orm import Session
 
 from ..core.config import settings
-from ..models import Invitation
+from ..models import Assignment, Invitation
+from ..enums import AssignmentStatus
 from .tokens import sign_invite_token, verify_invite_token
 
 
@@ -52,4 +51,30 @@ def get_invitation_by_token(db: Session, token: str) -> Optional[Invitation]:
         return None
     if inv.expires_at <= _now():
         return None
+    return inv
+
+
+class InvitationNotFound(Exception):
+    pass
+
+
+class InvalidInvitationToken(Exception):
+    pass
+
+
+def accept_invitation(db: Session, invitation_id: str, token: str) -> Invitation:
+    inv = get_invitation_by_token(db, token)
+    if not inv or inv.id != invitation_id:
+        raise InvalidInvitationToken()
+    asg = db.query(Assignment).filter_by(id=inv.assignment_id).first()
+    if not asg:
+        raise InvitationNotFound()
+    if asg.status != AssignmentStatus.ACCEPTED.value:
+        asg.status = AssignmentStatus.ACCEPTED.value
+        asg.updated_at = _now()
+        inv.used_at = _now()
+        db.add(asg)
+        db.add(inv)
+        db.commit()
+        db.refresh(inv)
     return inv

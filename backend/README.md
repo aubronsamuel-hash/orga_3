@@ -243,3 +243,9 @@ backend\.venv\Scripts\python -m pytest -q backend/tests/test_invitations_tokens.
 alembic upgrade head
 backend\.venv\Scripts\python -m pytest -q -k invitations_flow
 ```
+
+#### Invitations
+
+* Acceptation: POST /api/v1/invitations/{invitation_id}/accept?token=...
+* Sans Authorization; verification par token; met a jour assignment -> ACCEPTED.
+* Codes: 200, 400 token invalide, 404 introuvable
