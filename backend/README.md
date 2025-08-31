@@ -9,15 +9,11 @@ pip install -e .
 
 Le packaging est limite au package `app` (Alembic exclu).
 
-## Typage (mypy)
+### Typage (mypy)
 
-* Chemins: `MYPYPATH=backend`, `files=backend`.
-* Packages declares: `app` (py.typed), `tests`.
-* Commande:
-
-```powershell
-pwsh -NoLogo -NoProfile -File ..\PS1\mypy.ps1
-```
+* `mypy_path=backend;backend/typings`
+* Stubs alembic pour op/context/command.
+* Commande: `..\PS1\mypy.ps1`
 
 ## Jalon 1 - Backend skeleton + healthz
 
