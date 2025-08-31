@@ -10,3 +10,7 @@
 - HTTP client avec retries et CSRF.
 - Gestion d'état avec TanStack Query et Zustand.
 - Update optimiste et route /dev/retry pour tests.
+
+## Jalon 15.5 – Workflow acceptation mission
+- Service de tokens d'invitation (HMAC, expiration).
+- Table `invitations` avec hash de token.

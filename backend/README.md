@@ -225,3 +225,19 @@ scrape_configs:
 $Env:PYTHONPATH="backend"
 backend\.venv\Scripts\python -m pytest -q -k "obs or readiness or metrics"
 ```
+
+## Invitations (Jalon 15.5)
+
+Tokens signes pour l'acceptation des assignments.
+
+### Variables env
+
+* `INVITES_SECRET`
+* `INVITES_TTL_SECONDS` (defaut 604800)
+
+### Tests
+
+```powershell
+$Env:PYTHONPATH="backend"
+backend\.venv\Scripts\python -m pytest -q backend/tests/test_invitations_tokens.py
+```
