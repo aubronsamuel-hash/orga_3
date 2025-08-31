@@ -9,7 +9,16 @@ Base React + Vite with a small design system.
 - Update optimiste (`useUpdateProfile`)
 - Route test `/dev/retry` pour e2e
 
+## Calendrier (J14)
+
+- Vues: Month / Week / Day (FullCalendar) + Timeline simple (CSS Grid).
+- DnD: drag & drop et resize.
+- Filtres: status, user/org/project. Timezone.
+- Tests e2e: `npm -w frontend run e2e:ci` (spec: calendar-dnd).
+- Bundle budget: `npm -w frontend run size`.
+
 ## CI
+
 - Installation: `npm ci`
 - Lint: `npm run lint`
 - Unit: `npm run test:unit`

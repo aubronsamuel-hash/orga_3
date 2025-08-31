@@ -7,6 +7,7 @@ import { NotFound } from "./pages/NotFound";
 import { Protected } from "./components/Protected";
 import { Dashboard } from "./pages/Dashboard";
 import { AuthProvider } from "./auth";
+const CalendarPage = lazy(() => import("./features/calendar/CalendarPage"));
 
 function WithAuth({ element }: { element: JSX.Element }) {
   return <AuthProvider>{element}</AuthProvider>;
@@ -25,11 +26,12 @@ const routes: RouteObject[] = [
           <Protected>
             <Dashboard />
           </Protected>
-        )
+        ),
       },
-      { path: "*", element: <NotFound /> }
-    ]
-  }
+      { path: "calendar", element: <CalendarPage /> },
+      { path: "*", element: <NotFound /> },
+    ],
+  },
 ];
 
 if (import.meta.env.MODE !== "production") {

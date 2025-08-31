@@ -1,0 +1,19 @@
+.fc-event.cc-evt-accepted {
+  background: #16a34a;
+  border-color: #15803d;
+}
+.fc-event.cc-evt-invited {
+  background: #2563eb;
+  border-color: #1d4ed8;
+}
+.fc-event.cc-evt-declined {
+  background: #dc2626;
+  border-color: #b91c1c;
+}
+.fc-event.cc-evt-cancelled {
+  background: #6b7280;
+  border-color: #4b5563;
+}
+.fc-event {
+  color: #fff;
+}
