@@ -1,2 +1,2 @@
-# Marque 'backend' comme package pour eviter la double resolution mypy.
+# Marque 'backend' comme package racine pour les outils.
 

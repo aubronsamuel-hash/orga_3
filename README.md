@@ -61,8 +61,8 @@ pwsh -NoLogo -NoProfile -File PS1/repro_storybook_ci_cache.ps1
 * PS1/dev_down.ps1 : arrete le stack compose (option -Prune pour volumes)
 * PS1/smoke.ps1 : verif /healthz, /metrics et endpoint invitation
 * PS1/test_all.ps1 : ruff, mypy, pytest, npm lint
-* PS1/mypy.ps1 : lance mypy avec mypy.ini (evite le doublon app/backend.app)
-* PS1/test_backend.ps1 : tests unitaires conflits
+* PS1/mypy.ps1 : lance mypy avec `MYPYPATH=backend` et `mypy.ini`
+* PS1/test_backend.ps1 : tests unitaires backend
 * PS1/e2e_conflicts.ps1 : e2e Playwright (conflits)
 * PS1/fe_test.ps1 : npm lint, typecheck, unit
 * PS1/fe_e2e.ps1 : build + e2e smoke

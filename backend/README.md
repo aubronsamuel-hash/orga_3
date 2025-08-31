@@ -7,7 +7,16 @@ python -m pip install -U pip
 pip install -e .
 ```
 
-Le packaging est limite au package `app` (Alembic exclu). Typage: `mypy.ini` pointe sur `backend` comme package racine.
+Le packaging est limite au package `app` (Alembic exclu).
+
+## Typing (mypy)
+
+* Chemin de recherche configure: `mypy_path=backend` pour resoudre `app.*` et `tests.*`.
+* Commande:
+
+```
+pwsh -NoLogo -NoProfile -File ..\PS1\mypy.ps1
+```
 
 ## Jalon 1 - Backend skeleton + healthz
 

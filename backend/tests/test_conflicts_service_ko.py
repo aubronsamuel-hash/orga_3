@@ -1,5 +1,5 @@
 from datetime import datetime
-from backend.app.services.conflicts import ConflictService
+from app.services.conflicts import ConflictService
 
 
 class MockEmpty:
