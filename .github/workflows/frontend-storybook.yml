@@ -10,6 +10,7 @@ jobs:
     defaults:
       run:
         working-directory: frontend
+        shell: bash
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -24,7 +25,8 @@ jobs:
       - name: Install deps (frontend)
         run: npm ci --no-audit --no-fund
 
-      - name: Lint (ts/eslint)
+      # Lint optionnel, compatible bash (evite la syntaxe PowerShell)
+      - name: Lint (optional)
         run: npm run lint --if-present
 
       - name: Build storybook
@@ -33,11 +35,13 @@ jobs:
       - name: Smoke serve + probe (6006)
         run: |
           npx --yes http-server storybook-static -p 6006 >/dev/null 2>&1 &
-          for i in {1..30}; do
-            curl -sf http://127.0.0.1:6006/ && exit 0
+          for i in $(seq 1 30); do
+            curl -fsS http://127.0.0.1:6006/ >/dev/null && exit 0
             sleep 1
           done
-          echo "storybook not ready"; exit 3
+          echo "storybook not ready"
+          exit 3
 
+      # size-limit verifie dans le job frontend (build Vite). On le saute ici.
       - name: Bundle budget (size-limit)
-        run: npm run size --if-present
+        run: echo "skip: size-limit est execute dans le job frontend (bundle dist/)"
