@@ -25,8 +25,7 @@ jobs:
         run: npm ci --no-audit --no-fund
 
       - name: Lint (ts/eslint)
-        run: |
-          if (npm run -q lint 2>$null) { exit 0 } else { echo "lint script absent, skip"; exit 0; }
+        run: npm run lint --if-present
 
       - name: Build storybook
         run: npm run build-storybook -- --quiet
@@ -41,5 +40,4 @@ jobs:
           echo "storybook not ready"; exit 3
 
       - name: Bundle budget (size-limit)
-        run: |
-          if (npm run -q size 2>$null) { npm run size; } else { echo "size-limit absent, skip"; }
+        run: npm run size --if-present

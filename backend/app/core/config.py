@@ -1,32 +1,23 @@
 from __future__ import annotations
 
-# Configuration centralisee, sans 'type: ignore' superflu.
+import importlib
+from typing import TYPE_CHECKING
 
-# Fallback type-safe pour dotenv en environnement CI.
-
-from os import PathLike
-from typing import IO, Any, Callable, TYPE_CHECKING
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-try:
-    # python-dotenv est optionnel; en CI on peut ne pas l installer.
-    from dotenv import load_dotenv as _load_dotenv
+# Chargement .env **sans** import statique (evite les erreurs mypy si python-dotenv n'est pas installe)
+_load = None
+try:  # importlib renvoie Any, mypy ne tente pas de resoudre le paquet
+    _mod = importlib.import_module("dotenv")
+    _load = getattr(_mod, "load_dotenv", None)
 except Exception:
-    def _load_dotenv(
-        dotenv_path: str | PathLike[str] | None = None,
-        stream: IO[str] | None = None,
-        verbose: bool = False,
-        override: bool = False,
-        interpolate: bool = True,
-        encoding: str | None = None,
-    ) -> bool:
-        return False
+    _load = None
 
-load_dotenv: Callable[..., bool] = _load_dotenv
-
-# Charge .env si present (dev), inoffensif sinon.
-
-load_dotenv()
+if callable(_load):
+    try:
+        _load()
+    except Exception:
+        pass  # best-effort : si ca echoue en CI, on continue
 
 
 class Settings(BaseSettings):
