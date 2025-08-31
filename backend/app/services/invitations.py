@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import hashlib
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from typing import Optional
 
 from sqlalchemy.orm import Session
@@ -12,7 +12,7 @@ from .tokens import sign_invite_token, verify_invite_token
 
 
 def _now() -> datetime:
-    return datetime.now(timezone.utc)
+    return datetime.utcnow()
 
 
 def create_invitation(db: Session, assignment_id: str) -> tuple[Invitation, str]:

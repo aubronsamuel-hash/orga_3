@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { verifyInvitation } from "../lib/api/invitations";
+import {
+  verifyInvitation,
+  type InvitationPreview,
+} from "../lib/api/invitations";
 import { acceptAssignment, declineAssignment } from "../lib/api/assignments";
 
 export default function InviteLanding() {
   const [sp] = useSearchParams();
   const token = sp.get("token") || "";
-  const [info, setInfo] = useState<any>();
+  const [info, setInfo] = useState<InvitationPreview | null>(null);
   const [error, setError] = useState<string | undefined>();
   const nav = useNavigate();
 
@@ -14,8 +17,8 @@ export default function InviteLanding() {
     async function run() {
       try {
         setInfo(await verifyInvitation(token));
-      } catch (e: any) {
-        setError(e?.message || "invalid token");
+      } catch (e: unknown) {
+        setError(e instanceof Error ? e.message : "invalid token");
       }
     }
     if (token) run();

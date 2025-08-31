@@ -15,8 +15,8 @@ export default function MyMissions() {
     try {
       setLoading(true);
       setRows(await listMyAssignments());
-    } catch (e: any) {
-      setError(e?.message || "error");
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "error");
     } finally {
       setLoading(false);
     }

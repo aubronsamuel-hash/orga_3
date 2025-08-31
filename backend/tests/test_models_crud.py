@@ -102,12 +102,6 @@ def test_crud_minimal_flow() -> None:
                 % (now.isoformat(), later.isoformat())
             )
         )
-        # Invitation
-        s.execute(
-            text(
-                "INSERT INTO invitations (id, org_id, mission_id, user_id, token, revoked, created_at, updated_at) VALUES ('i1','org1','m1','u1','tok123',0,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)"
-            )
-        )
 
         res = s.execute(text("SELECT COUNT(*) FROM assignments")).scalar_one()
         assert res == 1
