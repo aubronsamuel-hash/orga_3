@@ -61,6 +61,7 @@ pwsh -NoLogo -NoProfile -File PS1/repro_storybook_ci_cache.ps1
 * PS1/dev_down.ps1 : arrete le stack compose (option -Prune pour volumes)
 * PS1/smoke.ps1 : verif /healthz, /metrics et endpoint invitation
 * PS1/test_all.ps1 : ruff, mypy, pytest, npm lint
+* PS1/mypy.ps1 : lance mypy avec mypy.ini (evite le doublon app/backend.app)
 * PS1/test_backend.ps1 : tests unitaires conflits
 * PS1/e2e_conflicts.ps1 : e2e Playwright (conflits)
 * PS1/fe_test.ps1 : npm lint, typecheck, unit
@@ -129,7 +130,7 @@ Si un `.npmrc` global force une registry privee, ce pin l ignore.
 
 ```powershell
 backend\.venv\Scripts\python -m ruff check backend
-backend\.venv\Scripts\python -m mypy --config-file backend\mypy.ini backend
+backend\.venv\Scripts\python -m mypy --config-file mypy.ini
 $Env$Env:PYTHONPATH="backend"; backend\.venv\Scripts\python -m pytest -q -k "v1_endpoints"
 ```
 ### Typing (passlib)
@@ -137,7 +138,7 @@ $Env$Env:PYTHONPATH="backend"; backend\.venv\Scripts\python -m pytest -q -k "v1_
 passlib n a pas de stubs officiels. Nous:
 
 * ignorons l import dans `backend/app/auth.py` via `# type: ignore[import-untyped]`
-* desactivons `import-untyped` uniquement pour `passlib.*` dans `backend/mypy.ini`
+* desactivons `import-untyped` uniquement pour `passlib.*` dans `mypy.ini`
 
 ## Warnings CI
 
@@ -152,7 +153,7 @@ TESTS (PS + curl):
 * Windows:
 
   * backend.venv\Scripts\python -m ruff check backend
-  * backend.venv\Scripts\python -m mypy --config-file backend\mypy.ini backend
+  * backend.venv\Scripts\python -m mypy --config-file mypy.ini
   * $Env:PYTHONPATH="backend"; backend.venv\Scripts\python -m pytest -q
   * pwsh -NoLogo -NoProfile -File PS1/fe_test.ps1
   * pwsh -NoLogo -NoProfile -File PS1/fe_e2e.ps1

@@ -1,5 +1,14 @@
 # Backend Coulisses Crew
 
+### Installation editable (dev)
+
+```
+python -m pip install -U pip
+pip install -e .
+```
+
+Le packaging est limite au package `app` (Alembic exclu). Typage: `mypy.ini` pointe sur `backend` comme package racine.
+
 ## Jalon 1 - Backend skeleton + healthz
 
 * GET /healthz -> 200 JSON {"status":"ok"}
