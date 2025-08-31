@@ -47,3 +47,7 @@ npm run dev
 # e2e acceptance toggle
 $Env:E2E_ACCEPTANCE=1; npm run e2e
 ```
+
+## Page Conflits
+
+Route `/conflicts`: liste des conflits detectes; clic sur "Remplacer par X" tente une resolution et retire le conflit si OK.

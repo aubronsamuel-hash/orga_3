@@ -18,7 +18,7 @@ from .api_auth import router as auth_router
 from .api_rbac_demo import router as rbac_demo_router
 from .api_v1_assignments import router as assignments_router
 from .api_v1_availability import router as availability_router
-from .api_v1_conflicts import router as conflicts_router
+from .api.v1 import conflicts as conflicts_api
 from .api_v1_invitations import router as invitations_router
 from .api_v1_missions import router as missions_router
 from .api_v1_orgs import router as orgs_router
@@ -123,7 +123,7 @@ def create_app() -> FastAPI:
     app.include_router(avail_api.router, prefix="/api/v1/availabilities", tags=["availabilities"])
     app.include_router(users_profile_api.router, prefix="/api/v1/users", tags=["users"])
     app.include_router(availability_router)
-    app.include_router(conflicts_router)
+    app.include_router(conflicts_api.router)
     app.include_router(rates_router)
     app.include_router(orgs_router)
 

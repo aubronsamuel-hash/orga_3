@@ -2,6 +2,7 @@
 * En cas de port occupe, fermer les processus node/uvicorn via dev_down.ps1.
 * Utiliser `Join-Path` et encodage UTF-8 dans les scripts PS1.
 * Python: preferer venv local `backend/.venv`.
+* e2e conflits: `PS1/e2e_conflicts.ps1`.
 
 ## SQLite sur Windows: verrous de fichiers
 
