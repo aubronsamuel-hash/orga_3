@@ -11,9 +11,17 @@ Le packaging est limite au package `app` (Alembic exclu).
 
 ### Mypy
 
-* `mypy_path` colon-separe dans `mypy.ini` pour CI Linux.
-* Local Windows: le script PS utilise le separateur adequat.
-* Les stubs locaux (`backend/typings`) ne sont pas inclus dans `files`.
+Executez depuis backend:
+
+```
+python -m mypy --config-file ../mypy.ini app tests
+```
+
+ou
+
+```
+pwsh -NoLogo -NoProfile -File ..\PS1\mypy_backend.ps1
+```
 
 ## Jalon 1 - Backend skeleton + healthz
 
