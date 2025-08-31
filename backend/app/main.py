@@ -115,6 +115,7 @@ def create_app() -> FastAPI:
     app.include_router(projects_router)
     app.include_router(missions_router)
     app.include_router(assignments_router)
+    # Invitations (create, verify, accept)
     app.include_router(invitations_router)
     app.include_router(users_router)
     app.include_router(availability_router)

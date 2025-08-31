@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from .auth import get_db
 from .models import Assignment, Invitation
 from .services import invitations as inv_service
+from .schemas.invitations import InvitationAcceptResponse
 
 router = APIRouter(prefix="/api/v1/invitations", tags=["invitations"])
 
@@ -46,3 +47,19 @@ def verify_invitation(token: str = Query(...), db: Session = Depends(get_db)):
     if not asg:
         raise HTTPException(status_code=404, detail="assignment not found")
     return {"assignment_id": asg.id, "status": asg.status, "expires_at": inv.expires_at}
+
+
+@router.post("/{invitation_id}/accept", response_model=InvitationAcceptResponse)
+def accept_invitation_endpoint(invitation_id: str, token: str = Query(...), db: Session = Depends(get_db)):
+    try:
+        inv = inv_service.accept_invitation(db, invitation_id, token)
+        return InvitationAcceptResponse(
+            invitation_id=inv.id,
+            assignment_id=inv.assignment_id,
+            accepted=True,
+            message="invitation accepted",
+        )
+    except inv_service.InvalidInvitationToken:
+        raise HTTPException(status_code=400, detail="invalid token")
+    except inv_service.InvitationNotFound:
+        raise HTTPException(status_code=404, detail="invitation or assignment not found")

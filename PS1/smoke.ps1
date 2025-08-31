@@ -1,4 +1,8 @@
-Param()
+Param(
+    [string]$BaseUrl = "http://localhost:8000",
+    [string]$InvitationId,
+    [string]$Token
+)
 $ErrorActionPreference="Stop"
 Set-StrictMode -Version Latest
 
@@ -13,7 +17,12 @@ function Check($name, $url) {
     }
 }
 
-Check "backend /healthz" "http://localhost:8000/healthz"
-Check "backend /metrics" "http://localhost:8000/metrics"
+Check "backend /healthz" "$BaseUrl/healthz"
+Check "backend /metrics" "$BaseUrl/metrics"
+if ($InvitationId -and $Token) {
+    Check "invitation accept" "$BaseUrl/api/v1/invitations/$InvitationId/accept?token=$Token"
+} else {
+    Write-Host "[smoke] invitation accept skipped" -ForegroundColor Yellow
+}
 Write-Host "[smoke] Prometheus UI: http://localhost:9090  Grafana: http://localhost:3000  Mailpit: http://localhost:8025" -ForegroundColor Cyan
 exit 0
