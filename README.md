@@ -29,20 +29,15 @@ Ruff:
 pwsh -NoLogo -NoProfile -Command "backend\.venv\Scripts\python -m ruff check backend"
 ```
 
-Mypy:
+## Typage (mypy)
+
+* Portee analyse: `backend/app, backend/tests` (les stubs locaux ne sont pas scannes).
+* Recherche modules: `backend/typings:backend` (CI Linux). Le script PS ajuste automatiquement pour Windows.
+* Commandes:
 
 ```powershell
-# 1) Normaliser les imports de tests (une fois ou a chaque pull si diffs):
-pwsh -NoLogo -NoProfile -File .\PS1\fix_mypy_imports.ps1 -WhatIf:$false
-# 2) Lancer mypy avec le chemin correct:
 pwsh -NoLogo -NoProfile -File .\PS1\mypy.ps1
 ```
-
-Notes:
-
-* Les tests importent desormais `.utils` (relatif) au lieu de `tests.utils`.
-* `app`/`tests` sont des packages explicites; `py.typed` present.
-
 
 ### Jalon 15.5 — Workflow d’acceptation mission
 - API: /v1/invitations (create/revoke/verify), /v1/assignments/{id}/accept|decline (token ou session)
