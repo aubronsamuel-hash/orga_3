@@ -58,6 +58,20 @@ Le job **storybook** publie via Chromatic (non bloquant, Phase 1) et n'exécute 
 pwsh -NoLogo -NoProfile -File ..\PS1\repro_storybook_ci_cache.ps1
 ```
 
+## Tests UI avec Storybook
+
+### Build et tests Storybook en local (Windows)
+
+```
+pwsh -NoLogo -NoProfile -File ..\PS1\storybook_tests.ps1
+```
+
+### Notes
+
+* Le test-runner utilise Jest + Playwright et respecte `frontend/jest.config.cjs`.
+* Cible SWC: `es2022` pour compatibilite CI.
+* Hooks deprecies remplaces par `preVisit`/`postVisit` dans `.storybook/test-runner.js`.
+
 ## Acceptance workflow
 
 ```
