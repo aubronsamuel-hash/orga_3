@@ -170,7 +170,8 @@ Endpoints exposes (subset prioritaire) :
 * `/api/v1/invitations` create/revoke + `/{id}/accept|decline?token=...` (token signe typ=invite)
 * `/api/v1/users` CRUD minimal + recherche
 * `/api/v1/availability` CRUD simple
-* `/api/v1/conflicts/user/{uid}` detection overlaps affectations ACCEPTED
+* `/api/v1/conflicts/user/{uid}` -> `{user_id, items:[...]}` (overlaps ACCEPTED)
+* Service: `app.services.conflicts.list_user_conflicts(db, user_id)`
 * `/api/v1/rates/user/{uid}` get/set profil tarifaire
 * `/api/v1/orgs/members` liste membres + roles
   Ecriture: `require_role(Role.manager)` ; Lecture: `require_role(Role.tech)` par defaut.
@@ -281,7 +282,5 @@ curl -Method Post -Uri http://localhost:8000/api/v1/availabilities/1:approve -He
 
 ## API Conflits
 
-GET /api/v1/conflicts?from=ISO&to=ISO -> [ConflictItem]
-GET /api/v1/conflicts/{id}?from=ISO&to=ISO -> ConflictDetail (suggestions)
-POST /api/v1/conflicts/resolve { conflict_id, replace_assignment_mission_id, replacement_user_id } -> { resolved, message }
+GET /api/v1/conflicts/user/{user_id} -> { user_id, items: [] }
 

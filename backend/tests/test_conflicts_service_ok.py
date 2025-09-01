@@ -1,47 +1,51 @@
-from datetime import datetime, timedelta
-from app.services.conflicts import ConflictService, Assignment
+from __future__ import annotations
+
+import os
+
+from sqlalchemy import create_engine, text
+
+from .utils import _client, _mk_account_and_members, _upgrade, TEST_DB_URL
 
 
-class MockDB:
-    def __init__(self):
-        now = datetime(2025, 9, 1, 8)
-        self.assigns = [
-            Assignment(1, 10, "Alice", now, now + timedelta(hours=4), "Light"),
-            Assignment(2, 10, "Alice", now + timedelta(hours=2), now + timedelta(hours=5), "Sound"),
-            Assignment(3, 11, "Bob", now, now + timedelta(hours=3), "Any"),
-        ]
-        self._users = [{"id": 11, "name": "Bob"}, {"id": 12, "name": "Chloe"}]
+def test_conflicts_empty_on_different_days() -> None:
+    os.environ["ENV"] = "dev"
+    _upgrade(TEST_DB_URL)
+    account_id, org_id = _mk_account_and_members(TEST_DB_URL)
+    client = _client()
+    eng = create_engine(TEST_DB_URL, future=True)
 
-    def fetch_assignments(self, s, e):
-        return self.assigns
+    r = client.post(
+        "/api/v1/users", headers={"Authorization": "***"}, json={"name": "Max"}
+    )
+    user_id = r.json()["id"]
 
-    def fetch_users(self):
-        return self._users
+    with eng.begin() as c:
+        m1 = c.execute(
+            text(
+                "INSERT INTO missions (id, org_id, title, starts_at, ends_at, created_at, updated_at) "
+                "VALUES (lower(hex(randomblob(8))), :o, 'm1', :sa, :ea, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id"
+            ),
+            {"o": org_id, "sa": "2025-09-02T09:00:00Z", "ea": "2025-09-02T12:00:00Z"},
+        ).scalar_one()
+        m2 = c.execute(
+            text(
+                "INSERT INTO missions (id, org_id, title, starts_at, ends_at, created_at, updated_at) "
+                "VALUES (lower(hex(randomblob(8))), :o, 'm2', :sa, :ea, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id"
+            ),
+            {"o": org_id, "sa": "2025-09-03T09:00:00Z", "ea": "2025-09-03T12:00:00Z"},
+        ).scalar_one()
+        for mid in [m1, m2]:
+            c.execute(
+                text(
+                    "INSERT INTO assignments (id, mission_id, user_id, status, created_at, updated_at) "
+                    "VALUES (lower(hex(randomblob(8))), :m, :u, 'ACCEPTED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"
+                ),
+                {"m": mid, "u": user_id},
+            )
 
-    def fetch_user_assignments(self, uid, s, e):
-        return [a for a in self.assigns if a.user_id == uid]
+    r = client.get(f"/api/v1/conflicts/user/{user_id}")
+    assert r.status_code == 200
+    data = r.json()
+    assert data["user_id"] == user_id
+    assert data["items"] == []
 
-    def replace_assignment(self, mission_id, replacement_user_id):
-        return True
-
-
-def test_find_conflicts_ok():
-    svc = ConflictService(MockDB())
-    res = svc.find_conflicts(datetime(2025, 9, 1), datetime(2025, 9, 2))
-    assert len(res) == 1
-    c = res[0]
-    assert c.user_name == "Alice"
-    assert set(c.mission_ids) == {1, 2}
-
-
-def test_suggestions_ok():
-    svc = ConflictService(MockDB())
-    c = svc.find_conflicts(datetime(2025, 9, 1), datetime(2025, 9, 2))[0]
-    sugg = svc.suggest_replacements(c)
-    assert any(s.user_name == "Chloe" for s in sugg)
-
-
-def test_resolve_ok():
-    svc = ConflictService(MockDB())
-    ok = svc.resolve("1-2:10", mission_id=1, replacement_user_id=12)
-    assert ok

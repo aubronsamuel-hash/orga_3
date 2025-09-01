@@ -1,32 +1,22 @@
-from pydantic import BaseModel, Field
-from typing import List
-from datetime import datetime
+from __future__ import annotations
 
-class TimeWindow(BaseModel):
-    start: datetime
-    end: datetime
+from typing import List, Literal, Optional
+
+from pydantic import BaseModel, Field
+
+ConflictKind = Literal["ASSIGNMENT_OVERLAP"]
+
 
 class ConflictItem(BaseModel):
-    conflict_id: str = Field(..., description="UUID logique concat mission_ids:user_id")
-    user_id: int
-    user_name: str
-    mission_ids: List[int]
-    window: TimeWindow
-    reason: str = Field("DOUBLE_BOOKING")
+    kind: ConflictKind = Field(default="ASSIGNMENT_OVERLAP")
+    user_id: str
+    mission_id: str
+    starts_at: str
+    ends_at: str
+    with_mission_id: Optional[str] = None
 
-class Suggestion(BaseModel):
-    user_id: int
-    user_name: str
 
-class ConflictDetail(BaseModel):
-    conflict: ConflictItem
-    suggestions: List[Suggestion] = []
+class ConflictList(BaseModel):
+    user_id: str
+    items: List[ConflictItem] = Field(default_factory=list)
 
-class ResolveRequest(BaseModel):
-    conflict_id: str
-    replace_assignment_mission_id: int
-    replacement_user_id: int
-
-class ResolveResult(BaseModel):
-    resolved: bool
-    message: str
