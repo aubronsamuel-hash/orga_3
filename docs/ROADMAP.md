@@ -1,8 +1,4 @@
-J17: mypy stabilise
-
-* Eviter doublon stubs: `files=backend/app,backend/tests` + `mypy_path=backend/typings:backend`
-* PS cross-OS pour MYPYPATH
-* `__all__` type-annotes
+J17: mypy stabilise par cwd=backend; suppression des `# type: ignore` inutiles dans `auth.py` et `api_v1_projects.py`.
 
 ## Objectifs
 - Livrer un MVP fiable (backend + frontend) puis durcir la securite a la fin.

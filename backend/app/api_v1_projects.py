@@ -89,7 +89,8 @@ def delete_project(pid: str, current=Depends(require_role(Role.admin)), db: Sess
     org_id = current["org_id"]
     res = db.execute(text("DELETE FROM projects WHERE id=:p AND org_id=:o"), {"p": pid, "o": org_id})
     db.commit()
-    if res.rowcount == 0:  # type: ignore[attr-defined]
+    rowcount = getattr(res, "rowcount", 0)
+    if (rowcount or 0) == 0:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="project introuvable")
     get_cache().invalidate_tags([f"projects:{org_id}"])
     return {"status": "ok"}

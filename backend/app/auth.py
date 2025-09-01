@@ -79,8 +79,8 @@ def get_db() -> Session:
     return SessionLocal()
 
 def get_current_account(
+    request: Request,
     creds: Optional[HTTPAuthorizationCredentials] = Depends(bearer_scheme),
-    request: Request = None,  # type: ignore[assignment]
     db: Session = Depends(get_db),
 ) -> Dict[str, Any]:
     if not creds:
