@@ -165,15 +165,14 @@ Si un `.npmrc` global force une registry privee, ce pin l ignore.
 
 ```powershell
 backend\.venv\Scripts\python -m ruff check backend
-backend\.venv\Scripts\python -m mypy --config-file mypy.ini
-$Env$Env:PYTHONPATH="backend"; backend\.venv\Scripts\python -m pytest -q -k "v1_endpoints"
+pwsh -NoLogo -NoProfile -File PS1/mypy_backend.ps1
+$Env:PYTHONPATH="backend"; backend\.venv\Scripts\python -m pytest -q -k "v1_endpoints"
 ```
 ### Typing (passlib)
 
 passlib n a pas de stubs officiels. Nous:
 
-* ignorons l import dans `backend/app/auth.py` via `# type: ignore[import-untyped]`
-* desactivons `import-untyped` uniquement pour `passlib.*` dans `mypy.ini`
+* ignorons l import dans `backend/app/auth.py` via `# type: ignore[import-untyped]`.
 
 ## Warnings CI
 

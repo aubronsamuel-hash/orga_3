@@ -6,7 +6,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, Optional, cast
 
 import jwt
-from passlib.context import CryptContext  # type: ignore[import-untyped, unused-ignore]
+from passlib.context import CryptContext  # type: ignore[import-untyped]
 from fastapi import Depends, HTTPException, status, Request, Response
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
