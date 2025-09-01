@@ -22,6 +22,13 @@ Le packaging est limite au package `app` (Alembic exclu).
 
 Les stubs Alembic sont sous `typing_stubs/alembic`.
 
+### Tests conflits: migrations requises
+Les tests d’integration du service conflits (`test_conflicts_service_ok.py` / `test_conflicts_service_ko.py`) supposent une base SQLite migree.
+Utilisez les fixtures/tests qui appellent Alembic upgrade (ex: `_upgrade(TEST_DB_URL)` dans `tests/utils.py`).
+Lancer uniquement ces 2 fichiers sans la sequence de migration peut produire `OperationalError: no such table: org_memberships`.
+Recommandation:
+PYTHONPATH=backend python -m pytest -q -k "conflicts" -vv
+
 ## Jalon 1 - Backend skeleton + healthz
 
 * GET /healthz -> 200 JSON {"status":"ok"}
