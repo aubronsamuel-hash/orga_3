@@ -63,15 +63,14 @@ python tools\mypy_backend.py
 
 ## Storybook et Chromatic
 
-* Build local (Windows):
-  pwsh -NoLogo -NoProfile -File PS1/storybook_build.ps1
-* Build local (Linux/Mac):
-  bash tools/storybook_build.sh
-* Publication Chromatic (CI ou local):
-  Definir CHROMATIC_PROJECT_TOKEN, puis:
-  pwsh -NoLogo -NoProfile -File PS1/storybook_chromatic.ps1
-* CI publie automatiquement a Chromatic si le secret `CHROMATIC_PROJECT_TOKEN` est present.
-* Note: `storybook build` n accepte plus `--ci`. L option `--ci` reste valide pour `chromatic`.
+Windows:
+pwsh -NoLogo -NoProfile -File PS1/storybook_build.ps1
+Linux/Mac:
+bash tools/storybook_build.sh
+Publication Chromatic (si token defini):
+$Env:CHROMATIC_PROJECT_TOKEN="<votre_token>"
+pwsh -NoLogo -NoProfile -File PS1/storybook_chromatic.ps1
+CI: la job "publish-chromatic" s execute uniquement si `CHROMATIC_PROJECT_TOKEN` est present; sinon elle log "ignoree". Non-bloquant.
 
 ### Politique README
 
@@ -113,7 +112,7 @@ Tests:
 ## Envs requis
 
 Voir .env.example. Pas de secrets dans le repo. Ajout de `INVITES_SECRET` et `INVITES_TTL_SECONDS` pour les tokens d'invitation.
-Variables: `VITE_API_BASE`, `PLAYWRIGHT_BASE_URL`.
+Variables: `VITE_API_BASE`, `PLAYWRIGHT_BASE_URL`, `CHROMATIC_PROJECT_TOKEN` (optionnel).
 
 ## Ports
 

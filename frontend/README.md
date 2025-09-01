@@ -35,7 +35,7 @@ Note: executer ces commandes dans `frontend/`.
 
 * npm run storybook : lance Storybook dev
 * npm run build:storybook : compile le site statique
-* npm run chromatic : publie sur Chromatic (requiert CHROMATIC_PROJECT_TOKEN)
+* npm run chromatic : publie sur Chromatic (requis: CHROMATIC_PROJECT_TOKEN)
 
 ### Secrets
 

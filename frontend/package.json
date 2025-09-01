@@ -22,7 +22,7 @@
     "storybook": "storybook dev -p 6006",
     "prepare": "husky install",
     "build:storybook": "node -e \"process.env.NODE_OPTIONS='--max-old-space-size=4096'\" && storybook build",
-    "chromatic": "chromatic --build-script-name build:storybook --only-changed --exit-zero-on-changes --auto-accept-changes",
+    "chromatic": "chromatic --only-changed --exit-zero-on-changes --auto-accept-changes",
     "test:storybook": "storybook test --ci",
     "size": "size-limit",
     "lint:a11y": "echo \"a11y via test-runner\""
