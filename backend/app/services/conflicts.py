@@ -1,40 +1,78 @@
 from __future__ import annotations
 
-from typing import List
+from datetime import datetime
+from typing import List, TypedDict
 
-from sqlalchemy import and_, select
+from sqlalchemy import text
 from sqlalchemy.orm import Session
 
-from app.models import Assignment, Mission
 from app.schemas.conflicts import ConflictItem, ConflictList
 
 
-def _overlap(a_start, a_end, b_start, b_end) -> bool:
+class _Row(TypedDict):
+    mission_id: str
+    starts_at: str
+    ends_at: str
+
+
+def _normalize_iso_utc(s: str) -> datetime:
+    """
+    Normalise des timestamps ISO fournis par SQLite sous forme TEXT.
+    Accepte: 'YYYY-MM-DDTHH:MM:SSZ' ou 'YYYY-MM-DDTHH:MM:SS+00:00' ou avec espace.
+    Retourne un datetime timezone-aware en UTC.
+    """
+    s2 = s.strip().replace(" ", "T")
+    if s2.endswith("Z"):
+        s2 = s2[:-1] + "+00:00"
+    return datetime.fromisoformat(s2)
+
+
+def _overlap(a_start: datetime, a_end: datetime, b_start: datetime, b_end: datetime) -> bool:
     return (a_start < b_end) and (b_start < a_end)
 
 
 def list_user_conflicts(db: Session, user_id: str) -> ConflictList:
-    q = (
-        select(Assignment.mission_id, Mission.starts_at, Mission.ends_at)
-        .join(Mission, Mission.id == Assignment.mission_id)
-        .where(and_(Assignment.user_id == user_id, Assignment.status == "ACCEPTED"))
-        .order_by(Mission.starts_at.asc())
+    # BYPASS du processor DateTime du dialecte SQLite:
+    # on CAST les colonnes en TEXT puis on parse nous-memes (support du 'Z').
+    sql = text(
+        """
+        SELECT
+            a.mission_id AS mission_id,
+            CAST(m.starts_at AS TEXT) AS starts_at,
+            CAST(m.ends_at   AS TEXT) AS ends_at
+        FROM assignments a
+        JOIN missions m ON m.id = a.mission_id
+        WHERE a.user_id = :uid AND a.status = 'ACCEPTED'
+        ORDER BY m.starts_at ASC
+        """
     )
-    rows = db.execute(q).all()
+    rows: List[_Row] = list(db.execute(sql, {"uid": user_id}).mappings())
+
+    # Parse + detection des chevauchements O(n^2) (OK pour nos volumes de tests)
+    parsed = [
+        (
+            r["mission_id"],
+            _normalize_iso_utc(r["starts_at"]),
+            _normalize_iso_utc(r["ends_at"]),
+        )
+        for r in rows
+    ]
+
     items: List[ConflictItem] = []
-    for i in range(len(rows)):
-        a = rows[i]
-        for j in range(i + 1, len(rows)):
-            b = rows[j]
-            if _overlap(a.starts_at, a.ends_at, b.starts_at, b.ends_at):
+    for i in range(len(parsed)):
+        mid_a, sa, ea = parsed[i]
+        for j in range(i + 1, len(parsed)):
+            mid_b, sb, eb = parsed[j]
+            if _overlap(sa, ea, sb, eb):
                 items.append(
                     ConflictItem(
                         user_id=user_id,
-                        mission_id=a.mission_id,
-                        with_mission_id=b.mission_id,
-                        starts_at=str(max(a.starts_at, b.starts_at)),
-                        ends_at=str(min(a.ends_at, b.ends_at)),
+                        mission_id=mid_a,
+                        with_mission_id=mid_b,
+                        starts_at=max(sa, sb).isoformat(),
+                        ends_at=min(ea, eb).isoformat(),
                     )
                 )
+
     return ConflictList(user_id=user_id, items=items)
 
