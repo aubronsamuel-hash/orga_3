@@ -22,9 +22,10 @@ Tests (PS + curl):
 * backend.venv\Scripts\python -m pytest -q -k "conflicts" -vv
 * curl -s -o NUL -w "%{http_code}" "http://localhost:8000/api/v1/conflicts/user/1"
 
-* Jalon UI/Storybook:
-  * Phase 1: OK (non-bloquant), publication conditionnelle au secret
-  * Next: rendre publish gate optionnellement requis plus tard
+* Jalon 12 - Design system + a11y:
+  * [x] Storybook CI (build)
+  * [x] a11y smoke via @storybook/test-runner (non-bloquant)
+  * [ ] Promotion en gate bloquant apres stabilisation
 
 ## Objectifs
 - Livrer un MVP fiable (backend + frontend) puis durcir la securite a la fin.

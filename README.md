@@ -72,6 +72,17 @@ $Env:CHROMATIC_PROJECT_TOKEN="<votre_token>"
 pwsh -NoLogo -NoProfile -File PS1/storybook_chromatic.ps1
 CI: la job "publish-chromatic" s execute uniquement si `CHROMATIC_PROJECT_TOKEN` est present; sinon elle log "ignoree". Non-bloquant.
 
+## Tests Storybook (a11y smoke)
+
+Windows:
+pwsh -NoLogo -NoProfile -File PS1/storybook_test.ps1 -Rebuild
+Linux/Mac:
+(cd frontend && npm ci && npx http-server storybook-static -p 6006 & sleep 3 && npx test-storybook --url http://127.0.0.1:6006)
+CI:
+
+* Job `storybook-tests` s execute apres le build et utilise l artefact `storybook-static`.
+* Phase 1: non-bloquant (`continue-on-error: true`). Promotion en gate bloquant apres stabilisation.
+
 ### Politique README
 
 Pas de secrets commités; .env.example ci-dessus. Si vous rendez ce job **requis** plus tard (Phase 2), alignez le nom du job (“storybook”) dans la règle de protection de branche.
@@ -88,6 +99,7 @@ Pas de secrets commités; .env.example ci-dessus. Si vous rendez ce job **requis
 * PS1/e2e_conflicts.ps1 : e2e Playwright (conflits)
 * PS1/fe_test.ps1 : npm lint, typecheck, unit
 * PS1/fe_e2e.ps1 : build + e2e smoke
+* PS1/storybook_test.ps1 : tests Storybook a11y smoke
 * tools/docs_guard.ps1 : guard doc
 * tools/readme_check.ps1 : verif sections README
 
