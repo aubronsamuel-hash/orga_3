@@ -1,12 +1,7 @@
-// Config minimale; axe a11y active par defaut via test-runner.
-// On durcira les regles plus tard (promotion gate).
+// Minimal config; a11y actif par defaut via test-runner.
+// Renforcer plus tard si besoin.
 /* eslint-disable */
 module.exports = {
-  // Example: filtrer certaines stories lourdes via `parameters: { test: { disable: true } }`
-  async preRender(page, context) {
-    // noop
-  },
-  async postRender(page, context) {
-    // noop
-  },
+  async preRender(page, context) {},
+  async postRender(page, context) {}
 };

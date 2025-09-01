@@ -39,9 +39,9 @@ Note: executer ces commandes dans `frontend/`.
 
 ### Storybook tests
 
-* `npm run test:storybook` : lance les tests end-to-end des stories (Playwright).
-* `npm run test:storybook:static` : teste contre `storybook-static` servi en local.
-* Desactiver un test pour une story lourde: ajouter `parameters: { test: { disable: true } }` dans la story.
+* npm run test:storybook : lance les tests via @storybook/test-runner.
+* npm run test:storybook:static : teste contre storybook-static servi en local.
+* Pour desactiver un test sur une story: ajouter `parameters: { test: { disable: true } }` dans la story.
 
 ### Secrets
 
