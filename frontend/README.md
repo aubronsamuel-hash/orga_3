@@ -29,19 +29,17 @@ Base React + Vite with a small design system.
 
 Note: executer ces commandes dans `frontend/`.
 
-## Storybook (dev/CI)
+## Storybook
 
-* Local:
+### Scripts
 
-  * `npm run storybook` (si script present) ou `npx storybook dev -p 6006`
-  * Build CI-like: `npx storybook build --ci`
-* CI:
+* npm run storybook : lance Storybook dev
+* npm run build:storybook : compile le site statique
+* npm run chromatic : publie sur Chromatic (requiert CHROMATIC_PROJECT_TOKEN)
 
-  * Chromatic via `chromaui/action@v1` (non bloquant, Phase 1)
-  * Node 20 LTS; fallback build local
-* Secrets:
+### Secrets
 
-  * `CHROMATIC_PROJECT_TOKEN` requis pour publication Chromatic (PR internes). PR de forks: step “skipped” (workflow non bloquant).
+* CHROMATIC_PROJECT_TOKEN : a definir dans GitHub Secrets pour activer la publication CI.
 
 ### Budgets (size-limit)
 

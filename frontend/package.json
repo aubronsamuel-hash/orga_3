@@ -21,7 +21,8 @@
     "e2e:auth": "cross-env E2E_AUTH=1 playwright test tests/e2e/auth.spec.ts",
     "storybook": "storybook dev -p 6006",
     "prepare": "husky install",
-    "build-storybook": "storybook build",
+    "build:storybook": "node -e \"process.env.NODE_OPTIONS='--max-old-space-size=4096'\" && storybook build",
+    "chromatic": "chromatic --build-script-name build:storybook --only-changed --exit-zero-on-changes --auto-accept-changes",
     "test:storybook": "storybook test --ci",
     "size": "size-limit",
     "lint:a11y": "echo \"a11y via test-runner\""
@@ -67,6 +68,7 @@
     "@vitejs/plugin-react": "4.3.1",
     "autoprefixer": "10.4.20",
     "axe-core": "^4.9.0",
+    "chromatic": "13.1.4",
     "cross-env": "^7.0.3",
     "eslint": "8.57.0",
     "eslint-config-prettier": "9.1.0",
