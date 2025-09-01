@@ -22,6 +22,16 @@ Tests (PS + curl):
 * backend.venv\Scripts\python -m pytest -q -k "conflicts" -vv
 * curl -s -o NUL -w "%{http_code}" "http://localhost:8000/api/v1/conflicts/user/1"
 
+### J18 — Storybook (Phase 1 non bloquante)
+
+* Re-activation du job CI `storybook`:
+  * Chromatic (action) avec `continue-on-error: true`
+  * Fallback build local
+  * Filtre chemins: `frontend/**`, `**/*.stories.*`
+* Prochain jalon (Phase 2):
+  * Rendre le check “storybook” **requis** en protection de branche apres 1-2 semaines de stabilisation
+  * Option: activer tests visuels (diffs screenshots) sur Chromatic
+
 ## Objectifs
 - Livrer un MVP fiable (backend + frontend) puis durcir la securite a la fin.
 - CI verte a chaque jalon, petites etapes atomiques pour eviter la casse.
