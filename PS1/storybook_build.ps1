@@ -1,16 +1,27 @@
-Param()
-$ErrorActionPreference="Stop"
+Param(
+    [switch]$SkipInstall = $false
+)
+$ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
-Push-Location (Join-Path $PSScriptRoot "..\frontend")
+
+$root = Split-Path -Parent $PSScriptRoot
+$frontend = Join-Path $root "frontend"
+
+Write-Host "[i] Build Storybook (Windows)"
+Push-Location $frontend
 try {
-if (Test-Path "package-lock.json") {
-  npm ci
-} else {
-  Write-Host "ATTENTION: aucun package-lock.json trouve" -ForegroundColor Yellow
-  npm install
+    if (-not $SkipInstall) {
+        npm ci
+    }
+    $env:NODE_OPTIONS="--max-old-space-size=4096"
+    npx storybook build
+    Write-Host "[OK] Storybook construit dans frontend/storybook-static"
+    exit 0
 }
-$env:NODE_OPTIONS="--max-old-space-size=4096"
-npx storybook build --ci
-} finally {
-  Pop-Location
+catch {
+    Write-Error "Echec build Storybook: $($_.Exception.Message)"
+    exit 2
+}
+finally {
+    Pop-Location
 }

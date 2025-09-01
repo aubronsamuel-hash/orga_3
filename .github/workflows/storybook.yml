@@ -3,57 +3,60 @@ on:
   pull_request:
     paths:
       - "frontend/**"
-      - "**/*.stories.*"
       - ".github/workflows/storybook.yml"
-  push:
-    branches: ["main"]
-    paths:
-      - "frontend/**"
-      - "**/*.stories.*"
-      - ".github/workflows/storybook.yml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
 
 jobs:
-  storybook:
-    name: storybook
+  build:
+    name: build-storybook
     runs-on: ubuntu-latest
-    # Phase 1 non bloquante: meme en cas d'echec, le job ne casse pas la CI
-    continue-on-error: true
-    env:
-      # Node memory headroom si build local est utilise
-      NODE_OPTIONS: --max-old-space-size=4096
+    defaults:
+      run:
+        working-directory: frontend
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Setup Node 20 LTS
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "npm"
-          cache-dependency-path: |
-            frontend/package-lock.json
-
-      - name: Install deps (frontend)
-        working-directory: frontend
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install deps
+        run: npm ci
+      - name: Build Storybook
         run: |
-          npm ci
-
-      # OPTION A (recommandee): Chromatic (build distant, stable)
-      - name: Publish to Chromatic
-        uses: chromaui/action@v1
+          NODE_OPTIONS=--max-old-space-size=4096 npx storybook build
+      - name: Upload static storybook
+        uses: actions/upload-artifact@v4
         with:
-          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
-          workingDir: frontend
-          exitZeroOnChanges: true
-          onlyChanged: true
-          autoAcceptChanges: true
-          zip: true
-        # Si secret absent (forks), eviter l'echec dur: step soft-fail
-        continue-on-error: true
+          name: storybook-static
+          path: frontend/storybook-static
 
-      # OPTION B (backup local) si Chromatic indisponible: build local pour detecter les erreurs de compilation
-      - name: Build Storybook locally (backup)
+  chromatic:
+    name: publish-chromatic
+    needs: build
+    runs-on: ubuntu-latest
+    if: ${{ secrets.CHROMATIC_PROJECT_TOKEN != '' && secrets.CHROMATIC_PROJECT_TOKEN != null }}
+    env:
+      CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+    defaults:
+      run:
         working-directory: frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install deps
+        run: npm ci
+      - name: Publish to Chromatic
         run: |
-          npx storybook build --ci
-        continue-on-error: true
+          npx chromatic --project-token "$CHROMATIC_PROJECT_TOKEN" --ci --only-changed --exit-zero-on-changes --auto-accept-changes

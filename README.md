@@ -61,22 +61,17 @@ python tools\mypy_backend.py
 - obs-smoke: tests ciblant observabilite (/metrics, probes)
   Relire `docs/ROADMAP.md` avant toute PR.
 
-## Storybook CI (Phase 1 — non bloquante)
+## Storybook et Chromatic
 
-* Workflow: `.github/workflows/storybook.yml`
-* Conditions: s active sur PR/push quand `frontend/**` ou `**/*.stories.*` changent.
-* Execution:
-  * Chromatic (si `CHROMATIC_PROJECT_TOKEN` present dans Secrets GitHub Actions)
-  * Fallback build local `storybook build --ci` (non bloquant)
-* Non bloquant: `continue-on-error: true` — n impacte pas la CI globale.
-* Secrets: ajouter `CHROMATIC_PROJECT_TOKEN` (Settings → Secrets and variables → Actions).
-
-### Commandes locales (Windows-first)
-
-```
-pwsh -NoLogo -NoProfile -File .\PS1\storybook_build.ps1
-$Env:CHROMATIC_PROJECT_TOKEN="..." ; pwsh -NoLogo -NoProfile -File .\PS1\storybook_chromatic.ps1
-```
+* Build local (Windows):
+  pwsh -NoLogo -NoProfile -File PS1/storybook_build.ps1
+* Build local (Linux/Mac):
+  bash tools/storybook_build.sh
+* Publication Chromatic (CI ou local):
+  Definir CHROMATIC_PROJECT_TOKEN, puis:
+  pwsh -NoLogo -NoProfile -File PS1/storybook_chromatic.ps1
+* CI publie automatiquement a Chromatic si le secret `CHROMATIC_PROJECT_TOKEN` est present.
+* Note: `storybook build` n accepte plus `--ci`. L option `--ci` reste valide pour `chromatic`.
 
 ### Politique README
 
