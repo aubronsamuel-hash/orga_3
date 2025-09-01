@@ -37,6 +37,12 @@ Local (Windows-first):
 pwsh -NoLogo -NoProfile -File .\PS1\mypy_backend.ps1
 ```
 
+Ce wrapper:
+
+* pousse en `backend/`
+* expose `backend/typing_stubs` via MYPYPATH
+* verifie `app` et `tests` avec `mypy.ini` a la racine.
+
 CI:
 
 * Etape mypy lance dans `working-directory: backend` avec:

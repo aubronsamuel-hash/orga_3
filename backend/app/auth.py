@@ -7,7 +7,7 @@ from typing import Any, Dict, Optional, cast
 
 import jwt
 from passlib.context import CryptContext  # type: ignore[import-untyped]
-from fastapi import Depends, HTTPException, status, Request, Response
+from fastapi import Depends, HTTPException, status, Response
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 
@@ -79,7 +79,6 @@ def get_db() -> Session:
     return SessionLocal()
 
 def get_current_account(
-    request: Request,
     creds: Optional[HTTPAuthorizationCredentials] = Depends(bearer_scheme),
     db: Session = Depends(get_db),
 ) -> Dict[str, Any]:
