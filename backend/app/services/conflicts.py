@@ -1,26 +1,16 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import List, TypedDict
+from typing import List
 
 from sqlalchemy import text
+from sqlalchemy.engine import RowMapping
 from sqlalchemy.orm import Session
 
 from app.schemas.conflicts import ConflictItem, ConflictList
 
 
-class _Row(TypedDict):
-    mission_id: str
-    starts_at: str
-    ends_at: str
-
-
 def _normalize_iso_utc(s: str) -> datetime:
-    """
-    Normalise des timestamps ISO fournis par SQLite sous forme TEXT.
-    Accepte: 'YYYY-MM-DDTHH:MM:SSZ' ou 'YYYY-MM-DDTHH:MM:SS+00:00' ou avec espace.
-    Retourne un datetime timezone-aware en UTC.
-    """
     s2 = s.strip().replace(" ", "T")
     if s2.endswith("Z"):
         s2 = s2[:-1] + "+00:00"
@@ -32,8 +22,7 @@ def _overlap(a_start: datetime, a_end: datetime, b_start: datetime, b_end: datet
 
 
 def list_user_conflicts(db: Session, user_id: str) -> ConflictList:
-    # BYPASS du processor DateTime du dialecte SQLite:
-    # on CAST les colonnes en TEXT puis on parse nous-memes (support du 'Z').
+    # Lire TEXT + parser nous-memes (support du 'Z')
     sql = text(
         """
         SELECT
@@ -46,7 +35,8 @@ def list_user_conflicts(db: Session, user_id: str) -> ConflictList:
         ORDER BY m.starts_at ASC
         """
     )
-    rows: List[_Row] = list(db.execute(sql, {"uid": user_id}).mappings())
+    # .mappings() -> MappingResult[RowMapping]; .all() -> list[RowMapping]
+    rows: List[RowMapping] = list(db.execute(sql, {"uid": user_id}).mappings().all())
 
     # Parse + detection des chevauchements O(n^2) (OK pour nos volumes de tests)
     parsed = [
