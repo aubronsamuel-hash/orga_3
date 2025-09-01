@@ -283,3 +283,9 @@ curl -Method Post -Uri http://localhost:8000/api/v1/availabilities/1:approve -He
 
 GET /api/v1/conflicts/user/{user_id} -> { user_id, items: [] }
 
+### Note SQLite et timestamps ISO avec `Z`
+
+Sous SQLite, nos colonnes `starts_at/ends_at` sont stockees en `TEXT`. Lorsque les tests inserent des valeurs comme `2025-09-02T09:00:00Z`,
+le dialecte SQLAlchemy peut echouer a parser `Z`. Le service `app.services.conflicts` contourne ce point en lisant ces colonnes en `TEXT`
+et en normalisant `Z` vers `+00:00` avant comparaison. Aucun changement d API.
+
