@@ -5,6 +5,11 @@ J17: mypy stabilise + conflits utilisateur
 * Endpoint `/api/v1/conflicts/user/{id}` (algo O(n^2) par utilisateur, fenetres courtes)
 * Suppression ignore inutile dans `app/auth.py`
 
+J17 (CI):
+
+* Normalisation lint-python: mypy via `tools/mypy_backend.py`.
+* Pas de curl dans lint; les checks HTTP ne s'executent qu'apres migrations (smoke/e2e).
+
 SCRIPTS PS:
 
 * .\PS1\mypy_backend.ps1
