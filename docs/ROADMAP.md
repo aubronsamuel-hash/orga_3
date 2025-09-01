@@ -22,12 +22,9 @@ Tests (PS + curl):
 * backend.venv\Scripts\python -m pytest -q -k "conflicts" -vv
 * curl -s -o NUL -w "%{http_code}" "http://localhost:8000/api/v1/conflicts/user/1"
 
-* Jalon UI/Storybook (non bloquant CI):
-
-  * Build Storybook sur PR
-  * Publication Chromatic conditionnelle au secret
-  * Documentation des scripts (Windows/Bash)
-  * Nettoyage workflows obsoletes
+* Jalon UI/Storybook:
+  * Phase 1: OK (non-bloquant), publication conditionnelle au secret
+  * Next: rendre publish gate optionnellement requis plus tard
 
 ## Objectifs
 - Livrer un MVP fiable (backend + frontend) puis durcir la securite a la fin.
