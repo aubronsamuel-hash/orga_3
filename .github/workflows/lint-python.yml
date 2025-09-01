@@ -23,8 +23,10 @@ jobs:
     - name: Ruff
       run: |
         python -m ruff check backend
-    - name: Mypy (cwd backend)
+    - name: Mypy (cwd backend, stub path)
       working-directory: backend
+      env:
+        MYPYPATH: typing_stubs
       run: |
         python -m mypy --version
         python -m mypy --config-file ../mypy.ini app tests

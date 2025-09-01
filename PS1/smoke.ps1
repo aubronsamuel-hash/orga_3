@@ -1,9 +1,15 @@
 Param()
 $ErrorActionPreference="Stop"
 Set-StrictMode -Version Latest
-Write-Host "[smoke] Ping BE/FE..."
-curl.exe -s http://localhost:8000/health || exit 4
-curl.exe -s http://localhost:5173 || exit 4
-Write-Host "[smoke] Conflits endpoint..."
-curl.exe -s "http://localhost:8000/api/v1/conflicts?from=2025-09-01T00:00:00Z&to=2025-09-30T00:00:00Z" | Out-Null
-Write-Host "OK" ; exit 0
+$base = $Env:API_BASE
+if (-not $base) { $base = "http://localhost:8000" }
+Write-Host "Ping $base/api/v1/conflicts/user/1"
+try {
+  $code = (Invoke-WebRequest -UseBasicParsing -Uri "$base/api/v1/conflicts/user/1").StatusCode
+  Write-Host "HTTP $code"
+  if ($code -ne 200) { exit 4 }
+} catch {
+  Write-Error $_
+  exit 4
+}
+

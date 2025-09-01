@@ -37,6 +37,12 @@ Local (Windows-first):
 pwsh -NoLogo -NoProfile -File .\PS1\mypy_backend.ps1
 ```
 
+Fallback cross-OS:
+
+```bash
+python tools/mypy_backend.py
+```
+
 Ce wrapper:
 
 * pousse en `backend/`
@@ -45,7 +51,7 @@ Ce wrapper:
 
 CI:
 
-* Etape mypy lance dans `working-directory: backend` avec:
+* Etape mypy lance dans `working-directory: backend` avec `MYPYPATH=typing_stubs`:
   `python -m mypy --config-file ../mypy.ini app tests`
 
 ### Jalon 15.5 — Workflow d’acceptation mission
@@ -100,9 +106,9 @@ pwsh -NoLogo -NoProfile -File PS1/repro_storybook_ci_cache.ps1
 * PS1/init_repo.ps1 : prepare venv Python et npm ci
 * PS1/dev_up.ps1 : lance le stack Docker compose de dev
 * PS1/dev_down.ps1 : arrete le stack compose (option -Prune pour volumes)
-* PS1/smoke.ps1 : verif /healthz, /metrics et endpoint invitation
+* PS1/smoke.ps1 : ping `/api/v1/conflicts/user/{id}`
 * PS1/test_all.ps1 : ruff, mypy, pytest, npm lint
-* PS1/mypy_backend.ps1 : lance mypy depuis `backend/`
+* PS1/mypy_backend.ps1 : lance mypy depuis `backend/` (fallback: `python tools/mypy_backend.py`)
 * PS1/test_backend.ps1 : tests unitaires backend
 * PS1/e2e_conflicts.ps1 : e2e Playwright (conflits)
 * PS1/fe_test.ps1 : npm lint, typecheck, unit

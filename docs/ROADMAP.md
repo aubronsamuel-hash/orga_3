@@ -1,18 +1,21 @@
-J17: mypy stabilise
+J17: mypy stabilise + conflits utilisateur
 
 * Stubs locaux pour Alembic (command/op/context)
-* Execution mypy en CWD backend (wrapper PS)
+* Execution mypy en CWD backend (wrapper PS + fallback Python)
+* Endpoint `/api/v1/conflicts/user/{id}` (algo O(n^2) par utilisateur, fenetres courtes)
 * Suppression ignore inutile dans `app/auth.py`
 
 SCRIPTS PS:
 
 * .\PS1\mypy_backend.ps1
+* .\PS1\smoke.ps1
 
 Tests (PS + curl):
 
 * backend.venv\Scripts\python -m ruff check backend
 * .\PS1\mypy_backend.ps1
-* .\PS1\test_backend.ps1
+* backend.venv\Scripts\python -m pytest -q -k "conflicts" -vv
+* curl -s -o NUL -w "%{http_code}" "http://localhost:8000/api/v1/conflicts/user/1"
 
 ## Objectifs
 - Livrer un MVP fiable (backend + frontend) puis durcir la securite a la fin.

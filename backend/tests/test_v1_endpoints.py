@@ -101,9 +101,11 @@ def test_flow_project_bulk_missions_invite_accept_and_conflicts() -> None:
     assert r.status_code == 200
 
     # Conflicts for user -> none expected
-    r = client.get(f"/api/v1/conflicts/user/{user_id}", headers={"Authorization": f"Bearer {token}"})
+    r = client.get(
+        f"/api/v1/conflicts/user/{user_id}", headers={"Authorization": f"Bearer {token}"}
+    )
     assert r.status_code == 200
-    assert r.json()["conflicts"] == []
+    assert r.json()["items"] == []
 
     # Duplicate mission 1 and try to ACCEPT overlapping -> should 400 on status change
     r = client.post(f"/api/v1/missions/{m1}:duplicate", headers={"Authorization": f"Bearer {token}"})
