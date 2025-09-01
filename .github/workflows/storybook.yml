@@ -40,7 +40,6 @@ jobs:
     name: publish-chromatic
     needs: build
     runs-on: ubuntu-latest
-    if: ${{ secrets.CHROMATIC_PROJECT_TOKEN != '' && secrets.CHROMATIC_PROJECT_TOKEN != null }}
     env:
       CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
     defaults:
@@ -57,6 +56,11 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - name: Install deps
         run: npm ci
+      - name: Skip (token absent)
+        if: ${{ env.CHROMATIC_PROJECT_TOKEN == '' || env.CHROMATIC_PROJECT_TOKEN == null }}
+        run: echo "CHROMATIC_PROJECT_TOKEN absent. Publication Chromatic ignoree."
       - name: Publish to Chromatic
+        if: ${{ env.CHROMATIC_PROJECT_TOKEN != '' && env.CHROMATIC_PROJECT_TOKEN != null }}
         run: |
           npx chromatic --project-token "$CHROMATIC_PROJECT_TOKEN" --ci --only-changed --exit-zero-on-changes --auto-accept-changes
+        continue-on-error: true

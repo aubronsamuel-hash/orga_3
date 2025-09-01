@@ -5,7 +5,7 @@ $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
 if ([string]::IsNullOrWhiteSpace($Env:CHROMATIC_PROJECT_TOKEN)) {
-    Write-Warning "CHROMATIC_PROJECT_TOKEN absent. Publication Chromatic sautee."
+    Write-Warning "CHROMATIC_PROJECT_TOKEN absent. Publication Chromatic ignoree."
     exit 0
 }
 
@@ -15,12 +15,12 @@ $frontend = Join-Path $root "frontend"
 Push-Location $frontend
 try {
     if ($DryRun) {
-        Write-Host "[i] DryRun Chromatic. Commande affichee:"
+        Write-Host "[i] DryRun Chromatic. Commande:"
         Write-Host "npx chromatic --project-token *** --ci --only-changed --exit-zero-on-changes --auto-accept-changes"
         exit 0
     }
-    npx chromatic --project-token $Env:CHROMATIC_PROJECT_TOKEN --ci --build-script-name build:storybook --only-changed --exit-zero-on-changes --auto-accept-changes
-    Write-Host "[OK] Publication Chromatic reussie."
+    npx chromatic --project-token $Env:CHROMATIC_PROJECT_TOKEN --ci --only-changed --exit-zero-on-changes --auto-accept-changes
+    Write-Host "[OK] Publication Chromatic OK."
     exit 0
 }
 catch {
