@@ -75,13 +75,15 @@ CI: la job "publish-chromatic" s execute uniquement si `CHROMATIC_PROJECT_TOKEN`
 ## Tests Storybook (a11y smoke)
 
 Windows:
-pwsh -NoLogo -NoProfile -File PS1/storybook_test.ps1 -Rebuild
+pwsh -NoLogo -NoProfile -File PS1/storybook_build.ps1
+pwsh -NoLogo -NoProfile -File PS1/storybook_test.ps1
 Linux/Mac:
-(cd frontend && npm ci && npx http-server storybook-static -p 6006 & sleep 3 && npx test-storybook --url http://127.0.0.1:6006)
+bash tools/storybook_build.sh
+(cd frontend && npx http-server storybook-static -p 6006 & sleep 3 && npx test-storybook --url http://127.0.0.1:6006)
 CI:
 
-* Job `storybook-tests` s execute apres le build et utilise l artefact `storybook-static`.
-* Phase 1: non-bloquant (`continue-on-error: true`). Promotion en gate bloquant apres stabilisation.
+* Job storybook-tests s execute apres le build et utilise l artefact storybook-static.
+* Phase 1: non-bloquant (continue-on-error: true). Promotion possible plus tard.
 
 ### Politique README
 
