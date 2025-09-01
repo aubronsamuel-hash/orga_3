@@ -9,17 +9,16 @@ pip install -e .
 
 Le packaging est limite au package `app` (Alembic exclu).
 
-### Mypy (depuis backend)
+### Typage (mypy)
 
-```
-python -m mypy --config-file ../mypy.ini app tests
-```
+* Local:
 
-Ou via le wrapper root:
+  ```
+  python -m mypy --config-file ../mypy.ini app tests
+  ```
 
-```
-pwsh -NoLogo -NoProfile -File ..\PS1\mypy_backend.ps1
-```
+  ou `pwsh -File ..\PS1\mypy_backend.ps1`
+* CI: utilise `python tools/mypy_backend.py` (depuis la racine).
 
 Les stubs Alembic sont sous `typing_stubs/alembic`.
 

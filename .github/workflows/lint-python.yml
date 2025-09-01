@@ -3,30 +3,29 @@ on:
   pull_request:
     paths:
     - "backend/**"
+    - "tools/mypy_backend.py"
+    - "mypy.ini"
     - ".github/workflows/lint-python.yml"
 jobs:
   lint:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
     steps:
     - uses: actions/checkout@v4
     - name: Setup Python
       uses: actions/setup-python@v5
       with:
         python-version: "3.12"
-    - name: Install tools
+    - name: Install linters
       run: |
         python -m pip install -U pip
-        python -m pip install mypy ruff
+        python -m pip install ruff mypy
     - name: Ruff
       run: |
         python -m ruff check backend
-    - name: Mypy (cwd backend, stub path)
-      working-directory: backend
-      env:
-        MYPYPATH: typing_stubs
+    - name: Mypy (runner cross-OS)
       run: |
-        python -m mypy --version
-        python -m mypy --config-file ../mypy.ini app tests
+        python tools/mypy_backend.py
+
+# NOTE: Ne PAS faire de curl runtime ici (base non migree dans lint).
+
+# Les checks HTTP restent dans le job smoke compose ou e2e.

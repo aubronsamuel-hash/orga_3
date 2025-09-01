@@ -21,38 +21,18 @@ pwsh -NoLogo -NoProfile -File PS1/smoke.ps1
 Ports: BE 8000 ; FE 5173 ; DB 5432 ; Redis 6379 ; Adminer 8080 ; Prom 9090 ; Grafana 3000 ; Mailpit 8025.
 Voir `deploy/README.md` pour details (compose, observabilite). Roadmap: relire `docs/roadmap.md`.
 
-## Lints et Typage
+## CI Python (lint + typing)
 
-Ruff:
+* **Ruff**: `python -m ruff check backend`
+* **Mypy**: CI appelle `python tools/mypy_backend.py` (cross-OS). Local Windows-first: `pwsh -File .\PS1\mypy_backend.ps1`.
+* **Pas de curl runtime dans lint** (DB non migree). Les checks HTTP sont executes dans le job `docker-smoke`/`e2e` APRES migrations.
 
-```powershell
-pwsh -NoLogo -NoProfile -Command "backend\.venv\Scripts\python -m ruff check backend"
-```
-
-## Typage (mypy)
-
-Local (Windows-first):
+### Repro locale (lint + typing)
 
 ```powershell
-pwsh -NoLogo -NoProfile -File .\PS1\mypy_backend.ps1
+backend\.venv\Scripts\python -m ruff check backend
+python tools\mypy_backend.py
 ```
-
-Fallback cross-OS:
-
-```bash
-python tools/mypy_backend.py
-```
-
-Ce wrapper:
-
-* pousse en `backend/`
-* expose `backend/typing_stubs` via MYPYPATH
-* verifie `app` et `tests` avec `mypy.ini` a la racine.
-
-CI:
-
-* Etape mypy lance dans `working-directory: backend` avec `MYPYPATH=typing_stubs`:
-  `python -m mypy --config-file ../mypy.ini app tests`
 
 ### Jalon 15.5 — Workflow d’acceptation mission
 - API: /v1/invitations (create/revoke/verify), /v1/assignments/{id}/accept|decline (token ou session)
@@ -80,26 +60,6 @@ CI:
 - frontend-storybook: build Storybook (storybook-static/) + smoke HTTP; pas de size-limit ici car il cible dist/assets/*.js produit par le build Vite
 - obs-smoke: tests ciblant observabilite (/metrics, probes)
   Relire `docs/ROADMAP.md` avant toute PR.
-
-## CI Typage (mypy)
-
-La CI execute mypy depuis `backend/`:
-
-```bash
-python -m mypy --config-file ../mypy.ini app tests
-```
-
-Local:
-
-```powershell
-pwsh -NoLogo -NoProfile -File .\PS1\mypy_backend.ps1
-```
-
-### Repro locale (Windows)
-
-```powershell
-pwsh -NoLogo -NoProfile -File PS1/repro_storybook_ci_cache.ps1
-```
 
 ## Scripts clefs
 
@@ -199,7 +159,7 @@ TESTS (PS + curl):
 * Windows:
 
   * backend.venv\Scripts\python -m ruff check backend
-  * backend.venv\Scripts\python -m mypy --config-file mypy.ini
+  * python tools\mypy_backend.py
   * $Env:PYTHONPATH="backend"; backend.venv\Scripts\python -m pytest -q
   * pwsh -NoLogo -NoProfile -File PS1/fe_test.ps1
   * pwsh -NoLogo -NoProfile -File PS1/fe_e2e.ps1
