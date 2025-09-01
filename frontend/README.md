@@ -37,6 +37,12 @@ Note: executer ces commandes dans `frontend/`.
 * npm run build:storybook : compile le site statique
 * npm run chromatic : publie sur Chromatic (requis: CHROMATIC_PROJECT_TOKEN)
 
+### Storybook tests
+
+* `npm run test:storybook` : lance les tests end-to-end des stories (Playwright).
+* `npm run test:storybook:static` : teste contre `storybook-static` servi en local.
+* Desactiver un test pour une story lourde: ajouter `parameters: { test: { disable: true } }` dans la story.
+
 ### Secrets
 
 * CHROMATIC_PROJECT_TOKEN : a definir dans GitHub Secrets pour activer la publication CI.

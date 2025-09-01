@@ -23,7 +23,8 @@
     "prepare": "husky install",
     "build:storybook": "node -e \"process.env.NODE_OPTIONS='--max-old-space-size=4096'\" && storybook build",
     "chromatic": "chromatic --only-changed --exit-zero-on-changes --auto-accept-changes",
-    "test:storybook": "storybook test --ci",
+    "test:storybook": "test-storybook",
+    "test:storybook:static": "start-server-and-test \"http-server storybook-static -p 6006\" http://127.0.0.1:6006 \"test-storybook --url http://127.0.0.1:6006\"",
     "size": "size-limit",
     "lint:a11y": "echo \"a11y via test-runner\""
   },
@@ -83,7 +84,10 @@
     "tailwindcss": "3.4.10",
     "typescript": "5.6.2",
     "vite": "5.4.8",
-    "vitest": "2.0.5"
+    "vitest": "2.0.5",
+    "http-server": "^14.1.1",
+    "start-server-and-test": "^2.0.3",
+    "playwright": "^1.47.2"
   },
   "size-limit": [
     {
