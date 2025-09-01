@@ -29,10 +29,24 @@ Base React + Vite with a small design system.
 
 Note: executer ces commandes dans `frontend/`.
 
+## Storybook (dev/CI)
+
+* Local:
+
+  * `npm run storybook` (si script present) ou `npx storybook dev -p 6006`
+  * Build CI-like: `npx storybook build --ci`
+* CI:
+
+  * Chromatic via `chromaui/action@v1` (non bloquant, Phase 1)
+  * Node 20 LTS; fallback build local
+* Secrets:
+
+  * `CHROMATIC_PROJECT_TOKEN` requis pour publication Chromatic (PR internes). PR de forks: step “skipped” (workflow non bloquant).
+
 ### Budgets (size-limit)
 
 Le budget de bundle (size-limit) cible `dist/assets/*.js` (build Vite). Il est execute dans le job **frontend (lint+unit+e2e-smoke)**.
-Le job **frontend-storybook** ne produit que `storybook-static/` et n execute pas `size-limit`. Il fait un build et un smoke HTTP (port 6006).
+Le job **storybook** publie via Chromatic (non bloquant, Phase 1) et n'exécute pas `size-limit`.
 
 ## Repro Storybook (Windows)
 

@@ -57,9 +57,30 @@ python tools\mypy_backend.py
 
 - backend: ruff, mypy, pytest
 - frontend (lint+unit+e2e-smoke): build Vite + size-limit (bundle budget) + tests
-- frontend-storybook: build Storybook (storybook-static/) + smoke HTTP; pas de size-limit ici car il cible dist/assets/*.js produit par le build Vite
+- storybook: Chromatic (non bloquant) + fallback build local
 - obs-smoke: tests ciblant observabilite (/metrics, probes)
   Relire `docs/ROADMAP.md` avant toute PR.
+
+## Storybook CI (Phase 1 — non bloquante)
+
+* Workflow: `.github/workflows/storybook.yml`
+* Conditions: s active sur PR/push quand `frontend/**` ou `**/*.stories.*` changent.
+* Execution:
+  * Chromatic (si `CHROMATIC_PROJECT_TOKEN` present dans Secrets GitHub Actions)
+  * Fallback build local `storybook build --ci` (non bloquant)
+* Non bloquant: `continue-on-error: true` — n impacte pas la CI globale.
+* Secrets: ajouter `CHROMATIC_PROJECT_TOKEN` (Settings → Secrets and variables → Actions).
+
+### Commandes locales (Windows-first)
+
+```
+pwsh -NoLogo -NoProfile -File .\PS1\storybook_build.ps1
+$Env:CHROMATIC_PROJECT_TOKEN="..." ; pwsh -NoLogo -NoProfile -File .\PS1\storybook_chromatic.ps1
+```
+
+### Politique README
+
+Pas de secrets commités; .env.example ci-dessus. Si vous rendez ce job **requis** plus tard (Phase 2), alignez le nom du job (“storybook”) dans la règle de protection de branche.
 
 ## Scripts clefs
 
