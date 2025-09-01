@@ -1,4 +1,18 @@
-J17: mypy stabilise par cwd=backend; suppression des `# type: ignore` inutiles dans `auth.py` et `api_v1_projects.py`.
+J17: mypy stabilise
+
+* Stubs locaux pour Alembic (command/op/context)
+* Execution mypy en CWD backend (wrapper PS)
+* Suppression ignore inutile dans `app/auth.py`
+
+SCRIPTS PS:
+
+* .\PS1\mypy_backend.ps1
+
+Tests (PS + curl):
+
+* backend.venv\Scripts\python -m ruff check backend
+* .\PS1\mypy_backend.ps1
+* .\PS1\test_backend.ps1
 
 ## Objectifs
 - Livrer un MVP fiable (backend + frontend) puis durcir la securite a la fin.

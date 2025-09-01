@@ -21,6 +21,8 @@ Ou via le wrapper root:
 pwsh -NoLogo -NoProfile -File ..\PS1\mypy_backend.ps1
 ```
 
+Les stubs Alembic sont sous `typing_stubs/alembic`.
+
 ## Jalon 1 - Backend skeleton + healthz
 
 * GET /healthz -> 200 JSON {"status":"ok"}
