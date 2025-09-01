@@ -9,15 +9,13 @@ pip install -e .
 
 Le packaging est limite au package `app` (Alembic exclu).
 
-### Mypy
-
-Executez depuis backend:
+### Mypy (depuis backend)
 
 ```
 python -m mypy --config-file ../mypy.ini app tests
 ```
 
-ou
+Ou via le wrapper root:
 
 ```
 pwsh -NoLogo -NoProfile -File ..\PS1\mypy_backend.ps1
