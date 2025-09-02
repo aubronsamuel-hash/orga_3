@@ -24,6 +24,11 @@ Le packaging est limite au package `app` (Alembic exclu).
   * Ports: 8000 expose
 * Sante: `/health` et `/healthz` -> 200
 
+## Docker SAFE_MODE
+
+* L image par defaut sert les endpoints de sante avec `SAFE_MODE=1`.
+* Forcer le mode complet (dev): `-e SAFE_MODE=0` (necessitera deps projet complètes dans une image future).
+
 Tests (PS + curl):
 
 * Typage: `python tools/mypy_backend.py`

@@ -9,12 +9,15 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-# Installer deps via pyproject du backend
-COPY backend/pyproject.toml backend/ ./
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -e backend
+# Deps minimales pour SAFE_MODE (/healthz)
 
-# Copier le code
+# Pins stables pour reproductibilite CI
+
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir fastapi==0.115.0 uvicorn==0.30.6
+
+# Code backend (routes lourdes protegees par SAFE_MODE)
+
 COPY backend/ backend/
 
 EXPOSE 8000

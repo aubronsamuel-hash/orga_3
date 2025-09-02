@@ -34,12 +34,15 @@ pwsh -NoLogo -NoProfile -File PS1/smoke.ps1
 * CMD: `uvicorn backend.app.main:app --host 0.0.0.0 --port 8000`
 * `PYTHONPATH=/app/backend` pour resoudre `backend.app.*`
 
-## Docker (backend rapide)
+## Docker (SAFE_MODE)
+
+* Image de smoke: deps minimales (FastAPI+Uvicorn), `SAFE_MODE=1` par defaut -> seules `/health` et `/healthz`.
+* Lancer:
 
 ```
 docker build -t cc-backend .
-docker run --rm -p 8000:8000 cc-backend
-curl -s http://localhost:8000/healthz
+docker run --rm -e SAFE_MODE=1 -p 8000:8000 cc-backend
+curl -sSf http://localhost:8000/healthz
 ```
 
 Ports: BE 8000 ; FE 5173 ; DB 5432 ; Redis 6379 ; Adminer 8080 ; Prom 9090 ; Grafana 3000 ; Mailpit 8025.
