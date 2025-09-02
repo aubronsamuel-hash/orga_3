@@ -85,6 +85,19 @@ CI:
 * Job storybook-tests s execute apres le build et utilise l artefact storybook-static.
 * Phase 1: non-bloquant (continue-on-error: true). Promotion possible plus tard.
 
+## CI Frontend - Storybook tests
+
+Le job `storybook / storybook-tests` s appuie sur:
+
+* `frontend/jest.config.cjs` (SWC cible `es2022`)
+* `frontend/.storybook/test-runner.js` (hooks `preVisit`/`postVisit`)
+
+Reproduction locale:
+
+```
+pwsh -NoLogo -NoProfile -File PS1/storybook_tests.ps1
+```
+
 ### Politique README
 
 Pas de secrets commités; .env.example ci-dessus. Si vous rendez ce job **requis** plus tard (Phase 2), alignez le nom du job (“storybook”) dans la règle de protection de branche.
