@@ -301,14 +301,7 @@ Conventions calcul: UTC, arrondis 2 decimales, jours feries optionnels (J19.2)
 CI Gates: pytest OK, e2e smoke OK, docs-guard OK
 Acceptance: totaux mensuels par user operationnels et exportables.
 
-## Jalon 19.1 - Perfectionnements comptabilite
-J19.1 (ETAPE 20) livre:
-
-* ICS reel via service injectable (DB a brancher etape suivante)
-* Cache TTL in-memory sur reports
-
-Prochaines etapes:
-* J21: Jours feries/surcotes, Redis cache optionnel, requete ORM pour ICS et reports (perf), et tests d integration.
+* Note: **J19.1 (livre)** - ICS reel (export) + cache TTL in-memory pour `/reports/monthly-users` afin de stabiliser la charge avant J20.
 
 ## Jalon 20 - Perf baseline
 But: k6 smoke + baseline RPS/latence, budgets FE (size-limit), Lighthouse CI (optionnel).

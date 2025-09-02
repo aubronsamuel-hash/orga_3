@@ -45,6 +45,16 @@ curl -s http://localhost:8000/healthz
 Ports: BE 8000 ; FE 5173 ; DB 5432 ; Redis 6379 ; Adminer 8080 ; Prom 9090 ; Grafana 3000 ; Mailpit 8025.
 Voir `deploy/README.md` pour details (compose, observabilite). Roadmap: relire `docs/roadmap.md`.
 
+## Perf baseline (J20)
+
+* **k6 smoke**: `pwsh -NoLogo -NoProfile -File PS1/k6_smoke.ps1`
+  * Vars: `K6_BASE_URL` (defaut `http://localhost:8000`), `K6_VUS`, `K6_DURATION`
+* **Budget FE**: `npm --prefix frontend run build && npm --prefix frontend run size-limit`
+* CI:
+  * `perf-k6` (non bloquant)
+  * `fe-bundle-budget` (bloquant si depasse budget)
+* Endpoints relies: `/healthz` (baseline rapide). Voir backend/README.md.
+
 ## CI Python (lint + typing)
 
 * **Ruff**: `python -m ruff check backend`

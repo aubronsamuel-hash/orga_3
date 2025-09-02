@@ -26,7 +26,7 @@
     "test:storybook": "test-storybook",
     "test:storybook:static": "start-server-and-test \"http-server storybook-static -p 6006\" http://127.0.0.1:6006 \"test-storybook --url http://127.0.0.1:6006\"",
     "test-storybook-ci": "npm run build-storybook -- --quiet && npx http-server storybook-static -p 6006 & npx storybook@latest test --url http://127.0.0.1:6006 --ci",
-    "size": "size-limit",
+    "size-limit": "npx size-limit",
     "lint:a11y": "echo \"a11y via test-runner\""
   },
   "lint-staged": {
@@ -54,7 +54,7 @@
   },
   "devDependencies": {
     "@playwright/test": "1.47.2",
-    "@size-limit/file": "^11.1.4",
+    "@size-limit/preset-app": "^11.1.4",
     "@storybook/addon-a11y": "^8.2.0",
     "@storybook/addon-essentials": "8.2.9",
     "@storybook/react": "8.2.9",
@@ -92,17 +92,5 @@
     "typescript": "5.6.2",
     "vite": "5.4.8",
     "vitest": "2.0.5"
-  },
-  "size-limit": [
-    {
-      "name": "main",
-      "path": "dist/assets/index-*.js",
-      "limit": "220 KB"
-    },
-    {
-      "name": "calendar-chunk",
-      "path": "dist/assets/CalendarPage-*.js",
-      "limit": "360 KB"
-    }
-  ]
+  }
 }

@@ -32,6 +32,11 @@ Tests (PS + curl):
   * `pwsh -NoLogo -NoProfile -File PS1/docker_smoke.ps1`
   * ou: `docker build -t cc-backend . && docker run --rm -p 8000:8000 cc-backend` puis `curl -sf http://localhost:8000/healthz`
 
+## Perf / healthz
+
+* k6 smoke cible `/healthz` (SAFE_MODE=1 possible en Docker).
+* Lancer local: voir `PS1/k6_smoke.ps1`.
+
 ### Typage (mypy)
 
 * Local:
