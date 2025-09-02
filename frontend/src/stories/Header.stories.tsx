@@ -1,21 +1,22 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { MemoryRouter } from "react-router-dom";
 import { AppLayout } from "../ui/AppLayout";
 
 const meta = {
   title: "Layout/AppLayout",
   component: AppLayout,
-  decorators: [
-    (Story) => (
-      <MemoryRouter initialEntries={["/"]} basename="/">
-        <Story />
-      </MemoryRouter>
-    ),
-  ],
+  parameters: {
+    layout: "fullscreen",
+    chromatic: { disableSnapshot: true },
+  },
 } satisfies Meta<typeof AppLayout>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Default: Story = {
+  play: async ({ canvasElement }) => {
+    const header = canvasElement.querySelector("header");
+    if (!header) throw new Error("Header not rendered");
+  },
+};

@@ -1,29 +1,36 @@
-// @ts-check
-// Runner Storybook v8 — utilise preVisit/postVisit (remplace preRender/postRender)
-const { getStoryContext } = require("@storybook/test-runner");
-const { injectAxe, checkA11y } = require("axe-playwright");
+import { checkA11y, injectAxe } from "axe-playwright";
 
-/** @type {import('@storybook/test-runner').TestRunnerConfig} */
-module.exports = {
-  async preVisit(page, context) {
-    // Attendre que l iframe soit pret avant axe
-    await page.waitForLoadState("domcontentloaded");
-    await injectAxe(page);
-  },
+export const postVisit = async (page) => {
+  // Guard to avoid running axe twice
+  const already = await page.evaluate(() => {
+    if (window.__axe_running__) return true;
+    window.__axe_running__ = true;
+    return false;
+  });
+  if (already) return;
 
-  async postVisit(page, context) {
-    // Accessibility de base: on ignore les stories marquées a11y: { disable: true }
-    const storyContext = await getStoryContext(page, context);
-    if (storyContext && storyContext.parameters?.a11y?.disable) return;
-    await checkA11y(page, "#storybook-root", {
-      detailedReport: false,
-      detailedReportOptions: { html: false },
-    });
-  },
+  // Wait for the story to be fully rendered
+  await page.waitForSelector("#storybook-root", {
+    state: "attached",
+    timeout: 5000,
+  });
+  await page.waitForLoadState("domcontentloaded");
 
-  // Stabilite CI (utile en runners ephemeres)
-  concurrency: 2,
-  // Timeout raisonnable mais strict
-  // (la CI affichait ~4-5s totaux; on laisse marge)
-  storyTimeout: 20000,
+  // Inject axe once
+  await injectAxe(page);
+
+  // Limit scope to story root
+  await checkA11y(page, "#storybook-root", {
+    detailedReport: true,
+    detailedReportOptions: { html: true },
+  });
+
+  // Release guard
+  await page.evaluate(() => {
+    window.__axe_running__ = false;
+  });
 };
+
+// No a11y in preVisit
+export const preVisit = async (_page) => {};
+
