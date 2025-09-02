@@ -18,8 +18,8 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.db import Base
-from app.enums import AssignmentStatus, ProjectStatus
+from backend.app.db import Base
+from backend.app.enums import AssignmentStatus, ProjectStatus
 
 
 def _uuid() -> str:

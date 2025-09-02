@@ -3,9 +3,9 @@ from __future__ import annotations
 from fastapi import APIRouter, Depends, Path
 from sqlalchemy.orm import Session
 
-from app.db import get_db
-from app.schemas.conflicts import ConflictList
-from app.services import conflicts as conflicts_service
+from backend.app.db import get_db
+from backend.app.schemas.conflicts import ConflictList
+from backend.app.services import conflicts as conflicts_service
 
 
 router = APIRouter(prefix="/api/v1/conflicts", tags=["conflicts"])

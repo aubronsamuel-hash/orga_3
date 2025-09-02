@@ -58,8 +58,8 @@ def _seed() -> None:
 
 def _client() -> TestClient:
     os.environ["DATABASE_URL"] = TEST_DB_URL
-    from app.main import create_app
-    from app import db
+    from backend.app.main import create_app
+    from backend.app import db
 
     app = create_app()
     db.Base.metadata.create_all(bind=db.engine)

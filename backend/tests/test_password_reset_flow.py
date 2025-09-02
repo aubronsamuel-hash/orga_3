@@ -35,8 +35,8 @@ def test_password_reset_dev_flow() -> None:
     _upgrade(TEST_DB_URL)
 
     # Import tardif pour E402 + bonne DB
-    from app.main import create_app
-    from app.auth import verify_password
+    from backend.app.main import create_app
+    from backend.app.auth import verify_password
 
     app = create_app()
     client = TestClient(app)

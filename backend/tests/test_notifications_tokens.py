@@ -1,4 +1,4 @@
-from app.services.notifications.tokens import (
+from backend.app.services.notifications.tokens import (
     build_links,
     sign_token,
     verify_token,

@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from fastapi.testclient import TestClient
 
-from app.main import app
-from app.api.v1 import reports as reports_api
+from backend.app.main import app
+from backend.app.api.v1 import reports as reports_api
 
 client = TestClient(app)
 

@@ -39,8 +39,8 @@ def test_login_refresh_me_logout_flow() -> None:
     _upgrade(TEST_DB_URL)
 
     # Import tardif pour respecter E402 et prendre la bonne DB
-    from app.main import create_app
-    from app.auth import hash_password
+    from backend.app.main import create_app
+    from backend.app.auth import hash_password
 
     app = create_app()
     client = TestClient(app)

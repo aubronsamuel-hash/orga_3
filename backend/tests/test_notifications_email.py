@@ -1,6 +1,6 @@
 import types
 
-from app.services.notifications import email as email_svc
+from backend.app.services.notifications import email as email_svc
 
 
 class DummySMTP:

@@ -9,7 +9,7 @@ import os
 
 os.environ.setdefault("DATABASE_URL", "sqlite://")
 
-from app.services.tokens import sign_invite_token, verify_invite_token
+from backend.app.services.tokens import sign_invite_token, verify_invite_token
 
 
 def test_sign_and_verify():
@@ -21,7 +21,7 @@ def test_sign_and_verify():
 
 
 def test_expired_token(monkeypatch):
-    monkeypatch.setattr("app.services.tokens.settings.INVITES_TTL_SECONDS", 1)
+    monkeypatch.setattr("backend.app.services.tokens.settings.INVITES_TTL_SECONDS", 1)
     token, _ = sign_invite_token("a2")
     time.sleep(2)
     with pytest.raises(jwt.ExpiredSignatureError):

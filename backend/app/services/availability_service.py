@@ -6,7 +6,7 @@ from typing import Optional
 from sqlalchemy import and_, or_, select
 from sqlalchemy.orm import Session
 
-from app.models.availability import Availability, AvailabilityStatus
+from backend.app.models.availability import Availability, AvailabilityStatus
 
 
 class BadRequest(Exception):

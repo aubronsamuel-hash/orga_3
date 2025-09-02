@@ -7,7 +7,7 @@ from sqlalchemy import text
 from sqlalchemy.engine import RowMapping
 from sqlalchemy.orm import Session
 
-from app.schemas.conflicts import ConflictItem, ConflictList
+from backend.app.schemas.conflicts import ConflictItem, ConflictList
 
 
 def _normalize_iso_utc(s: str) -> datetime:

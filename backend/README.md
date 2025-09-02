@@ -24,7 +24,8 @@ Les stubs Alembic sont sous `typing_stubs/alembic`.
 
 ## Notes CI / Typage
 
-* mypy utilise `backend/mypy.ini` et force `mypy_path=backend`. Le runner appelle `tools/mypy_backend.py` qui insere `backend/` dans `sys.path` et `MYPYPATH`. Cela garantit que les imports `from backend.app...` resolvent correctement sous Windows/Linux. (cf. Roadmap: CI verte a chaque jalon).
+* Mypy est lance via `tools/mypy_backend.py` avec `--explicit-package-bases` et cible le package `backend`. La racine repo est sur `sys.path` (pas `backend/`), evitant le doublon `app.*` vs `backend.app.*`.
+* Les libs externes (FastAPI, SQLAlchemy, Pydantic, etc.) sont ignorees pour le typage (sections `[mypy-*.]`), afin de ne pas exiger leurs stubs.
 
 ## Exports (CSV/PDF/ICS)
 - CSV et ICS fonctionnent sans deps additionnelles.

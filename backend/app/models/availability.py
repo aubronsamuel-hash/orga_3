@@ -7,8 +7,8 @@ from typing import Optional
 from sqlalchemy import JSON, DateTime, Enum, ForeignKey, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.db import Base
-from app.models import TSMixin, _uuid
+from backend.app.db import Base
+from backend.app.models import TSMixin, _uuid
 
 
 class EmploymentType(str, enum.Enum):

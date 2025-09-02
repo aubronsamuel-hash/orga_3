@@ -36,7 +36,7 @@ def _upgrade(url: str) -> None:
 
 
 def _client() -> TestClient:
-    from app.main import create_app
+    from backend.app.main import create_app
 
     app = create_app()
     return TestClient(app)
@@ -63,7 +63,7 @@ def test_projects_cache_hit_miss_and_invalidation() -> None:
                 "INSERT INTO org_memberships (id, org_id, account_id, role, created_at, updated_at) VALUES ('m1','o1','a1','manager',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)"
             )
         )
-    from app.auth import create_access_token
+    from backend.app.auth import create_access_token
 
     token = create_access_token("a1", "o1")
     client = _client()
@@ -109,7 +109,7 @@ def test_missions_cache_hit_miss() -> None:
                 "INSERT INTO org_memberships (id, org_id, account_id, role, created_at, updated_at) VALUES ('m2','o2','a2','manager',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)"
             )
         )
-    from app.auth import create_access_token
+    from backend.app.auth import create_access_token
 
     token = create_access_token("a2", "o2")
     client = _client()

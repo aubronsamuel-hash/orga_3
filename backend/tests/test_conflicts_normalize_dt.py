@@ -1,4 +1,4 @@
-from app.services.conflicts import _normalize_iso_utc
+from backend.app.services.conflicts import _normalize_iso_utc
 
 
 def test_normalize_iso_z_to_offset() -> None:
