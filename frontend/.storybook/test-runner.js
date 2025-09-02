@@ -1,18 +1,29 @@
-// Config Storybook test-runner (Playwright + Jest)
-// Hooks non deprecies (preVisit/postVisit). Compatible Storybook 8.
+// @ts-check
+// Runner Storybook v8 — utilise preVisit/postVisit (remplace preRender/postRender)
 const { getStoryContext } = require("@storybook/test-runner");
+const { injectAxe, checkA11y } = require("axe-playwright");
 
+/** @type {import('@storybook/test-runner').TestRunnerConfig} */
 module.exports = {
-async preVisit(page, context) {
-await page.setViewportSize({ width: 1280, height: 800 });
-},
-async postVisit(page, context) {
-// Placeholder: pas d assertion par defaut pour eviter le bruit.
-},
-// Utilitaire optionnel (dispo si besoin)
-async getContext(page, context) {
-const storyContext = await getStoryContext(page, context);
-return storyContext;
-}
-};
+  async preVisit(page, context) {
+    // Attendre que l iframe soit pret avant axe
+    await page.waitForLoadState("domcontentloaded");
+    await injectAxe(page);
+  },
 
+  async postVisit(page, context) {
+    // Accessibility de base: on ignore les stories marquées a11y: { disable: true }
+    const storyContext = await getStoryContext(page, context);
+    if (storyContext && storyContext.parameters?.a11y?.disable) return;
+    await checkA11y(page, "#storybook-root", {
+      detailedReport: false,
+      detailedReportOptions: { html: false },
+    });
+  },
+
+  // Stabilite CI (utile en runners ephemeres)
+  concurrency: 2,
+  // Timeout raisonnable mais strict
+  // (la CI affichait ~4-5s totaux; on laisse marge)
+  storyTimeout: 20000,
+};

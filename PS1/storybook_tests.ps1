@@ -1,25 +1,32 @@
-# Repro locale du job "storybook / storybook-tests"
-
+#requires -Version 7.2
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
-$repoRoot   = Split-Path -Parent $PSScriptRoot
-$frontendDir = Join-Path $repoRoot "frontend"
+Write-Host "[Storybook] Build + Test (Windows)" -ForegroundColor Cyan
 
-Write-Host "[INFO] Frontend: $frontendDir"
-Push-Location $frontendDir
+$root = Split-Path -Parent $PSCommandPath | Split-Path -Parent
+$frontend = Join-Path $root "frontend"
+
+Push-Location $frontend
 try {
-Write-Host "[INFO] npm ci"
-npm ci
+  if (-Not (Test-Path "node_modules")) {
+    Write-Host "npm ci..." -ForegroundColor Yellow
+    npm ci
+  }
 
-Write-Host "[INFO] Lancer les tests Storybook en mode CI (build + http-server + runner)"
-npm run test-storybook-ci
+  Write-Host "build-storybook..." -ForegroundColor Yellow
+  npm run build-storybook -- --quiet
+
+  Write-Host "serve static @6006..." -ForegroundColor Yellow
+
+  # http-server en tache de fond
+  Start-Process -FilePath "npx" -ArgumentList "http-server", "storybook-static", "-p", "6006" -NoNewWindow
+  Start-Sleep -Seconds 3
+
+  Write-Host "test-storybook (runner)..." -ForegroundColor Yellow
+  npx test-storybook --url http://127.0.0.1:6006 --maxWorkers=2
+  if ($LASTEXITCODE -ne 0) { exit 1 }
 }
 finally {
-
-# http-server est termine par le runner a la fin; si besoin, tuer les reliquats
-
-Get-Process -Name "http-server" -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
-Pop-Location
+  Pop-Location
 }
-
