@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import csv
 from io import BytesIO, StringIO
-from typing import List
+from typing import Any, List, Tuple
 
 
 
@@ -22,16 +22,23 @@ def to_csv_monthly_users(items: List[dict]) -> bytes:
     return buf.getvalue().encode("utf-8")
 
 
+def _import_reportlab() -> Tuple[Any, Any]:
+    """Import runtime de reportlab (A4 et canvas)."""
+    try:
+        from reportlab.lib.pagesizes import A4  # runtime only
+        from reportlab.pdfgen import canvas  # runtime only
+        return A4, canvas
+    except Exception as exc:  # pragma: no cover - dependance manquante
+        raise RuntimeError(
+            "Export PDF indisponible: module 'reportlab' non installe."
+        ) from exc
+
+
 def to_pdf_monthly_users(
     items: List[dict],
     title: str = "Totaux mensuels par utilisateur",
 ) -> bytes:
-    # Import paresseux pour eviter l'erreur si reportlab n'est pas installe.
-    try:
-        from reportlab.lib.pagesizes import A4  # type: ignore[import-not-found]
-        from reportlab.pdfgen import canvas  # type: ignore[import-not-found]
-    except Exception as e:  # pragma: no cover - dependance manquante
-        raise RuntimeError("PDF_EXPORT_UNAVAILABLE") from e
+    A4, canvas = _import_reportlab()
 
     buf = BytesIO()
     c = canvas.Canvas(buf, pagesize=A4)
