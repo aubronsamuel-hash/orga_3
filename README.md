@@ -98,6 +98,12 @@ Reproduction locale:
 pwsh -NoLogo -NoProfile -File PS1/storybook_tests.ps1
 ```
 
+### Router
+
+* Decorateur global: `frontend/.storybook/preview.tsx` (MemoryRouter basename="/").
+* Garde-fou local dans `frontend/src/stories/Header.stories.tsx`.
+* Helper anti-null: `frontend/src/lib/routerSafe.ts` evite la destruction d’un contexte null en docs/canvas.
+
 ### Politique README
 
 Pas de secrets commités; .env.example ci-dessus. Si vous rendez ce job **requis** plus tard (Phase 2), alignez le nom du job (“storybook”) dans la règle de protection de branche.

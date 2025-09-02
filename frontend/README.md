@@ -66,6 +66,12 @@ pwsh -NoLogo -NoProfile -File ..\PS1\repro_storybook_ci_cache.ps1
 pwsh -NoLogo -NoProfile -File ..\PS1\storybook_tests.ps1
 ```
 
+### Contexte Router requis
+
+Certaines stories (Layout/Header/AppLayout) consomment le contexte Router (`basename`, `useLocation`, etc.).
+Un decorateur global `MemoryRouter` est defini dans `.storybook/preview.tsx` avec `basename="/"`.
+La story `Layout/AppLayout` a en plus un decorateur local (garde-fou) et utilise `useSafeBasename("/")` pour eviter les crashs hors Router.
+
 ### Compatibilite SWC
 
 * @storybook/test-runner cible `es2023` en interne.

@@ -1,25 +1,23 @@
-# Repro locale du job "storybook / storybook-tests"
-
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
-$repoRoot   = Split-Path -Parent $PSScriptRoot
-$frontendDir = Join-Path $repoRoot "frontend"
-
-Write-Host "[INFO] Frontend: $frontendDir"
-Push-Location $frontendDir
+Push-Location (Join-Path $PSScriptRoot "..\frontend")
 try {
-Write-Host "[INFO] npm ci"
-npm ci
+  if (-not (Test-Path "node_modules")) {
+    npm ci
+  }
 
-Write-Host "[INFO] Lancer les tests Storybook en mode CI (build + http-server + runner)"
-npm run test-storybook-ci
+  npm run build-storybook -- --quiet
+
+  # lancer un http-server simple
+  npx http-server storybook-static -p 6006 | Out-Null &
+  Start-Sleep -Seconds 3
+
+  # runner
+  npx test-storybook --url http://127.0.0.1:6006 --maxWorkers=2
+  if ($LASTEXITCODE -ne 0) { exit 1 }
+} finally {
+  Pop-Location
 }
-finally {
-
-# http-server est termine par le runner a la fin; si besoin, tuer les reliquats
-
-Get-Process -Name "http-server" -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
-Pop-Location
-}
+exit 0
 
