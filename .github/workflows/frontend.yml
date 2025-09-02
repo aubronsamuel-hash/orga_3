@@ -2,16 +2,10 @@ name: frontend (lint+unit+e2e-smoke)
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened]
     paths:
       - "frontend/**"
       - ".github/workflows/frontend.yml"
-  push:
-    branches:
-      - main
-    paths:
-      - "frontend/**"
-      - ".github/workflows/frontend.yml"
-  workflow_dispatch: {}
 
 concurrency:
   group: frontend-${{ github.ref }}

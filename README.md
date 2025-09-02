@@ -270,11 +270,11 @@ Rien de specifique pour les E2E Storybook (pas de secrets).
 * Frontend dev: 5173
 * Storybook E2E (serve): 6006
 
-## CI - Frontend: declencheurs et bruit
+## CI - Frontend
 
-* Le workflow **frontend (lint+unit+e2e-smoke)** ne se lance que si des fichiers sous `frontend/**` (ou le fichier du workflow) changent.
-* Objectif: eviter les runs vides et les emails "No jobs were run".
-* `concurrency` est active pour annuler les runs precedents sur la meme ref.
+* Le workflow **frontend (lint+unit+e2e-smoke)** ne se lance que sur **pull_request** quand des fichiers sous `frontend/**` (ou le fichier du workflow) changent.
+* Objectif: supprimer les runs vides et les emails "No jobs were run".
+* `concurrency` annule les runs precedents sur la meme ref.
 
 ## Tests/Lint
 
