@@ -9,6 +9,11 @@ pip install -e .
 
 Le packaging est limite au package `app` (Alembic exclu).
 
+## Sante
+
+* /health et /healthz (alias pour la CI)
+* Uvicorn ecoute 0.0.0.0:8000 (Docker: EXPOSE 8000)
+
 ### Typage (mypy)
 
 * Local:

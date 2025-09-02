@@ -100,7 +100,8 @@ def create_app() -> FastAPI:
     metrics_enabled = os.getenv("METRICS_ENABLED", "true").lower() == "true"
     setup_metrics(app, enabled=metrics_enabled)
 
-    @app.get("/healthz")
+    @app.get("/healthz", tags=["meta"])
+    @app.get("/health", tags=["meta"])
     def healthz() -> Dict[str, str]:
         return {"status": "ok"}
 
@@ -137,3 +138,13 @@ def create_app() -> FastAPI:
 
 
 app = create_app()
+
+if __name__ == "__main__":  # pragma: no cover - manual execution
+    import uvicorn
+
+    uvicorn.run(
+        "backend.app.main:app",
+        host="0.0.0.0",
+        port=int(os.environ.get("PORT", "8000")),
+        reload=False,
+    )

@@ -18,6 +18,17 @@ pwsh -NoLogo -NoProfile -File PS1/dev_up.ps1
 pwsh -NoLogo -NoProfile -File PS1/smoke.ps1
 ```
 
+## Endpoints de sante
+
+* GET /health et GET /healthz -> 200 {"status":"ok"}
+* CI docker-smoke ping /healthz sur http://localhost:8000
+
+## Docker (backend)
+
+* Port: 8000 expose
+* CMD: `uvicorn backend.app.main:app --host 0.0.0.0 --port 8000`
+* `PYTHONPATH=/app/backend` pour resoudre `backend.app.*`
+
 Ports: BE 8000 ; FE 5173 ; DB 5432 ; Redis 6379 ; Adminer 8080 ; Prom 9090 ; Grafana 3000 ; Mailpit 8025.
 Voir `deploy/README.md` pour details (compose, observabilite). Roadmap: relire `docs/roadmap.md`.
 
