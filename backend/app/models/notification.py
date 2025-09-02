@@ -2,8 +2,11 @@ from __future__ import annotations
 
 import enum
 import uuid
-from sqlalchemy import Column, String, DateTime, Enum, JSON, func
+from datetime import datetime
+
+from sqlalchemy import DateTime, Enum, JSON, func
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db import Base
 
@@ -29,15 +32,21 @@ class NotificationStatus(str, enum.Enum):
 class Notification(Base):
     __tablename__ = "notifications"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user_id = Column(UUID(as_uuid=True), nullable=False, index=True)
-    channel = Column(Enum(Channel), nullable=False)
-    ntype = Column(Enum(NotificationType), nullable=False)
-    payload = Column(JSON, nullable=False)
-    status = Column(
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), nullable=False, index=True
+    )
+    channel: Mapped[Channel] = mapped_column(Enum(Channel), nullable=False)
+    ntype: Mapped[NotificationType] = mapped_column(Enum(NotificationType), nullable=False)
+    payload: Mapped[dict] = mapped_column(JSON, nullable=False)
+    status: Mapped[NotificationStatus] = mapped_column(
         Enum(NotificationStatus), nullable=False, default=NotificationStatus.queued
     )
-    created_at = Column(
+    created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
-    read_at = Column(DateTime(timezone=True), nullable=True)
+    read_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
