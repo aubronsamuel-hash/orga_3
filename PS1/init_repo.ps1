@@ -1,45 +1,69 @@
-Param()
-$ErrorActionPreference="Stop"
+#requires -Version 7.0
 Set-StrictMode -Version Latest
+$ErrorActionPreference = "Stop"
 
-Write-Host "[init_repo] Preparation du repo..." -ForegroundColor Cyan
+param(
+[switch]$Frontend,
+[switch]$Build,
+[switch]$Dev,
+[switch]$NoWait
+)
 
-# Ensurer encodage UTF8
-[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+# EXIT CODES
 
-function Require-Cmd($name) {
-if (-not (Get-Command $name -ErrorAction SilentlyContinue)) {
-Write-Error "Outil requis manquant: $name" ; exit 2
+# 0 OK; 1 USAGE_INVALIDE; 2 PREREQUIS_MANQUANTS; 10 ERREUR_INTERNE
+
+function Write-Info($msg){ Write-Host "[INFO] $msg" }
+function Write-Err($msg){ Write-Host "[ERREUR] $msg"; }
+
+# Import wrappers
+
+$WrappersPath = Join-Path $PSScriptRoot "tools\npm_wrappers.ps1"
+if (-not (Test-Path $WrappersPath)) {
+    Write-Err "Fichier manquant: $WrappersPath. (EXIT 10)"
+    exit 10
 }
-}
-Require-Cmd "python"
-Require-Cmd "npm"
+. $WrappersPath
 
-# Python venv
-
-$venv = Join-Path -Path "backend" -ChildPath ".venv"
-if (-not (Test-Path $venv)) {
-Write-Host "[init_repo] Creation venv..." -ForegroundColor Cyan
-python -m venv $venv
-}
-& (Join-Path $venv "Scripts\pip.exe") install -U pip
-
-# Installe runtime
-
-& (Join-Path $venv "Scripts\pip.exe") install -r (Join-Path "backend" "requirements.txt")
-
-# Installe dev si le fichier existe
-
-$reqDev = Join-Path "backend" "requirements-dev.txt"
-if (Test-Path $reqDev) {
-& (Join-Path $venv "Scripts\pip.exe") install -r $reqDev
+if (-not ($Frontend)) {
+    Write-Err "Usage invalide: specify -Frontend (et -Build ou -Dev). (EXIT 1)"
+    exit 1
 }
 
-# Frontend install
+$frontendDir = Join-Path $PSScriptRoot "..\frontend"
+if (-not (Test-Path $frontendDir)) {
+    Write-Err "Repertoire frontend introuvable: $frontendDir (EXIT 10)"
+    exit 10
+}
 
-Push-Location "frontend"
-npm ci
-Pop-Location
+Push-Location $frontendDir
+try {
+    Write-Info "Installation des dependances NPM (npm.cmd ci)..."
+    Invoke-Npm ci
 
-Write-Host "[init_repo] OK" -ForegroundColor Green
+    if ($Build) {
+        Write-Info "Build frontend (npm.cmd run build)..."
+        Invoke-Npm run build
+        Write-Info "Build termine."
+    }
+
+    if ($Dev) {
+        Write-Info "Lancement du serveur de dev (npm.cmd run dev)..."
+        if ($NoWait) {
+            Start-Process -FilePath (Resolve-CmdTool -Name "npm") -ArgumentList "run","dev"
+            Write-Info "Serveur dev lance en arriere-plan."
+        } else {
+            Invoke-Npm run dev
+        }
+    }
+
+}
+catch {
+    Write-Err "Erreur pendant l initialisation frontend: $($_.Exception.Message) (EXIT 10)"
+    exit 10
+}
+finally {
+    Pop-Location
+}
+
 exit 0
