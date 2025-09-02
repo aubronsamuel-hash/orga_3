@@ -1,0 +1,22 @@
+name: zap-baseline
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * 1"
+jobs:
+  zap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run ZAP baseline
+        run: |
+          mkdir -p artifacts
+          docker run --rm -v "$PWD/artifacts:/zap/wrk" ghcr.io/zaproxy/zaproxy:stable zap-baseline.py\
+          -t "https://${{ vars.STAGING_DOMAIN }}"\
+          -x zap_report.xml -w zap_report.md -r zap_report.html || true
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-baseline
+          path: artifacts/*
