@@ -4,7 +4,6 @@ import {
   exportCSV,
   type MonthlyUserItem,
 } from "../../api/reports";
-import CSVButton from "../../components/CSVButton";
 
 export default function MonthlyUsers() {
   const [orgId, setOrgId] = React.useState<string>("");
@@ -92,7 +91,14 @@ export default function MonthlyUsers() {
           >
             Charger
           </button>
-          <CSVButton onClick={onExport} disabled={!items.length} />
+          <button
+            onClick={onExport}
+            aria-label="Export CSV"
+            className="px-3 py-2 rounded-2xl shadow border text-sm"
+            disabled={!items.length}
+          >
+            Export CSV
+          </button>
         </div>
       </div>
       {error && <div className="text-red-600 text-sm">{error}</div>}

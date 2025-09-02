@@ -1,12 +1,11 @@
 from __future__ import annotations
 
 import csv
-from datetime import datetime
 from io import BytesIO, StringIO
 from typing import List
 
-from reportlab.lib.pagesizes import A4
-from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4  # type: ignore[import-not-found, import-untyped, unused-ignore]
+from reportlab.pdfgen import canvas  # type: ignore[import-not-found, import-untyped, unused-ignore]
 
 
 def to_csv_monthly_users(items: List[dict]) -> bytes:
