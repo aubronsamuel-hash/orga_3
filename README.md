@@ -70,12 +70,13 @@ Tests:
 
 * BE: /api/v1/reports/monthly-users, /api/v1/exports/{csv,pdf,ics}
 * FE: /accounting/monthly-users
-* Scripts: PS1/reports_smoke.ps1
+* Scripts: PS1/reports_smoke.ps1, PS1/ics_smoke.ps1
 * CLI: python -m backend.cli.cc reports --org-id <...> --date-from 2025-08-01 --date-to 2025-08-31
 
 Quickstart Windows
 
 * pwsh -NoLogo -NoProfile -File PS1/reports_smoke.ps1
+* pwsh -NoLogo -NoProfile -File PS1/ics_smoke.ps1
 
 Ports
 

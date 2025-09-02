@@ -295,13 +295,13 @@ CI Gates: pytest OK, e2e smoke OK, docs-guard OK
 Acceptance: totaux mensuels par user operationnels et exportables.
 
 ## Jalon 19.1 - Perfectionnements comptabilite
-- ICS reel: missions ACCEPTED -> evenements (UID stable, SUMMARY, DESCRIPTION avec project/user, timezone: UTC en stockage, affichage local FE).
-- Jours feries optionnels: table FR (ou lib externe) -> flag include_holidays.
-- Arrondis: regles configurables (0.25h, 0.5h).
-- Perf: cache 5 min (cle filtres) sur /reports; pagination exports si > N lignes.
-- rate_profile avances: primes, surcotes nuit/jour ferie, devise unique EUR (conversion future).
-- e2e FE: tri/filtre, export CSV verifie (contenu minimal).
-- Observabilite: compteur metrics nb_exports, latence.
+J19.1 (ETAPE 20) livre:
+
+* ICS reel via service injectable (DB a brancher etape suivante)
+* Cache TTL in-memory sur reports
+
+Prochaines etapes:
+* J21: Jours feries/surcotes, Redis cache optionnel, requete ORM pour ICS et reports (perf), et tests d integration.
 
 ## Jalon 20 - Perf baseline
 But: k6 smoke + baseline RPS/latence, budgets FE (size-limit), Lighthouse CI (optionnel).

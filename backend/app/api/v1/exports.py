@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 
 from ...services.reports import compute_monthly_totals
 from ...services.exports import to_csv_monthly_users, to_pdf_monthly_users, to_ics
+from ...services.ics import get_project_events
 from ...db import get_db
 
 router = APIRouter(prefix="/api/v1/exports", tags=["exports"])
@@ -90,10 +91,22 @@ def export_ics(
     date_to: str = Query(...),
     db: Session = Depends(get_db),
 ):
-    # Placeholder: real implementation should query assignments
-    events: list[dict] = []
+    try:
+        df = datetime.fromisoformat(date_from).replace(tzinfo=timezone.utc)
+        dt = datetime.fromisoformat(date_to).replace(tzinfo=timezone.utc)
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Dates invalides."
+        )
+    if df > dt:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Plage de dates invalide."
+        )
+    events = get_project_events(
+        db, project_id=project_id, date_from=df, date_to=dt
+    )
     ics = to_ics(events)
-    filename = f"project-{project_id}*{date_from}*{date_to}.ics"
+    filename = f"project-{project_id}*{df.date()}*{dt.date()}.ics"
     return Response(
         content=ics,
         media_type="text/calendar; charset=utf-8",
