@@ -34,7 +34,7 @@ Note: executer ces commandes dans `frontend/`.
 ### Scripts
 
 * npm run storybook : lance Storybook dev
-* npm run build:storybook : compile le site statique
+* npm run build-storybook : compile le site statique
 * npm run chromatic : publie sur Chromatic (requis: CHROMATIC_PROJECT_TOKEN)
 
 ### Storybook tests
@@ -66,11 +66,11 @@ pwsh -NoLogo -NoProfile -File ..\PS1\repro_storybook_ci_cache.ps1
 pwsh -NoLogo -NoProfile -File ..\PS1\storybook_tests.ps1
 ```
 
-### Notes
+### Compatibilite SWC
 
-* Le test-runner utilise Jest + Playwright et respecte `frontend/jest.config.cjs`.
-* Cible SWC: `es2022` pour compatibilite CI.
-* Hooks deprecies remplaces par `preVisit`/`postVisit` dans `.storybook/test-runner.js`.
+* @storybook/test-runner cible `es2023` en interne.
+* Le projet epingle `@swc/core` en `1.7.26` et `@swc/jest` en `0.2.36` pour assurer la compatibilite.
+* Aucune configuration Jest custom n'est requise pour le runner.
 
 ## Acceptance workflow
 

@@ -89,8 +89,8 @@ CI:
 
 Le job `storybook / storybook-tests` s appuie sur:
 
-* `frontend/jest.config.cjs` (SWC cible `es2022`)
 * `frontend/.storybook/test-runner.js` (hooks `preVisit`/`postVisit`)
+* `@swc/core 1.7.26` et `@swc/jest 0.2.36` pour supporter `es2023`.
 
 Reproduction locale:
 
