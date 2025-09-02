@@ -9,9 +9,11 @@ pip install -e .
 
 Le packaging est limite au package `app` (Alembic exclu).
 
-## Sante
+## Sante et SAFE_MODE
 
-* /health et /healthz (alias pour la CI)
+* `/health` et `/healthz` -> 200.
+* `SAFE_MODE=1` (par defaut dans l'image) : seules les routes de sante sont actives.
+* `SAFE_MODE=0` : routes API chargees (`/api/v1/...`).
 * Uvicorn ecoute 0.0.0.0:8000 (Docker: EXPOSE 8000)
 
 ## Lancement via Docker

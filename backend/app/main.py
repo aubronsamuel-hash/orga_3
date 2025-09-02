@@ -13,23 +13,12 @@ from .settings import settings
 from .logging_setup import configure_logging
 from .observability import setup_metrics
 from .db import set_database_url
-from .api import router as api_router
-from .api_auth import router as auth_router
-from .api_rbac_demo import router as rbac_demo_router
-from .api_v1_assignments import router as assignments_router
-from .api_v1_availability import router as availability_router
-from .api.v1 import conflicts as conflicts_api
-from .api_v1_invitations import router as invitations_router
-from .api_v1_missions import router as missions_router
-from .api_v1_orgs import router as orgs_router
-from .api_v1_projects import router as projects_router
-from .api_v1_rates import router as rates_router
-from .api_v1_users import router as users_router
-from .api.v1 import availabilities as avail_api
-from .api.v1 import users_profile as users_profile_api
-from .api.v1 import reports as reports_api
-from .api.v1 import exports as exports_api
-from .routers import notifications_router
+
+
+logger = logging.getLogger("app.main")
+
+
+SAFE_MODE = os.environ.get("SAFE_MODE", "0") == "1"
 
 
 # Middleware request_id + logs JSON
@@ -115,24 +104,57 @@ def create_app() -> FastAPI:
         code = 200 if status.get("ok") else 503
         return JSONResponse({"status": status}, status_code=code)
 
-    app.include_router(api_router)
-    app.include_router(auth_router)
-    app.include_router(rbac_demo_router)
-    app.include_router(projects_router)
-    app.include_router(missions_router)
-    app.include_router(assignments_router)
-    # Invitations (create, verify, accept)
-    app.include_router(invitations_router)
-    app.include_router(users_router)
-    app.include_router(avail_api.router, prefix="/api/v1/availabilities", tags=["availabilities"])
-    app.include_router(users_profile_api.router, prefix="/api/v1/users", tags=["users"])
-    app.include_router(availability_router)
-    app.include_router(conflicts_api.router)
-    app.include_router(reports_api.router)
-    app.include_router(exports_api.router)
-    app.include_router(rates_router)
-    app.include_router(orgs_router)
-    app.include_router(notifications_router)
+    if not SAFE_MODE:
+        try:
+            from .api import router as api_router
+            from .api_auth import router as auth_router
+            from .api_rbac_demo import router as rbac_demo_router
+            from .api_v1_assignments import router as assignments_router
+            from .api_v1_availability import router as availability_router
+            from .api.v1 import conflicts as conflicts_api
+            from .api_v1_invitations import router as invitations_router
+            from .api_v1_missions import router as missions_router
+            from .api_v1_orgs import router as orgs_router
+            from .api_v1_projects import router as projects_router
+            from .api_v1_rates import router as rates_router
+            from .api_v1_users import router as users_router
+            from .api.v1 import availabilities as avail_api
+            from .api.v1 import users_profile as users_profile_api
+            from .api.v1 import reports as reports_api
+            from .api.v1 import exports as exports_api
+            from .routers import notifications_router
+
+            app.include_router(api_router)
+            app.include_router(auth_router)
+            app.include_router(rbac_demo_router)
+            app.include_router(projects_router)
+            app.include_router(missions_router)
+            app.include_router(assignments_router)
+            # Invitations (create, verify, accept)
+            app.include_router(invitations_router)
+            app.include_router(users_router)
+            app.include_router(
+                avail_api.router,
+                prefix="/api/v1/availabilities",
+                tags=["availabilities"],
+            )
+            app.include_router(
+                users_profile_api.router, prefix="/api/v1/users", tags=["users"]
+            )
+            app.include_router(availability_router)
+            app.include_router(conflicts_api.router)
+            app.include_router(reports_api.router)
+            app.include_router(exports_api.router)
+            app.include_router(rates_router)
+            app.include_router(orgs_router)
+            app.include_router(notifications_router)
+            logger.info("Routes API chargees (mode complet).")
+        except Exception as exc:  # pragma: no cover - defensive
+            logger.warning(
+                "Chargement des routes en echec (mode degrade). Raison: %s", exc
+            )
+    else:
+        logger.info("Mode SAFE actif : routes API non chargees.")
 
     return app
 
