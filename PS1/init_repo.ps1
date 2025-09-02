@@ -1,69 +1,78 @@
 #requires -Version 7.0
+[CmdletBinding()]
+param(
+    [switch]$SkipBackend,
+    [switch]$SkipFrontend
+)
+
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-param(
-[switch]$Frontend,
-[switch]$Build,
-[switch]$Dev,
-[switch]$NoWait
-)
+function Info($msg) { Write-Host $msg }
 
-# EXIT CODES
+# Force npm/npx .cmd (evite npm.ps1 sous PowerShell)
+Set-Alias npm npm.cmd -Scope Global -Force
+Set-Alias npx npx.cmd -Scope Global -Force
 
-# 0 OK; 1 USAGE_INVALIDE; 2 PREREQUIS_MANQUANTS; 10 ERREUR_INTERNE
+# --- Backend setup ---
+if (-not $SkipBackend) {
+    $be = Join-Path (Get-Location) "backend"
+    if (-not (Test-Path $be)) { throw "Missing folder: $be" }
+    Push-Location $be
+    try {
+        Info "[backend] creating venv"
+        python -m venv .venv
+        .\.venv\Scripts\Activate.ps1
 
-function Write-Info($msg){ Write-Host "[INFO] $msg" }
-function Write-Err($msg){ Write-Host "[ERREUR] $msg"; }
+        Info "[backend] upgrading pip"
+        python -m pip install -U pip
 
-# Import wrappers
-
-$WrappersPath = Join-Path $PSScriptRoot "tools\npm_wrappers.ps1"
-if (-not (Test-Path $WrappersPath)) {
-    Write-Err "Fichier manquant: $WrappersPath. (EXIT 10)"
-    exit 10
-}
-. $WrappersPath
-
-if (-not ($Frontend)) {
-    Write-Err "Usage invalide: specify -Frontend (et -Build ou -Dev). (EXIT 1)"
-    exit 1
-}
-
-$frontendDir = Join-Path $PSScriptRoot "..\frontend"
-if (-not (Test-Path $frontendDir)) {
-    Write-Err "Repertoire frontend introuvable: $frontendDir (EXIT 10)"
-    exit 10
-}
-
-Push-Location $frontendDir
-try {
-    Write-Info "Installation des dependances NPM (npm.cmd ci)..."
-    Invoke-Npm ci
-
-    if ($Build) {
-        Write-Info "Build frontend (npm.cmd run build)..."
-        Invoke-Npm run build
-        Write-Info "Build termine."
-    }
-
-    if ($Dev) {
-        Write-Info "Lancement du serveur de dev (npm.cmd run dev)..."
-        if ($NoWait) {
-            Start-Process -FilePath (Resolve-CmdTool -Name "npm") -ArgumentList "run","dev"
-            Write-Info "Serveur dev lance en arriere-plan."
-        } else {
-            Invoke-Npm run dev
+        if (Test-Path "./requirements.txt") {
+            Info "[backend] pip install -r requirements.txt"
+            pip install -r requirements.txt
         }
+        if (Test-Path "./requirements-dev.txt") {
+            Info "[backend] pip install -r requirements-dev.txt"
+            pip install -r requirements-dev.txt
+        }
+
+        if (Test-Path "./.env.example" -and -not (Test-Path "./.env")) {
+            Info "[backend] copying .env.example -> .env"
+            Copy-Item "./.env.example" "./.env"
+        }
+
+        if (Test-Path "./alembic.ini") {
+            Info "[backend] alembic upgrade head"
+            alembic upgrade head
+        } else {
+            Info "[backend] no alembic.ini, skipping migrations"
+        }
+    } finally {
+        Pop-Location
     }
-
-}
-catch {
-    Write-Err "Erreur pendant l initialisation frontend: $($_.Exception.Message) (EXIT 10)"
-    exit 10
-}
-finally {
-    Pop-Location
+} else {
+    Info "[backend] skipped"
 }
 
-exit 0
+# --- Frontend setup ---
+if (-not $SkipFrontend) {
+    $fe = Join-Path (Get-Location) "frontend"
+    if (-not (Test-Path $fe)) { throw "Missing folder: $fe" }
+    Push-Location $fe
+    try {
+        Info "[frontend] npm ci"
+        npm ci
+        Info "[frontend] npm run build"
+        npm run build
+    } finally {
+        Pop-Location
+    }
+} else {
+    Info "[frontend] skipped"
+}
+
+Info "OK init_repo done."
+Info "Next:"
+Info " - Backend dev:   cd backend; ..venv\Scripts\Activate.ps1; uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+Info " - Frontend dev:  cd frontend; npm run dev"
+Info " - Or staging via Docker: docker compose -f deploy/staging/compose.yaml up --build -d"

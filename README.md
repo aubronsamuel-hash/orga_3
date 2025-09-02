@@ -4,21 +4,14 @@ Badges: (CI), (coverage) a ajouter des jalons suivants.
 
 ## Quickstart Windows (PowerShell)
 
-1. Prerequis: Node.js (inclut npm), Python, Git.
-2. IMPORTANT PowerShell: pour eviter un bug de shim npm.ps1 sous Set-StrictMode, nos scripts appellent **npm.cmd / npx.cmd** directement.
-3. Init frontend:
+1. Ouvrir PowerShell 7 (`pwsh`).
+2. Executer:
 
 ```powershell
-PS> .\PS1\init_repo.ps1 -Frontend -Build
+pwsh -NoLogo -NoProfile -File .\PS1\init_repo.ps1
 ```
 
-Dev:
-
-```powershell
-PS> .\PS1\init_repo.ps1 -Frontend -Dev -NoWait
-```
-
-En cas d'erreur "Prerequis manquants: 'npm.cmd' introuvable", installez Node.js et verifiez le PATH.
+Le script force **npm.cmd / npx.cmd** pour eviter le shim `npm.ps1`.
 
 ## Quickstart Windows (compose dev)
 
@@ -31,13 +24,16 @@ pwsh -NoLogo -NoProfile -File PS1/smoke.ps1
 
 ## Scripts clefs
 
-* PS1\init_repo.ps1 : init/build/dev frontend (utilise npm.cmd)
+* PS1\init_repo.ps1 : init backend/frontend (npm.cmd force)
 * PS1\tools\npm_wrappers.ps1 : wrappers Invoke-Npm / Invoke-Npx (bypass npm.ps1)
 
-## FAQ PowerShell shim npm
+## FAQ PowerShell 7 / npm.cmd
+
+Q: PowerShell 7 obligatoire ?
+R: Oui. Les scripts declarent `#requires -Version 7.0`. Utiliser `pwsh`.
 
 Q: "La propriete 'Statement' est introuvable ... npm.ps1:30"
-R: C'est un bug du shim npm.ps1 avec Set-StrictMode. Solution: appeler **npm.cmd** (ce que font nos scripts).
+R: Bug du shim npm.ps1 avec Set-StrictMode. Solution: appeler **npm.cmd** (ce que fait init_repo.ps1).
 
 ## Endpoints de sante
 
