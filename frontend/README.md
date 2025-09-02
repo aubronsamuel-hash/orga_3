@@ -60,6 +60,12 @@ pwsh -NoLogo -NoProfile -File ..\PS1\repro_storybook_ci_cache.ps1
 
 ## Tests UI avec Storybook
 
+### Contexte Router requis
+
+Certaines stories (Layout/Header/AppLayout) consomment le contexte Router (`basename`, `useLocation`, etc.).
+Un decorateur global `MemoryRouter` est defini dans `.storybook/preview.tsx` avec `basename="/"`.
+Les stories sensibles (ex: `Layout/AppLayout`, `Layout/Header`) gardent un decorateur local de secours.
+
 ### Build et tests Storybook en local (Windows)
 
 ```

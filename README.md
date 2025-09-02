@@ -89,8 +89,9 @@ CI:
 
 Le job `storybook / storybook-tests` s appuie sur:
 
-* `frontend/.storybook/test-runner.js` (hooks `preVisit`/`postVisit`)
-* `@swc/core 1.7.26` et `@swc/jest 0.2.36` pour supporter `es2023`.
+* `frontend/.storybook/test-runner.js` (hooks `preVisit`/`postVisit`, axe).
+* Decorateur global Router: `frontend/.storybook/preview.tsx` (`MemoryRouter basename="/"`).
+* Garde-fou local dans `frontend/src/stories/Header.stories.tsx` pour les stories consommatrices du Router.
 
 Reproduction locale:
 
