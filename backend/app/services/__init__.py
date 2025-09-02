@@ -1,2 +1,4 @@
-from typing import List
-__all__: List[str] = []
+"""Service package"""
+
+# assure package
+__all__ = ["notifications"]
