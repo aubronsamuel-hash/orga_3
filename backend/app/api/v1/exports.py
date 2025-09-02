@@ -36,7 +36,7 @@ def export_csv(
         db, org_id=org_id, project_id=project_id, date_from=df, date_to=dt
     )
     data = to_csv_monthly_users(items)
-    filename = f"monthly-users_{org_id}_{df.date()}_{dt.date()}.csv"
+    filename = f"monthly-users_{org_id}*{df.date()}*{dt.date()}.csv"
     return Response(
         content=data,
         media_type="text/csv; charset=utf-8",
@@ -66,8 +66,16 @@ def export_pdf(
     items = compute_monthly_totals(
         db, org_id=org_id, project_id=project_id, date_from=df, date_to=dt
     )
-    pdf = to_pdf_monthly_users(items)
-    filename = f"monthly-users_{org_id}_{df.date()}_{dt.date()}.pdf"
+    try:
+        pdf = to_pdf_monthly_users(items)
+    except RuntimeError as e:
+        if str(e) == "PDF_EXPORT_UNAVAILABLE":
+            raise HTTPException(
+                status_code=status.HTTP_501_NOT_IMPLEMENTED,
+                detail="Export PDF indisponible (dependance manquante).",
+            )
+        raise
+    filename = f"monthly-users_{org_id}*{df.date()}*{dt.date()}.pdf"
     return Response(
         content=pdf,
         media_type="application/pdf",
@@ -85,7 +93,7 @@ def export_ics(
     # Placeholder: real implementation should query assignments
     events: list[dict] = []
     ics = to_ics(events)
-    filename = f"project-{project_id}_{date_from}_{date_to}.ics"
+    filename = f"project-{project_id}*{date_from}*{date_to}.ics"
     return Response(
         content=ics,
         media_type="text/calendar; charset=utf-8",
