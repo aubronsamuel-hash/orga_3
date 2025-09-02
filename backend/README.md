@@ -14,6 +14,22 @@ Le packaging est limite au package `app` (Alembic exclu).
 * /health et /healthz (alias pour la CI)
 * Uvicorn ecoute 0.0.0.0:8000 (Docker: EXPOSE 8000)
 
+## Lancement via Docker
+
+* Image par defaut utilise le `Dockerfile` racine:
+
+  * CMD: `uvicorn backend.app.main:app --host 0.0.0.0 --port 8000`
+  * Ports: 8000 expose
+* Sante: `/health` et `/healthz` -> 200
+
+Tests (PS + curl):
+
+* Typage: `python tools/mypy_backend.py`
+* Docker smoke:
+
+  * `pwsh -NoLogo -NoProfile -File PS1/docker_smoke.ps1`
+  * ou: `docker build -t cc-backend . && docker run --rm -p 8000:8000 cc-backend` puis `curl -sf http://localhost:8000/healthz`
+
 ### Typage (mypy)
 
 * Local:
