@@ -5,6 +5,8 @@ from datetime import datetime, timezone
 from typing import Dict, Iterable, List, Optional, Tuple
 
 from sqlalchemy.orm import Session
+from ..core.cache import get_reports_cache
+import os
 
 
 @dataclass(frozen=True)
@@ -68,3 +70,27 @@ def compute_monthly_totals(
     items = list(agg.values())
     items.sort(key=lambda x: (x["user_name"], x["month"]))
     return items
+
+
+def compute_monthly_totals_cached(
+    db: Session,
+    *,
+    org_id: str,
+    project_id: Optional[str],
+    date_from: datetime,
+    date_to: datetime,
+) -> List[Dict]:
+    ttl = int(os.environ.get("REPORTS_CACHE_TTL_SECONDS", "300"))
+    cache = get_reports_cache(ttl)
+    key = (org_id, project_id or "", date_from.isoformat(), date_to.isoformat())
+
+    def _factory() -> List[Dict]:
+        return compute_monthly_totals(
+            db,
+            org_id=org_id,
+            project_id=project_id,
+            date_from=date_from,
+            date_to=date_to,
+        )
+
+    return cache.get_or_set(key, _factory)

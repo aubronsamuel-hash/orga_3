@@ -29,6 +29,17 @@ Les stubs Alembic sont sous `typing_stubs/alembic`.
   - La CI mypy ignore `reportlab.*` (voir `backend/mypy.ini`) afin d eviter les erreurs de stubs.
   - Le code importe `reportlab` en **lazy** au moment de generer le PDF.
 
+## ICS (Exports)
+
+* GET /api/v1/exports/ics?project_id&date_from&date_to
+* Retourne un calendrier ICS (missions ACCEPTED du project sur la plage).
+* Implementation: service `services/ics.get_project_events()` avec loader injectable; par defaut renvoie vide (a remplacer dans une etape DB).
+
+## Cache des reports
+
+* Endpoint /api/v1/reports/monthly-users utilise un cache TTL in-memory (process) parametre par `REPORTS_CACHE_TTL_SECONDS` (defaut 300s).
+* Aucune dependance Redis pour cette etape.
+
 ### Tests conflits: migrations requises
 Les tests d’integration du service conflits (`test_conflicts_service_ok.py` / `test_conflicts_service_ko.py`) supposent une base SQLite migree.
 Utilisez les fixtures/tests qui appellent Alembic upgrade (ex: `_upgrade(TEST_DB_URL)` dans `tests/utils.py`).

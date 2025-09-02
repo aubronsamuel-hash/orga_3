@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from ...schemas.reports import MonthlyUserItem, MonthlyUsersResponse
-from ...services.reports import compute_monthly_totals
+from ...services.reports import compute_monthly_totals_cached
 from ...db import get_db
 
 router = APIRouter(prefix="/api/v1/reports", tags=["reports"])
@@ -34,7 +34,7 @@ def monthly_users(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Plage de dates invalide: date_from > date_to.",
         )
-    items = compute_monthly_totals(
+    items = compute_monthly_totals_cached(
         db, org_id=org_id, project_id=project_id, date_from=df, date_to=dt
     )
     return MonthlyUsersResponse(
