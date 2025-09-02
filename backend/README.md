@@ -22,6 +22,10 @@ Le packaging est limite au package `app` (Alembic exclu).
 
 Les stubs Alembic sont sous `typing_stubs/alembic`.
 
+## Notes CI / Typage
+
+* mypy utilise `backend/mypy.ini` et force `mypy_path=backend`. Le runner appelle `tools/mypy_backend.py` qui insere `backend/` dans `sys.path` et `MYPYPATH`. Cela garantit que les imports `from backend.app...` resolvent correctement sous Windows/Linux. (cf. Roadmap: CI verte a chaque jalon).
+
 ## Exports (CSV/PDF/ICS)
 - CSV et ICS fonctionnent sans deps additionnelles.
 - PDF: dependance **optionnelle** via `reportlab`. En local:
