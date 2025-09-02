@@ -26,6 +26,7 @@ Les stubs Alembic sont sous `typing_stubs/alembic`.
 
 * Mypy est lance via `tools/mypy_backend.py` avec `--explicit-package-bases` et cible le package `backend`. La racine repo est sur `sys.path` (pas `backend/`), evitant le doublon `app.*` vs `backend.app.*`.
 * Les libs externes (FastAPI, SQLAlchemy, Pydantic, etc.) sont ignorees pour le typage (sections `[mypy-*.]`), afin de ne pas exiger leurs stubs.
+* Mypy ignore aussi `pytest.*` et `typer.*` (tests/CLI) pour eviter l'exigence de stubs tiers.
 
 ## Exports (CSV/PDF/ICS)
 - CSV et ICS fonctionnent sans deps additionnelles.
