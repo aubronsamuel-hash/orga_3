@@ -1,4 +1,8 @@
-from backend.app.services.notifications.tokens import sign_token, verify_token, build_links
+from app.services.notifications.tokens import (
+    build_links,
+    sign_token,
+    verify_token,
+)
 
 
 def test_sign_and_verify():

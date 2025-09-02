@@ -1,4 +1,4 @@
-from backend.app.services.notifications.rate_limit import RateLimiter
+from app.services.notifications.rate_limit import RateLimiter
 
 
 def test_rate_limit_mem_window():
