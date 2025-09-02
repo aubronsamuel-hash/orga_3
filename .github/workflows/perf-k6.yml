@@ -1,0 +1,39 @@
+name: perf-k6
+on:
+  pull_request:
+    
+jobs:
+  k6-smoke:
+    name: k6 smoke (non-blocking)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: Start backend (if needed)
+        run: |
+          docker build -t cc-backend .
+          docker run -d --rm -e SAFE_MODE=1 -p 8000:8000 --name cc-backend cc-backend
+      - name: Wait backend
+        run: |
+          for i in {1..30}; do
+            if curl -sSf http://localhost:8000/healthz >/dev/null; then exit 0; fi
+            sleep 2
+          done
+          echo "backend not ready"; exit 3
+      - name: Install k6
+        run: |
+          sudo apt-get update && sudo apt-get install -y gnupg2
+          curl -s https://dl.k6.io/key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/k6-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install -y k6
+      - name: Run k6 smoke
+        env:
+          K6_BASE_URL: http://localhost:8000
+          K6_VUS: 5
+          K6_DURATION: 20s
+        run: |
+          k6 run deploy/k6/smoke_health.js
+      - name: Stop backend
+        if: always()
+        run: docker rm -f cc-backend || true

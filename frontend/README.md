@@ -15,7 +15,6 @@ Base React + Vite with a small design system.
 - DnD: drag & drop et resize.
 - Filtres: status, user/org/project. Timezone.
 - Tests e2e: `npm -w frontend run e2e:ci` (spec: calendar-dnd).
-- Bundle budget: `npm -w frontend run size`.
 
 ## CI
 
@@ -25,9 +24,15 @@ Base React + Vite with a small design system.
 - Storybook: `npm run storybook`
 - Storybook tests: `npm run test:storybook`
 - Build: `npm run build`
-- Bundle budget: `npm run size`
+- Bundle budget: `npm run size-limit`
 
 Note: executer ces commandes dans `frontend/`.
+
+## Bundle budget (size-limit)
+
+* Config: `.size-limit.json`
+* Commande: `npm run build && npm run size-limit`
+* Ajuster la limite si necessaire (PR avec justification).
 
 ## Storybook
 
@@ -46,11 +51,6 @@ Note: executer ces commandes dans `frontend/`.
 ### Secrets
 
 * CHROMATIC_PROJECT_TOKEN : a definir dans GitHub Secrets pour activer la publication CI.
-
-### Budgets (size-limit)
-
-Le budget de bundle (size-limit) cible `dist/assets/*.js` (build Vite). Il est execute dans le job **frontend (lint+unit+e2e-smoke)**.
-Le job **storybook** publie via Chromatic (non bloquant, Phase 1) et n'exécute pas `size-limit`.
 
 ## Frontend E2E Storybook
 
