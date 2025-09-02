@@ -12,7 +12,7 @@ Le packaging est limite au package `app` (Alembic exclu).
 ## Sante et SAFE_MODE
 
 * `/health` et `/healthz` -> 200.
-* `SAFE_MODE=1` (par defaut dans l'image) : seules les routes de sante sont actives.
+* `SAFE_MODE=1` (par defaut dans l'image) : sert une micro-app FastAPI (`deploy/k6/health_app.py`) avec seulement les routes de sante.
 * `SAFE_MODE=0` : routes API chargees (`/api/v1/...`).
 * Uvicorn ecoute 0.0.0.0:8000 (Docker: EXPOSE 8000)
 
@@ -26,7 +26,7 @@ Le packaging est limite au package `app` (Alembic exclu).
 
 ## Docker SAFE_MODE
 
-* L image par defaut sert les endpoints de sante avec `SAFE_MODE=1`.
+* L image par defaut sert une micro-app de sante avec `SAFE_MODE=1`.
 * Forcer le mode complet (dev): `-e SAFE_MODE=0` (necessitera deps projet complètes dans une image future).
 
 Tests (PS + curl):

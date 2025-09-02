@@ -25,28 +25,24 @@ pwsh -NoLogo -NoProfile -File PS1/smoke.ps1
 
 ## Mode SAFE (docker-smoke)
 
-* Le container par defaut est lance avec `SAFE_MODE=1` pour garantir `/health` et `/healthz` sans charger les routes lourdes.
+* Le container par defaut est lance avec `SAFE_MODE=1` pour servir une micro-app `/health` et `/healthz` sans charger les routes lourdes.
 * En production/dev complet, retirer `SAFE_MODE` (ou `SAFE_MODE=0`) pour charger toutes les routes.
 
-## Docker (backend)
+## Docker (SAFE_MODE et perf-k6)
 
-* Port: 8000 expose
-* CMD: `uvicorn backend.app.main:app --host 0.0.0.0 --port 8000`
-* `PYTHONPATH=/app/backend` pour resoudre `backend.app.*`
+* L'image par défaut lance une micro-app de santé quand `SAFE_MODE=1`:
 
-## Docker (SAFE_MODE)
+  * Endpoints: `/health`, `/healthz` → `{"status":"ok"}`
+  * Utilisé par `docker-smoke` et `perf-k6` pour une vérification robuste.
+* Pour lancer le backend complet: `docker run -e SAFE_MODE=0 -p 8000:8000 cc-backend`.
 
-* Image de smoke: deps minimales (FastAPI+Uvicorn), `SAFE_MODE=1` par defaut -> seules `/health` et `/healthz`.
-* Lancer:
+Commandes:
 
 ```
 docker build -t cc-backend .
 docker run --rm -e SAFE_MODE=1 -p 8000:8000 cc-backend
 curl -sSf http://localhost:8000/healthz
 ```
-
-Ports: BE 8000 ; FE 5173 ; DB 5432 ; Redis 6379 ; Adminer 8080 ; Prom 9090 ; Grafana 3000 ; Mailpit 8025.
-Voir `deploy/README.md` pour details (compose, observabilite). Roadmap: relire `docs/roadmap.md`.
 
 ## Perf baseline (J20)
 
