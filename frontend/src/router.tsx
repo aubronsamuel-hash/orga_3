@@ -11,6 +11,7 @@ import MyMissions from "./pages/MyMissions";
 import InviteLanding from "./pages/Invite";
 const CalendarPage = lazy(() => import("./features/calendar/CalendarPage"));
 import ConflictsPage from "./pages/ConflictsPage";
+import { accountingRoutes } from "./routes/accounting";
 
 function WithAuth({ element }: { element: JSX.Element }) {
   return <AuthProvider>{element}</AuthProvider>;
@@ -42,6 +43,7 @@ const routes: RouteObject[] = [
       },
       { path: "conflicts", element: <ConflictsPage /> },
       { path: "invite", element: <InviteLanding /> },
+      ...accountingRoutes,
       { path: "*", element: <NotFound /> },
     ],
   },
