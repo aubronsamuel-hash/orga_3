@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
-from app.main import create_app
-from app.routers import notifications as notif_router
+from backend.app.main import create_app
+from backend.app.routers import notifications as notif_router
 
 app = create_app()
 

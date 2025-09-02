@@ -6,14 +6,14 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from sqlalchemy.orm import Session
 
-from app.db import get_db
-from app.models.availability import (
+from backend.app.db import get_db
+from backend.app.models.availability import (
     Availability,
     AvailabilityStatus,
     EmploymentType as ModelEmploymentType,
     UserProfile,
 )
-from app.schemas.availability import (
+from backend.app.schemas.availability import (
     EmploymentType as SchemaEmploymentType,
     UserProfileIn,
     UserProfileOut,

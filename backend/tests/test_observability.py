@@ -20,7 +20,7 @@ def _upgrade(url: str) -> None:
 
 
 def _client():
-    from app.main import create_app
+    from backend.app.main import create_app
 
     app = create_app()
     return TestClient(app)

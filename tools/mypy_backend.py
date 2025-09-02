@@ -10,23 +10,16 @@ ROOT = Path(__file__).resolve().parent.parent
 BACKEND = ROOT / "backend"
 CONFIG = BACKEND / "mypy.ini"
 
-# Forcer la resolution pour le package "backend"
-os.environ.setdefault("MYPYPATH", str(BACKEND))
-if str(BACKEND) not in sys.path:
-    sys.path.insert(0, str(BACKEND))
+# Unifier la resolution: racine repo sur sys.path, pas de MYPYPATH=backend
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+os.environ.pop("MYPYPATH", None)  # evite mapping app.* fantome
 
-targets = [str(BACKEND / "app")]
-bt = BACKEND / "tests"
-rt = ROOT / "tests"
-if bt.exists():
-    targets.append(str(bt))
-if rt.exists():
-    targets.append(str(rt))
+# Cible: le package "backend" (avec bases explicites)
+targets = ["backend"]
 
-args = ["--config-file", str(CONFIG)] + targets
+args = ["--config-file", str(CONFIG), "--explicit-package-bases"] + targets
 stdout, stderr, status = mypy_api.run(args)
-
-# Rejoue la sortie comme la CI attend
 if stdout:
     print(stdout, end="")
 if stderr:

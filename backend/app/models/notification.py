@@ -8,7 +8,7 @@ from sqlalchemy import DateTime, Enum, JSON, func
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.db import Base
+from backend.app.db import Base
 
 
 class Channel(str, enum.Enum):

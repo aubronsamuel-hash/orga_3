@@ -37,13 +37,13 @@ def _upgrade(url: str) -> None:
 
 def _mk_token(account_id: str, org_id: str) -> str:
     # import tardif apres alembic
-    from app.auth import create_access_token
+    from backend.app.auth import create_access_token
 
     return create_access_token(account_id, org_id)
 
 
 def _client() -> TestClient:
-    from app.main import create_app
+    from backend.app.main import create_app
 
     app = create_app()
     return TestClient(app)

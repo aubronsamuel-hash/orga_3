@@ -7,7 +7,7 @@ from alembic.config import Config
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, text
 
-from app.auth import create_access_token
+from backend.app.auth import create_access_token
 
 TEST_DB_PATH = Path("backend/test_v1.db").resolve()
 TEST_DB_URL = f"sqlite:///{TEST_DB_PATH}"
@@ -32,7 +32,7 @@ def _upgrade(url: str) -> None:
     command.upgrade(cfg, "head")
 
 def _client():
-    from app.main import create_app
+    from backend.app.main import create_app
     app = create_app()
     return TestClient(app)
 

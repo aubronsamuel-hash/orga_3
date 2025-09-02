@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
-from typing import Any, Callable, Dict, Iterable, List
+from typing import Any, Callable, Dict, Iterable, List, Optional
 
 from sqlalchemy.orm import Session
 
@@ -22,8 +22,10 @@ def get_project_events(
     project_id: str,
     date_from: datetime,
     date_to: datetime,
-    loader: Callable[[Session, str, datetime, datetime], Iterable[_Row]] = default_loader,
+    loader: Optional[Callable[[Session, str, datetime, datetime], Iterable[_Row]]] = None,
 ) -> List[Dict[str, Any]]:
+    if loader is None:
+        loader = default_loader
     if date_from.tzinfo is None:
         date_from = date_from.replace(tzinfo=timezone.utc)
     if date_to.tzinfo is None:

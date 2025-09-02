@@ -46,7 +46,7 @@ def _alembic_upgrade(url: str) -> None:
 def test_crud_minimal_flow() -> None:
     _alembic_upgrade(TEST_DB_URL)
     engine = create_engine(TEST_DB_URL, future=True)
-    from app.enums import AssignmentStatus, ProjectStatus  # import after upgrade
+    from backend.app.enums import AssignmentStatus, ProjectStatus  # import after upgrade
     _ = (AssignmentStatus, ProjectStatus)
 
     with Session(engine, future=True) as s:

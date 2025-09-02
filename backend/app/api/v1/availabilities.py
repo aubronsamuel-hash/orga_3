@@ -7,14 +7,14 @@ from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.db import get_db
-from app.models.availability import Availability, AvailabilityStatus as ModelStatus
-from app.schemas.availability import (
+from backend.app.db import get_db
+from backend.app.models.availability import Availability, AvailabilityStatus as ModelStatus
+from backend.app.schemas.availability import (
     AvailabilityCreate,
     AvailabilityOut,
     AvailabilityStatus,
 )
-from app.services.availability_service import (
+from backend.app.services.availability_service import (
     BadRequest,
     NotFound,
     request_availability,

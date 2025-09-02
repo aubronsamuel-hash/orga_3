@@ -31,8 +31,8 @@ def _upgrade(url: str) -> None:
 
 
 def _client() -> TestClient:
-    from app.main import create_app
-    from app.auth import get_current_account
+    from backend.app.main import create_app
+    from backend.app.auth import get_current_account
 
     app = create_app()
     app.dependency_overrides[get_current_account] = lambda: {
