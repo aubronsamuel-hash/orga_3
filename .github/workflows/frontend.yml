@@ -5,8 +5,13 @@ on:
     paths:
       - "frontend/**"
       - ".github/workflows/frontend.yml"
-      - "package.json"
-      - "package-lock.json"
+  push:
+    branches:
+      - main
+    paths:
+      - "frontend/**"
+      - ".github/workflows/frontend.yml"
+  workflow_dispatch: {}
 
 concurrency:
   group: frontend-${{ github.ref }}
