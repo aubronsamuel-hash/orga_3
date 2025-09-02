@@ -23,6 +23,11 @@ pwsh -NoLogo -NoProfile -File PS1/smoke.ps1
 * GET /health et GET /healthz -> 200 {"status":"ok"}
 * CI docker-smoke ping /healthz sur http://localhost:8000
 
+## Mode SAFE (docker-smoke)
+
+* Le container par defaut est lance avec `SAFE_MODE=1` pour garantir `/health` et `/healthz` sans charger les routes lourdes.
+* En production/dev complet, retirer `SAFE_MODE` (ou `SAFE_MODE=0`) pour charger toutes les routes.
+
 ## Docker (backend)
 
 * Port: 8000 expose
