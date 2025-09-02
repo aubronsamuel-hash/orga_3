@@ -22,6 +22,13 @@ Le packaging est limite au package `app` (Alembic exclu).
 
 Les stubs Alembic sont sous `typing_stubs/alembic`.
 
+## Exports (CSV/PDF/ICS)
+- CSV et ICS fonctionnent sans deps additionnelles.
+- PDF: dependance **optionnelle** via `reportlab`. En local:
+  - `pip install reportlab`
+  - La CI mypy ignore `reportlab.*` (voir `backend/mypy.ini`) afin d eviter les erreurs de stubs.
+  - Le code importe `reportlab` en **lazy** au moment de generer le PDF.
+
 ### Tests conflits: migrations requises
 Les tests d’integration du service conflits (`test_conflicts_service_ok.py` / `test_conflicts_service_ko.py`) supposent une base SQLite migree.
 Utilisez les fixtures/tests qui appellent Alembic upgrade (ex: `_upgrade(TEST_DB_URL)` dans `tests/utils.py`).
