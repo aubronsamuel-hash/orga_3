@@ -1,23 +1,21 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import { AppLayout } from "../ui/AppLayout";
 
-const meta: Meta<typeof AppLayout> = {
+const meta = {
   title: "Layout/AppLayout",
   component: AppLayout,
-  // Garde-fou si une story consomme le Router (basename/useLocation) avant le decorateur global
   decorators: [
     (Story) => (
-      <MemoryRouter basename="/" initialEntries={["/"]}>
+      <MemoryRouter initialEntries={["/"]} basename="/">
         <Story />
       </MemoryRouter>
     ),
   ],
-};
+} satisfies Meta<typeof AppLayout>;
+
 export default meta;
 
-type Story = StoryObj<typeof AppLayout>;
-export const Default: Story = {
-  args: {},
-};
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {};
