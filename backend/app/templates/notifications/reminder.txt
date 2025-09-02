@@ -1,0 +1,5 @@
+Rappel mission: {{mission}}
+Actions:
+
+* Accepter: {{accept_url}}
+* Decliner: {{decline_url}}
