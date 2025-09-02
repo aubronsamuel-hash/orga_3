@@ -83,6 +83,13 @@ Jobs standard (les activer par jalon):
 - perf (k6 smoke + baseline)
 - obs-smoke (prometheus scrape ok, loki logs ok, grafana up)
 
+## Stabilisation CI Frontend (Playwright/Storybook)
+
+* Remplacer l installation manuelle `--with-deps` par `microsoft/playwright-github-action@v1`.
+* Activer cache des navigateurs Playwright.
+* Concurrency guard pour eviter les annulations aleatoires dues aux push consecutifs.
+* Limiter la parallelisation test-storybook (`--maxWorkers=2`).
+
 ---
 
 # Jalons (etapes atomiques)

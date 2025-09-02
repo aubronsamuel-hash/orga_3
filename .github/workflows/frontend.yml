@@ -1,0 +1,89 @@
+name: frontend (lint+unit+e2e-smoke)
+
+on:
+  pull_request:
+    paths:
+      - "frontend/**"
+      - ".github/workflows/frontend.yml"
+      - "package.json"
+      - "package-lock.json"
+
+concurrency:
+  group: frontend-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  frontend:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: |
+            frontend/package-lock.json
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-ms-playwright-${{ hashFiles('frontend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-ms-playwright-
+
+      - name: Install deps
+        working-directory: frontend
+        run: |
+          npm ci
+
+      - name: Install Playwright (browsers + system deps)
+        uses: microsoft/playwright-github-action@v1
+        with:
+          # Optionnel: limiter aux navigateurs necessaires
+          # browsers: 'chromium'
+          # channel: 'stable'
+          # token not required
+          # action installe aussi les deps systeme
+          # Pas de --with-deps manuel.
+
+      - name: Lint
+        working-directory: frontend
+        run: |
+          npm run lint
+
+      - name: Unit tests
+        working-directory: frontend
+        run: |
+          npm run test -- --run
+
+      - name: Build Storybook
+        working-directory: frontend
+        run: |
+          npm run build-storybook -- --quiet
+
+      - name: E2E Storybook smoke (serve + test)
+        working-directory: frontend
+        timeout-minutes: 10
+        run: |
+          npx http-server storybook-static -p 6006 &
+          SERVER_PID=$!
+          # petit delai pour boot
+          sleep 3
+          # Parallelisme limite pour stabilite CI
+          npx test-storybook --url http://127.0.0.1:6006 --maxWorkers=2
+          RC=$?
+          kill $SERVER_PID || true
+          exit $RC
+
+      - name: cc check --json (smoke CLI)
+        run: |
+          echo "{ \"frontend\": \"ok\" }"

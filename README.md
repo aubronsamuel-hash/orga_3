@@ -238,6 +238,29 @@ Si un `.npmrc` global force une registry privee, ce pin l ignore.
 - Toutes les commandes npm front s executent **dans `frontend/`**.
 - Local (Windows): `pwsh -NoLogo -NoProfile -File PS1/fe_ci.ps1`
 
+## CI Frontend stabilisee
+
+* Utilisation de `microsoft/playwright-github-action@v1` pour installer navigateurs + dependances systeme.
+* Cache des navigateurs: `~/.cache/ms-playwright` via `actions/cache`.
+* Concurrency: `frontend-${{ github.ref }}` avec `cancel-in-progress: true` pour annuler les runs precedents lors de nouveaux push.
+* E2E Storybook: serveur local via `http-server`, tests avec `test-storybook` et `--maxWorkers=2`.
+
+### Scripts clefs (Windows-first)
+
+```powershell
+# E2E Storybook local
+.\frontend\PS1\e2e_storybook.ps1 -Port 6006
+```
+
+### Envs requis
+
+Rien de specifique pour les E2E Storybook (pas de secrets).
+
+### Ports
+
+* Frontend dev: 5173
+* Storybook E2E (serve): 6006
+
 ## Tests/Lint
 
 ```powershell
