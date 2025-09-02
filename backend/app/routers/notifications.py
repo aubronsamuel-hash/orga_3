@@ -73,7 +73,7 @@ def send_invitation(req: InviteRequest):
         "accept_url": links["accept_url"],
         "decline_url": links["decline_url"],
     }
-    results = {}
+    results: dict[str, str] = {}
     if "email" in req.channels:
         if not req.user_email:
             raise HTTPException(status_code=400, detail="Email cible manquant.")
@@ -91,15 +91,13 @@ def send_invitation(req: InviteRequest):
             )
         results["email"] = "queued" if req.dry_run else "sent"
     if "telegram" in req.channels:
-        if not (
-            settings.TELEGRAM_BOT_TOKEN
-            and (req.telegram_chat_id or settings.TELEGRAM_DEFAULT_CHAT_ID)
-        ):
+        chat_id_opt = req.telegram_chat_id or settings.TELEGRAM_DEFAULT_CHAT_ID
+        if not (settings.TELEGRAM_BOT_TOKEN and chat_id_opt):
             raise HTTPException(status_code=400, detail="Telegram non configure.")
         if not req.dry_run:
             send_telegram(
                 settings.TELEGRAM_BOT_TOKEN,
-                req.telegram_chat_id or settings.TELEGRAM_DEFAULT_CHAT_ID,
+                str(chat_id_opt),
                 render_template("invite", context),
             )
         results["telegram"] = "queued" if req.dry_run else "sent"
@@ -115,7 +113,7 @@ class VerifyTokenResp(BaseModel):
 @router.get("/invitations/verify", response_model=VerifyTokenResp)
 def verify_invitation_token(t: str = Query(..., description="token signe")):
     ok, info = verify_token(settings.SIGNING_SECRET, t)
-    if not ok:
+    if not ok or info is None:
         return VerifyTokenResp(ok=False)
     return VerifyTokenResp(ok=True, assignment_id=info["assignment_id"], user_id=info["user_id"])
 
