@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from typing import Dict, Iterable, List, Optional, Tuple
 
 from sqlalchemy.orm import Session
@@ -20,7 +20,7 @@ class _Row:
 
 
 def _month_key(dt: datetime) -> str:
-    dt = dt.astimezone(UTC)
+    dt = dt.astimezone(timezone.utc)
     return f"{dt.year:04d}-{dt.month:02d}"
 
 

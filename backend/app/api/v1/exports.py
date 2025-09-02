@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
@@ -28,8 +28,8 @@ def export_csv(
             detail="Type d export non supporte.",
         )
     try:
-        df = datetime.fromisoformat(date_from).replace(tzinfo=UTC)
-        dt = datetime.fromisoformat(date_to).replace(tzinfo=UTC)
+        df = datetime.fromisoformat(date_from).replace(tzinfo=timezone.utc)
+        dt = datetime.fromisoformat(date_to).replace(tzinfo=timezone.utc)
     except Exception:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Dates invalides.")
     items = compute_monthly_totals(
@@ -59,8 +59,8 @@ def export_pdf(
             detail="Type d export non supporte.",
         )
     try:
-        df = datetime.fromisoformat(date_from).replace(tzinfo=UTC)
-        dt = datetime.fromisoformat(date_to).replace(tzinfo=UTC)
+        df = datetime.fromisoformat(date_from).replace(tzinfo=timezone.utc)
+        dt = datetime.fromisoformat(date_to).replace(tzinfo=timezone.utc)
     except Exception:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Dates invalides.")
     items = compute_monthly_totals(
