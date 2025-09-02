@@ -27,6 +27,7 @@ from .api_v1_rates import router as rates_router
 from .api_v1_users import router as users_router
 from .api.v1 import availabilities as avail_api
 from .api.v1 import users_profile as users_profile_api
+from .routers import notifications_router
 
 
 # Middleware request_id + logs JSON
@@ -126,6 +127,7 @@ def create_app() -> FastAPI:
     app.include_router(conflicts_api.router)
     app.include_router(rates_router)
     app.include_router(orgs_router)
+    app.include_router(notifications_router)
 
     return app
 

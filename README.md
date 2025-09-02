@@ -53,6 +53,18 @@ python tools\mypy_backend.py
 * API: /api/v1/conflicts, /api/v1/conflicts/{id}, /api/v1/conflicts/resolve
 * UI: /conflicts
 * Tests: `pwsh -NoLogo -NoProfile -File PS1/test_backend.ps1`, `pwsh -NoLogo -NoProfile -File PS1/e2e_conflicts.ps1`
+
+## Jalon 18 - Notifications
+
+* Email via MailPit (dev)
+* Telegram bot (staging/prod)
+* Liens signes accept/decline
+* Scripts: PS1/test_notif.ps1, PS1/smoke.ps1
+* Endpoints exposes sous /api/v1 (voir backend/README.md)
+
+Tests:
+
+* `pwsh -NoLogo -NoProfile -File PS1/test_notif.ps1`
 ## CI
 
 - backend: ruff, mypy, pytest

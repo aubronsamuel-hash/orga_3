@@ -1,0 +1,2 @@
+Changement d horaire pour la mission: {{mission}}
+Voir details dans l application.

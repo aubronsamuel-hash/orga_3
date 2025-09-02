@@ -296,3 +296,32 @@ Sous SQLite, nos colonnes `starts_at/ends_at` sont stockees en `TEXT`. Lorsque l
 le dialecte SQLAlchemy peut echouer a parser `Z`. Le service `app.services.conflicts` contourne ce point en lisant ces colonnes en `TEXT`
 et en normalisant `Z` vers `+00:00` avant comparaison. Aucun changement d API.
 
+
+## Notifications (Jalon 18)
+
+Prerequis dev:
+
+* MailPit via compose: `docker compose -f deploy/dev/compose.yaml up -d mailpit`
+* Backend sur http://localhost:8000
+
+Env (voir `.env.example`):
+
+* SMTP_HOST/PORT/USER/PASSWORD/SMTP_FROM
+* TELEGRAM_BOT_TOKEN/TELEGRAM_DEFAULT_CHAT_ID (optionnel)
+* INVITE_LINK_BASE_URL, SIGNING_SECRET
+* INVITE_RATE_LIMIT_COUNT/INVITE_RATE_LIMIT_WINDOW_SEC
+* REDIS_URL (optionnel)
+
+Endpoints:
+
+* POST /api/v1/notifications/test-email
+* POST /api/v1/invitations/send
+* GET  /api/v1/invitations/verify?t=...
+
+Tests:
+
+* `pwsh -NoLogo -NoProfile -File PS1/test_notif.ps1`
+
+Rate limit:
+
+* In-memoire par defaut; Redis utilise si REDIS_URL configure. 429 en cas d abus.

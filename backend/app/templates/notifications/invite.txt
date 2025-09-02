@@ -1,0 +1,8 @@
+Bonjour {{user_name}},
+
+Vous avez recu une invitation pour la mission: {{mission}}.
+
+Accepter: {{accept_url}}
+Decliner: {{decline_url}}
+
+Ceci est un email automatique. Merci.
