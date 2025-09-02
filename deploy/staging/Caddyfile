@@ -1,0 +1,40 @@
+{
+email ${ACME_EMAIL}
+admin 0.0.0.0:2019
+}
+
+${STAGING_DOMAIN} {
+encode gzip
+@api path /api/* /api/v1/* /healthz
+handle @api {
+reverse_proxy backend:8000
+}
+
+@assets path /assets/* /favicon.ico
+handle @assets {
+reverse_proxy frontend:5173
+}
+
+# Frontend app (SPA)
+
+route {
+reverse_proxy frontend:5173
+}
+
+# Static health endpoint for LB/probes
+
+handle_path /healthz {
+respond "ok" 200
+}
+
+tls {
+issuer acme
+}
+
+header {
+X-Frame-Options "DENY"
+X-Content-Type-Options "nosniff"
+Referrer-Policy "no-referrer-when-downgrade"
+Content-Security-Policy "default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval'"
+}
+}

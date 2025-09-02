@@ -1,0 +1,31 @@
+name: deploy-staging
+on:
+  workflow_dispatch:
+    inputs:
+      env_file:
+        description: "Chemin .env staging sur runner"
+        required: false
+        default: "deploy/staging/.env"
+jobs:
+  deploy:
+    runs-on: self-hosted
+    environment: staging
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Docker login (optional registry)
+        if: ${{ false }}
+        run: echo "Skip registry login; zero secret policy"
+      - name: Deploy compose up
+        shell: pwsh
+        run: |
+          cd deploy/staging
+          ./deploy_up.ps1 -EnvFile "${{ github.event.inputs.env_file }}"
+      - name: Smoke
+        shell: pwsh
+        env:
+          STAGING_DOMAIN: ${{ vars.STAGING_DOMAIN }}
+        run: |
+          cd deploy/staging
+          ./smoke.ps1 -BaseUrl ("https://{0}" -f $Env:STAGING_DOMAIN)

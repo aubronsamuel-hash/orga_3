@@ -54,6 +54,26 @@ curl -sSf http://localhost:8000/healthz
   * `fe-bundle-budget` (bloquant si depasse budget)
 * Endpoints relies: `/healthz` (baseline rapide). Voir backend/README.md.
 
+## Staging
+
+* Dossier: deploy/staging
+* Demarrage: PowerShell
+  cd deploy/staging
+  ./deploy_up.ps1 -EnvFile ".env"
+* Test rapide:
+  $Env:STAGING_DOMAIN="staging.example.com"
+  ./smoke.ps1 -BaseUrl ("https://{0}" -f $Env:STAGING_DOMAIN)
+* CI:
+  * deploy-staging (manuel, runner self-hosted)
+  * zap-baseline (manuel + hebdo)
+
+ENV requis (.env staging sur VM):
+
+* BACKEND_IMAGE, FRONTEND_IMAGE
+* POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD, DATABASE_URL
+* REDIS_URL
+* STAGING_DOMAIN, ACME_EMAIL
+
 ## CI Python (lint + typing)
 
 * **Ruff**: `python -m ruff check backend`
