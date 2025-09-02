@@ -89,3 +89,9 @@ $Env:E2E_ACCEPTANCE=1; npm run e2e
 ## Page Conflits
 
 Route `/conflicts`: liste des conflits detectes; clic sur "Remplacer par X" tente une resolution et retire le conflit si OK.
+
+## Comptabilite
+
+* Route: /accounting/monthly-users
+* Actions: Charger, Export CSV
+* ENV: VITE_API_BASE (defaut http://localhost:8000)

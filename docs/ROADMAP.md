@@ -286,13 +286,12 @@ Acceptance: notifications efficaces et sures.
 
 ## Jalon 19 - Comptabilite et exports
 But: cachets, factures, exports CSV/PDF/ICS, **totaux mensuels par user** et par project/org.
-Livrables: 
-- Backend: `/v1/reports/monthly-users` (par org/project, filtre date, group by user/mois), `/v1/exports/*` pour CSV/PDF/ICS.
-- Frontend: ecran Comptabilite -> **Totaux mensuels par user** (table triable, filtres, export CSV), recap par project.
-- Calculs: heures prevues vs confirmees (ACCEPTED), taux horaires ou forfaits via `rate_profile`.
-Tests: validations montants, regroupements mensuels, conversions horaires->montants, exports.
-CI Gates: pytest + e2e.
-Docs: formats, conventions de calcul (UTC, arrondis, inclusions jours feries en option).
+Formats:
+- CSV: ; delimite, colonnes: user_id,user_name,month,hours_planned,hours_confirmed,amount
+- PDF: tableau simple A4 (ReportLab)
+- ICS: missions ACCEPTED (placeholder vide, integrer requete dans J19.1)
+Conventions calcul: UTC, arrondis 2 decimales, jours feries optionnels (J19.2)
+CI Gates: pytest OK, e2e smoke OK, docs-guard OK
 Acceptance: totaux mensuels par user operationnels et exportables.
 
 ## Jalon 20 - Perf baseline

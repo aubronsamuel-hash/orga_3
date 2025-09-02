@@ -27,6 +27,8 @@ from .api_v1_rates import router as rates_router
 from .api_v1_users import router as users_router
 from .api.v1 import availabilities as avail_api
 from .api.v1 import users_profile as users_profile_api
+from .api.v1 import reports as reports_api
+from .api.v1 import exports as exports_api
 from .routers import notifications_router
 
 
@@ -125,6 +127,8 @@ def create_app() -> FastAPI:
     app.include_router(users_profile_api.router, prefix="/api/v1/users", tags=["users"])
     app.include_router(availability_router)
     app.include_router(conflicts_api.router)
+    app.include_router(reports_api.router)
+    app.include_router(exports_api.router)
     app.include_router(rates_router)
     app.include_router(orgs_router)
     app.include_router(notifications_router)

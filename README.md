@@ -65,6 +65,26 @@ python tools\mypy_backend.py
 Tests:
 
 * `pwsh -NoLogo -NoProfile -File PS1/test_notif.ps1`
+
+## Jalon 19 - Comptabilite et Exports
+
+* BE: /api/v1/reports/monthly-users, /api/v1/exports/{csv,pdf,ics}
+* FE: /accounting/monthly-users
+* Scripts: PS1/reports_smoke.ps1
+* CLI: python -m backend.cli.cc reports --org-id <...> --date-from 2025-08-01 --date-to 2025-08-31
+
+Quickstart Windows
+
+* pwsh -NoLogo -NoProfile -File PS1/reports_smoke.ps1
+
+Ports
+
+* BE 8000, FE 5173
+
+Tests/Lint
+
+* backend.venv\Scripts\python -m pytest -q --disable-warnings --maxfail=1
+* npm run e2e:smoke
 ## CI
 
 - backend: ruff, mypy, pytest

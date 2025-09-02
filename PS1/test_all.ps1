@@ -12,10 +12,13 @@ $py = Join-Path $venv "Scripts\python.exe"
 
 # Ensure PYTHONPATH=backend for app imports
 $Env:PYTHONPATH = "backend"
-& $py -m pytest -q --maxfail=1 --disable-warnings --cov=backend --cov-report=xml:coverage.xml
+Write-Host "== Pytest backend =="
+& $py -m pytest -q --disable-warnings --maxfail=1
 
 Push-Location "frontend"
 npm run lint
+Write-Host "== E2E FE smoke =="
+npm run e2e:smoke
 Pop-Location
 
 Write-Host "[test_all] OK" -ForegroundColor Green

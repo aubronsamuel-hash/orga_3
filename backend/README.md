@@ -325,3 +325,24 @@ Tests:
 Rate limit:
 
 * In-memoire par defaut; Redis utilise si REDIS_URL configure. 429 en cas d abus.
+
+## Comptabilite - Jalon 19
+
+### Endpoints
+
+GET /api/v1/reports/monthly-users?org_id&project_id&date_from&date_to
+
+* 200: { org_id, project_id, date_from, date_to, items:[], currency:"EUR" }
+* 400: plage de dates invalide
+* 422: format de dates invalide
+
+GET /api/v1/exports/csv?type=monthly-users&org_id&project_id&date_from&date_to
+GET /api/v1/exports/pdf?type=monthly-users&org_id&project_id&date_from&date_to
+GET /api/v1/exports/ics?project_id&date_from&date_to
+
+### Conventions de calcul
+
+* UTC base, mois AAAA-MM par start_utc
+* heures_prevues = duree mission
+* heures_confirmees = (status ACCEPTED) ? confirmed_hours || duree : 0
+* rate_profile: hourly => h_confirmees*rate ; flat => forfait si ACCEPTED
