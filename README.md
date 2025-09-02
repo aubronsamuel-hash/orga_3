@@ -89,6 +89,7 @@ Tests/Lint
 ## Notes CI (J19)
 
 * ReportLab n expose pas de stubs types. Les imports sont ignores finement via `# type: ignore[import-not-found, import-untyped, unused-ignore]` sur `reportlab.lib.pagesizes` et `reportlab.pdfgen`. Aucun impact runtime.
+* Compatibilite Python: la CI Windows tourne en Python 3.10. Utiliser `datetime.timezone.utc` (et non `datetime.UTC` qui est 3.11+).
 ## CI
 
 - backend: ruff, mypy, pytest

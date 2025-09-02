@@ -343,6 +343,7 @@ GET /api/v1/exports/ics?project_id&date_from&date_to
 ### Conventions de calcul
 
 * UTC base, mois AAAA-MM par start_utc
+* UTC: conversions via `timezone.utc` pour compat 3.10+.
 * heures_prevues = duree mission
 * heures_confirmees = (status ACCEPTED) ? confirmed_hours || duree : 0
 * rate_profile: hourly => h_confirmees*rate ; flat => forfait si ACCEPTED
