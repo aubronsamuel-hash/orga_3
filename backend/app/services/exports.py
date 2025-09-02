@@ -4,8 +4,6 @@ import csv
 from io import BytesIO, StringIO
 from typing import List
 
-from reportlab.lib.pagesizes import A4  # type: ignore[import-not-found, import-untyped, unused-ignore]
-from reportlab.pdfgen import canvas  # type: ignore[import-not-found, import-untyped, unused-ignore]
 
 
 def to_csv_monthly_users(items: List[dict]) -> bytes:
@@ -24,7 +22,17 @@ def to_csv_monthly_users(items: List[dict]) -> bytes:
     return buf.getvalue().encode("utf-8")
 
 
-def to_pdf_monthly_users(items: List[dict], title: str = "Totaux mensuels par utilisateur") -> bytes:
+def to_pdf_monthly_users(
+    items: List[dict],
+    title: str = "Totaux mensuels par utilisateur",
+) -> bytes:
+    # Import paresseux pour eviter l'erreur si reportlab n'est pas installe.
+    try:
+        from reportlab.lib.pagesizes import A4  # type: ignore[import-not-found]
+        from reportlab.pdfgen import canvas  # type: ignore[import-not-found]
+    except Exception as e:  # pragma: no cover - dependance manquante
+        raise RuntimeError("PDF_EXPORT_UNAVAILABLE") from e
+
     buf = BytesIO()
     c = canvas.Canvas(buf, pagesize=A4)
     width, height = A4
@@ -37,7 +45,11 @@ def to_pdf_monthly_users(items: List[dict], title: str = "Totaux mensuels par ut
     c.drawString(40, y, " | ".join(header))
     y -= 14
     for it in items:
-        line = f'{it["user_name"]} | {it["month"]} | {it["hours_planned"]:.2f} | {it["hours_confirmed"]:.2f} | {it["amount"]:.2f}'
+        line = (
+            f'{it["user_name"]} | {it["month"]} | '
+            f'{it["hours_planned"]:.2f} | {it["hours_confirmed"]:.2f} | '
+            f'{it["amount"]:.2f}'
+        )
         if y < 40:
             c.showPage()
             y = height - 40
