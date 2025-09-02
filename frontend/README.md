@@ -52,11 +52,23 @@ Note: executer ces commandes dans `frontend/`.
 Le budget de bundle (size-limit) cible `dist/assets/*.js` (build Vite). Il est execute dans le job **frontend (lint+unit+e2e-smoke)**.
 Le job **storybook** publie via Chromatic (non bloquant, Phase 1) et n'exécute pas `size-limit`.
 
-## Repro Storybook (Windows)
+## Frontend E2E Storybook
 
+* Build: `npm run build-storybook -- --quiet`
+* Serve: `npx http-server storybook-static -p 6006`
+* Test: `npx test-storybook --url http://127.0.0.1:6006 --maxWorkers=2`
+
+Windows-first:
+
+```powershell
+.\PS1\e2e_storybook.ps1 -Port 6006
 ```
-pwsh -NoLogo -NoProfile -File ..\PS1\repro_storybook_ci_cache.ps1
-```
+
+CI:
+
+* Action officielle: `microsoft/playwright-github-action@v1`
+* Cache: `~/.cache/ms-playwright`
+* Pas de `npx playwright install --with-deps` manuel dans la CI.
 
 ## Tests UI avec Storybook
 
