@@ -1,8 +1,12 @@
 # Changelog
 
 ## [Unreleased]
+
+## v0.19.0 - Comptabilite et exports
 ### Added
-- Jalon 15.5: workflow d’acceptation (API, UI, tokens signés, tests)
+- Reports mensuels par user et project avec totaux.
+- Exports CSV et ICS; export PDF optionnel (501 si reportlab absent).
+- Compatibilite Python 3.10+ via `datetime.timezone.utc`.
 
 ## Jalon 12 – Design system + a11y
 - Added CSS tokens and theme variables.

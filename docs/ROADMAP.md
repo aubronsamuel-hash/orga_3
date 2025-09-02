@@ -284,7 +284,7 @@ CI Gates: pytest + e2e notif.
 Docs: runbook SMTP/Telegram (sans secrets), variables env, anti-abuse (rate limit invitation).
 Acceptance: notifications efficaces et sures.
 
-## Jalon 19 - Comptabilite et exports
+## Jalon 19 - Comptabilite et exports (DONE)
 But: cachets, factures, exports CSV/PDF/ICS, **totaux mensuels par user** et par project/org.
 Formats:
 - CSV: ; delimite, colonnes: user_id,user_name,month,hours_planned,hours_confirmed,amount
@@ -293,6 +293,15 @@ Formats:
 Conventions calcul: UTC, arrondis 2 decimales, jours feries optionnels (J19.2)
 CI Gates: pytest OK, e2e smoke OK, docs-guard OK
 Acceptance: totaux mensuels par user operationnels et exportables.
+
+## Jalon 19.1 - Perfectionnements comptabilite
+- ICS reel: missions ACCEPTED -> evenements (UID stable, SUMMARY, DESCRIPTION avec project/user, timezone: UTC en stockage, affichage local FE).
+- Jours feries optionnels: table FR (ou lib externe) -> flag include_holidays.
+- Arrondis: regles configurables (0.25h, 0.5h).
+- Perf: cache 5 min (cle filtres) sur /reports; pagination exports si > N lignes.
+- rate_profile avances: primes, surcotes nuit/jour ferie, devise unique EUR (conversion future).
+- e2e FE: tri/filtre, export CSV verifie (contenu minimal).
+- Observabilite: compteur metrics nb_exports, latence.
 
 ## Jalon 20 - Perf baseline
 But: k6 smoke + baseline RPS/latence, budgets FE (size-limit), Lighthouse CI (optionnel).
