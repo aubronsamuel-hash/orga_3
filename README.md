@@ -85,6 +85,10 @@ Tests/Lint
 
 * backend.venv\Scripts\python -m pytest -q --disable-warnings --maxfail=1
 * npm run e2e:smoke
+
+## Notes CI (J19)
+
+* ReportLab n expose pas de stubs types. Les imports sont ignores finement via `# type: ignore[import-not-found, import-untyped, unused-ignore]` sur `reportlab.lib.pagesizes` et `reportlab.pdfgen`. Aucun impact runtime.
 ## CI
 
 - backend: ruff, mypy, pytest
